@@ -1,0 +1,36 @@
+/* AboutMe.css */
+.about-me-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 50px;
+    background-color: #fbd7e4; /* Strawberry pink background */
+  }
+  
+  .content {
+    flex: 1;
+    max-width: 600px;
+  }
+  
+  .image-container {
+    flex: 1;
+    text-align: center;
+  }
+  
+  img {
+    width: 100%;
+    border-radius: 10px; /* Add border radius for a rounded image */
+    border: 2px solid #ffffff; /* White border around the image */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+  }
+  
+  h1 {
+    color: #ff66a3; /* Light pink title color */
+  }
+  
+  p {
+    margin-bottom: 15px;
+    font-size: 18px;
+    color: #ffffff; /* White text color */
+  }
+  

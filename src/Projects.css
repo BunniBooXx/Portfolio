@@ -1,0 +1,54 @@
+/* Projects.css */
+
+.projects-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .kawaii-title {
+    font-size: 32px;
+    color: #ff85a2; /* Strawberry pink title */
+    margin-bottom: 20px;
+  }
+  
+  .project-card {
+    background-color: #ffffff; /* White card background */
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+    max-width: 400px;
+    width: 100%;
+  }
+  
+  .project-title {
+    font-size: 24px;
+    color: #ff85a2; /* Strawberry pink project title */
+    margin-bottom: 10px;
+  }
+  
+  .project-bio {
+    font-size: 16px;
+    color: #555; /* Dark gray bio text */
+    margin-bottom: 15px;
+  }
+  
+  .project-link {
+    display: block;
+    background-color: #ff4d72; /* Darker pink button background */
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .project-link:hover {
+    background-color: #ff577f; /* Lighter pink on hover */
+  }
+  
