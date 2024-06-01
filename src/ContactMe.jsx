@@ -13,7 +13,7 @@ const ContactMe = () => {
   const sendEmail = (e) => {
     e.preventDefault();
 
-    emailjs.sendForm('service_cc7dukm', 'template_jqn73uq', form.current, 'b3f7LghfO8lhnUG50')
+    emailjs.sendForm('service_cc7dukm', 'template_59litsq', form.current, 'b3f7LghfO8lhnUG50')
       .then((result) => {
         console.log(result.text);
         console.log("message sent")

@@ -17,8 +17,8 @@ const Projects = () => {
       </div>
 
       <div className="project-card">
-        <h2 className="project-title">Ecommerce Application</h2>
-        <p className="project-bio">An adorable ecommerce application for your kawaii shopping needs.</p>
+        <h2 className="project-title">Bunny Bubble Nails</h2>
+        <p className="project-bio">Coming soon</p>
         <a href="https://ecommerce-external-website.com" className="project-link" target="_blank" rel="noopener noreferrer">
           Discover Ecommerce App
         </a>
@@ -26,8 +26,8 @@ const Projects = () => {
 
       <div className="project-card">
         <h2 className="project-title">Otome Game</h2>
-        <p className="project-bio">Immerse yourself in a charming otome game with captivating characters.</p>
-        <a href="https://otome-game-external-website.com" className="project-link" target="_blank" rel="noopener noreferrer">
+        <p className="project-bio">Immerse yourself in a charming otome game with captivating characters. Currently a work in progress</p>
+        <a href="https://arielles-code.netlify.app/" className="project-link" target="_blank" rel="noopener noreferrer">
           Play Otome Game
         </a>
       </div>
