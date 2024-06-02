@@ -31,6 +31,33 @@
   p {
     margin-bottom: 15px;
     font-size: 18px;
-    color: #d9a7ec; /* White text color */
+    color: #f88993; /* White text color */
   }
   
+  /* Media queries for responsive design */
+
+/* Tablet and smaller screens */
+@media (max-width: 768px) {
+  .about-me-container {
+    padding: 1rem;
+  }
+
+  .content {
+    max-width: 100%;
+  }
+
+  .image-container {
+    max-width: 200px;
+  }
+}
+
+/* Mobile screens */
+@media (max-width: 480px) {
+  .about-me-container {
+    padding: 0.5rem;
+  }
+
+  .image-container {
+    max-width: 150px;
+  }
+}

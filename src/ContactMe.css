@@ -1,73 +1,99 @@
-/* ContactMe.css */
+
 
 body {
-    margin: 0;
-    font-family: 'Arial', sans-serif;
-  }
-  
-  .contact-container {
-    background-color: #ffe6f2; /* Pastel pink background */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-  }
-  
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+}
+
+.contact-container {
+  background-color: #ffe6f2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.contact-form {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  width: 100%;
+}
+
+.title {
+  font-size: 24px;
+  color: #ff85a2;
+  text-align: center;
+}
+
+.input-label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 16px;
+  color: #ff85a2;
+}
+
+.input-field {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ff85a2;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+.submit-button {
+  background-color: #ff4d72;
+  color: #140707;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.submit-button:hover {
+  background-color: #ff577f;
+}
+
+.social-icons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.social-icon {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+}
+
+/* Media queries for responsive design */
+
+/* Tablet and smaller screens */
+@media (max-width: 768px) {
   .contact-form {
-    background-color: #ffffff; /* White box for the form */
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     max-width: 400px;
-    width: 100%;
   }
-  
-  .title {
-    font-size: 24px;
-    color: #ff85a2; /* Strawberry pink title */
-    text-align: center;
+}
+
+/* Mobile screens */
+@media (max-width: 480px) {
+  .contact-form {
+    max-width: 300px;
   }
-  
-  .input-label {
-    display: block;
-    margin-bottom: 5px;
-    font-size: 16px;
-    color: #ff85a2; /* Strawberry pink label text */
-  }
-  
-  .input-field {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    border: 1px solid #ff85a2; /* Strawberry pink border */
-    border-radius: 4px;
-    box-sizing: border-box;
-    font-size: 14px;
-  }
-  
-  .submit-button {
-    background-color: #ff4d72; /* Darker pink for the submit button */
-    color: #140707;
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  
-  .submit-button:hover {
-    background-color: #ff577f; /* Lighter pink on hover */
-  }
-  
+
   .social-icons {
-    margin-top: 20px;
-    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
   }
-  
+
   .social-icon {
-    width: 30px;
-    height: 30px;
-    margin-right: 10px;
+    margin: 5px;
   }
-  
+}
