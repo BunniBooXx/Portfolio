@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import resumeFile from './Jaqueline_Smith_Resume_3.docx';
+
 
 export default function Navbar() {
   return (
@@ -24,9 +24,8 @@ export default function Navbar() {
                 <li>
                   <Link to="/projects">Projects</Link>
                 </li>
-                <li>
-                  <a href={resumeFile} download="resume.docx">Resume</a>
-              </li>
+              <li>
+                <Link to="/resume">Resume</Link></li>
               </ul>
             </details>
           </li>

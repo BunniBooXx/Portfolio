@@ -7,6 +7,7 @@ import Navbar from './Navbar';
 import AboutMe from './AboutMe';
 import ContactMe from './ContactMe';
 import Projects from './Projects'; // Import the Projects component
+import Resume from './Resume'; // Import the Resume component
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/aboutme" element={<AboutMe />} />
         <Route path="/contact" element={<ContactMe />} />
         <Route path="/projects" element={<Projects />} /> {/* Add the Projects route */}
+        <Route path="/resume" element={<Resume/>}/>
         <Route />
       </Routes>
       <Footer />
