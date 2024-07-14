@@ -18,15 +18,15 @@ const Projects = () => {
 
       <div className="project-card">
         <h2 className="project-title">Bunny Bubble Nails</h2>
-        <p className="project-bio">Coming soon</p>
-        <a href="https://ecommerce-external-website.com" className="project-link" target="_blank" rel="noopener noreferrer">
+        <p className="project-bio"> Custom Press On Nails Shopping Site</p>
+        <a href="https://bunnybubblenails.com" className="project-link" target="_blank" rel="noopener noreferrer">
           Discover Ecommerce App
         </a>
       </div>
 
       <div className="project-card">
         <h2 className="project-title">Otome Game</h2>
-        <p className="project-bio">Immerse yourself in a charming otome game with captivating characters. Currently a work in progress</p>
+        <p className="project-bio">Immerse yourself in a charming otome game with captivating characters.</p>
         <a href="https://arielles-code.netlify.app/" className="project-link" target="_blank" rel="noopener noreferrer">
           Play Otome Game
         </a>
