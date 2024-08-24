@@ -1,10 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-
 export default function Navbar() {
   return (
-    <div className="navbar bg-base-100">
+    <div className="navbar bg-base-100 sticky top-0 z-50 shadow-md">
       <div className="flex-1">
         <Link to="/" className="btn btn-ghost text-xl">
           Home
@@ -20,12 +19,13 @@ export default function Navbar() {
               <summary>
                 More
               </summary>
-              <ul className="p-2 bg-base-100 rounded-t-none">
+              <ul className="p-2 bg-base-100 shadow-lg rounded-t-none z-50">
                 <li>
                   <Link to="/projects">Projects</Link>
                 </li>
-              <li>
-                <Link to="/resume">Resume</Link></li>
+                <li>
+                  <Link to="/resume">Resume</Link>
+                </li>
               </ul>
             </details>
           </li>
@@ -34,6 +34,7 @@ export default function Navbar() {
     </div>
   );
 }
+
 
 
 
