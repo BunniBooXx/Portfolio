@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Raleway:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=CuteFont&family=Raleway:wght@400;700&display=swap');
 
 .resume-container {
   display: flex;
@@ -8,45 +8,68 @@
   padding: 20px;
   text-align: center;
   min-height: 100vh;
-  background-color: #fff0f5;
+  background-color: #fff0f5; /* Soft pink background */
   font-family: 'Raleway', sans-serif;
 }
 
+/* Heading Style */
 .resume-container h1 {
-  font-size: 2.5rem;
-  color: #d63384;
+  font-size: 2.8rem;
+  color: #ea5fa4;
   margin-bottom: 20px;
-  text-shadow: 2px 2px #ffb6c1;
   font-family: 'Dancing Script', cursive;
+  text-shadow: 1px 1px #ffb6c1;
+  position: relative;
 }
 
+/* Add small heart icons around the heading */
+.resume-container h1::before,
+.resume-container h1::after {
+  content: "♡";
+  font-size: 1.8rem;
+  color: #ff69b4;
+  margin: 0 10px;
+}
+
+/* Description paragraph with subtle styling */
 .resume-container p {
   font-size: 1.2rem;
-  color: #6f42c1;
+  color:  #ea5fa4;;
   margin-bottom: 20px;
-  font-family: 'Dancing Script', cursive;
+  font-family: 'CuteFont', cursive;
+  position: relative;
 }
 
+/* PDF Viewer container */
 .pdf-viewer {
   width: 80%;
   height: 80vh;
   background-color: white;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   border-radius: 15px;
   overflow: hidden;
-  padding: 10px;
-  border: 3px solid #ffb6c1;
+  padding: 15px;
+  border: 2px solid #ffb6c1;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+/* Subtle hover effect for PDF Viewer */
+.pdf-viewer:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 18px rgba(255, 182, 193, 0.3);
+}
+
+/* PDF iframe styling */
 .pdf-viewer iframe {
   width: 100%;
   height: 100%;
   border: none;
 }
 
+/* Responsive adjustments */
 @media (max-width: 768px) {
   .resume-container h1 {
-    font-size: 2rem;
+    font-size: 2.2rem;
   }
 
   .resume-container p {
@@ -56,13 +79,13 @@
   .pdf-viewer {
     width: 90%;
     height: 70vh;
-    padding: 15px;
+    padding: 10px;
   }
 }
 
 @media (max-width: 480px) {
   .resume-container h1 {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
   }
 
   .resume-container p {

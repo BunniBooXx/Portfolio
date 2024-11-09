@@ -32,6 +32,16 @@
   background-position: center;
   z-index: 0; /* Background image should be behind everything */
 }
+.welcome-link {
+  color: black;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  cursor: pointer;
+}
+
+.welcome-link:hover {
+  color: #ff69b4; /* Change to a soft pink on hover for a girly touch */
+}
 
 /* Media queries for responsive design */
 

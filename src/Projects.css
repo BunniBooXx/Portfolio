@@ -1,56 +1,116 @@
-/* Projects.css */
-
+/* Projects Container */
 .projects-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 20px;
+  background-color: #fff0f6; /* Soft pastel pink background */
 }
 
+/* Kawaii Title */
 .kawaii-title {
-  font-size: 32px;
+  font-size: 36px;
   color: #ff85a2;
   margin-bottom: 20px;
   text-align: center;
+  font-family: 'CuteFont', cursive;
+  text-shadow: 1px 1px 2px #ffb6c1;
+  position: relative;
 }
 
+/* Add hearts next to the title */
+.kawaii-title::before,
+.kawaii-title::after {
+  content: "♡";
+  font-size: 28px;
+  color: #ff69b4;
+  margin: 0 10px;
+}
+
+/* Project Card */
 .project-card {
-  background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  border: 2px solid #ffb6c1; /* Soft pink border */
+  border-radius: 15px;
+  box-shadow: 0px 0px 15px rgba(255, 182, 193, 0.3); /* Pink shadow */
   padding: 20px;
   margin-bottom: 20px;
   max-width: 600px;
   width: 100%;
+  position: relative;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
+/* Add a cute bow on top of each card */
+.project-card::before {
+  content: "🎀";
+  font-size: 24px;
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #ff69b4;
+}
+
+/* Hover effect for project card */
+.project-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 0px 20px rgba(255, 182, 193, 0.5);
+}
+
+/* Project Title */
 .project-title {
   font-size: 24px;
   color: #ff85a2;
   margin-bottom: 10px;
+  font-family: 'CuteFont', cursive;
+  text-shadow: 1px 1px 2px #ffb6c1;
+  position: relative;
 }
 
+/* Add small hearts around project title */
+.project-title::before,
+.project-title::after {
+  content: "♡";
+  font-size: 20px;
+  color: #ff69b4;
+  margin: 0 5px;
+}
+
+/* Project Bio */
 .project-bio {
   font-size: 16px;
   color: #555;
   margin-bottom: 15px;
+  font-family: 'Comic Sans MS', cursive;
 }
 
+/* Project Link Button */
 .project-link {
-  display: block;
+  display: inline-block;
   background-color: #ff4d72;
   color: #fff;
-  padding: 10px;
-  border: none;
-  border-radius: 4px;
+  padding: 10px 15px;
+  border: 2px solid #ffb6c1;
+  border-radius: 25px;
   text-align: center;
   text-decoration: none;
   font-size: 16px;
+  font-family: 'CuteFont', sans-serif;
   cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
 }
 
+/* Hover effect for the link */
 .project-link:hover {
-  background-color: #ff577f;
+  background-color: #ff69b4;
+  transform: translateY(-3px);
+}
+
+/* Flower icon added next to each link */
+.project-link::before {
+  content: "🌸";
+  margin-right: 8px;
 }
 
 /* Media queries for responsive design */
@@ -67,6 +127,10 @@
   .project-card {
     max-width: 300px;
     padding: 15px;
+  }
+
+  .kawaii-title {
+    font-size: 28px;
   }
 
   .project-title {

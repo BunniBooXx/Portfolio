@@ -1,0 +1,64 @@
+/* Footer container with pastel background and subtle shadow */
+.footer-container {
+    background: linear-gradient(135deg, #ffe6eb, #ffc1e3);
+    padding: 2rem;
+    border-top: 3px solid #ffb6c1;
+    box-shadow: 0 -5px 10px rgba(255, 182, 193, 0.3);
+    text-align: center;
+    font-family: 'CuteFont', sans-serif;
+  }
+  
+  /* Footer links with animated hover effects */
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .footer-link {
+    color: #ff69b4;
+    font-size: 1.1rem;
+    transition: color 0.3s ease, transform 0.3s ease;
+    text-shadow: 0 0 8px rgba(255, 105, 180, 0.6);
+  }
+  
+  .footer-link:hover {
+    color: #ff1493;
+    transform: scale(1.2);
+    text-decoration: underline;
+  }
+  
+  /* Social icon buttons with pastel neon glow */
+  .social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+  }
+  
+  .social-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  
+  .social-button:hover svg {
+    transform: scale(1.2);
+    fill: #ff69b4;
+    filter: drop-shadow(0 0 6px #ffb6c1);
+  }
+  
+  .social-button svg {
+    width: 32px;
+    height: 32px;
+    fill: #f36997;
+  }
+  
+  /* Copyright styling */
+  .footer-copyright {
+    color: #070707;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+  }
+  
