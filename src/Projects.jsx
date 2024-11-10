@@ -9,7 +9,7 @@ const Projects = () => {
       <h1 className="kawaii-title">Kawaii Projects</h1>
 
       <div className="project-card">
-        <h2 className="project-title">To Do List</h2>
+        <h2 className="project-title">Petite Planner</h2>
         <p className="project-bio">A delightful to do list app to keep track of your daily tasks.</p>
         <a href="https://glistening-rugelach-21389b.netlify.app" className="project-link" target="_blank" rel="noopener noreferrer">
           Explore To Do List
