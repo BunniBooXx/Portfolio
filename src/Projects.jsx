@@ -31,6 +31,14 @@ const Projects = () => {
           Play Otome Game
         </a>
       </div>
+
+      <div className="project-card">
+        <h2 className="project-title">Pretty Links</h2>
+        <p className="project-bio">A Chrome bookmarks extension for managing your links.</p>
+        <a href="https://pretty-links.netlify.app" className="project-link" target="_blank" rel="noopener noreferrer">
+          Explore Pretty Links
+        </a>
+      </div>
     </div>
   );
 };

@@ -8,7 +8,7 @@ const Resume = () => {
       <p>You can view my resume below:</p>
       <div className="pdf-viewer">
         <iframe
-          src="/resume.pdf"
+          src="/Jaqueline-Smith-Resume.pdf"
           title="Resume"
           frameBorder="0"
         ></iframe>
