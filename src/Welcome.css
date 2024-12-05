@@ -2,65 +2,241 @@
   position: relative;
   height: 100vh;
   overflow: hidden;
-  z-index: 1; /* Ensure this is lower than the navbar */
+  z-index: 1;
+  cursor: none;
 }
+
+.background-image {
+  position: absolute;
+  top: -5%;
+  left: -5%;
+  width: 110%;
+  height: 110%;
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+  transition: transform 0.3s ease-out;
+}
+
+.sparkle {
+  position: absolute;
+  pointer-events: none;
+  animation: sparkleAnimation 1s forwards;
+  z-index: 3;
+}
+
+.floating-heart {
+  position: absolute;
+  font-size: 2rem;
+  pointer-events: none;
+  animation: floatAnimation 3s infinite ease-in-out;
+}
+
+.bounce-text {
+  animation: bounce 2s infinite;
+  font-size: 1.2rem;
+  color: #ff69b4;
+}
+
+.bubble {
+  background-color: rgba(255, 255, 255, 0.85);
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 8px 32px rgba(255, 105, 180, 0.2);
+  backdrop-filter: blur(8px);
+  transform-style: preserve-3d;
+  transition: transform 0.3s ease;
+}
+
+.bubble:hover {
+  transform: translateZ(20px) rotateX(5deg) rotateY(5deg);
+}
+
+@keyframes sparkleAnimation {
+  0% {
+    transform: scale(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5) rotate(180deg);
+    opacity: 0;
+  }
+}
+
+@keyframes floatAnimation {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(10deg);
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Custom cursor styles */
+.welcome-container::after {
+  content: '🌸';
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  font-size: 24px;
+  transform: translate(-50%, -50%);
+  animation: cursorFloat 2s infinite ease-in-out;
+}
+
+@keyframes cursorFloat {
+  0%, 100% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  50% {
+    transform: translate(-50%, -50%) rotate(15deg);
+  }
+}
+
+/* Rest of your existing styles... */
+
 
 .welcome-content {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 2; /* Ensure this is lower than the navbar */
+  z-index: 2;
   text-align: center;
   color: black;
   padding: 2rem;
+  width: 90%;
+  max-width: 800px;
 }
 
 .bubble {
-  background-color: rgba(255, 255, 255, 0.8); /* Transparent white background */
-  padding: 2rem;
-  border-radius: 1rem; /* Rounded corners for the bubble */
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 2.5rem;
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+  backdrop-filter: blur(4px);
+  transition: transform 0.3s ease;
 }
 
-.background-image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  background-position: center;
-  z-index: 0; /* Background image should be behind everything */
+.bubble:hover {
+  transform: scale(1.02);
 }
-.welcome-link {
-  color: black;
+
+.welcome-title {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(45deg, #ff69b4, #6495ED);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.tech-card {
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.7);
+  transition: all 0.3s ease;
+}
+
+.tech-card-hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.tech-icons {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin: 1rem 0;
+}
+
+.tech-icon {
+  font-size: 2rem;
+  transition: transform 0.3s ease;
+}
+
+.tech-icon:hover {
+  transform: rotate(360deg) scale(1.2);
+}
+
+.typing-text {
+  overflow: hidden;
+  border-right: 2px solid #ff69b4;
+  white-space: nowrap;
+  margin: 0 auto;
+  animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+}
+
+.cta-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.cta-button {
+  padding: 0.8rem 1.5rem;
+  border-radius: 2rem;
+  background: linear-gradient(45deg, #ff69b4, #6495ED);
+  color: white;
   text-decoration: none;
-  transition: color 0.3s ease;
-  cursor: pointer;
+  font-weight: bold;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.welcome-link:hover {
-  color: #ff69b4; /* Change to a soft pink on hover for a girly touch */
+.cta-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 105, 180, 0.3);
 }
 
-/* Media queries for responsive design */
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
 
-/* Tablet and smaller screens */
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: #ff69b4 }
+}
+
+/* Responsive design */
 @media (max-width: 768px) {
   .welcome-content {
     padding: 1rem;
   }
+  
   .bubble {
-    padding: 1rem;
+    padding: 1.5rem;
+  }
+  
+  .welcome-title {
+    font-size: 2rem;
+  }
+  
+  .cta-buttons {
+    flex-direction: column;
   }
 }
 
-/* Mobile screens */
 @media (max-width: 480px) {
   .welcome-content {
     padding: 0.5rem;
   }
+  
   .bubble {
-    padding: 0.5rem;
+    padding: 1rem;
+  }
+  
+  .welcome-title {
+    font-size: 1.5rem;
   }
 }
+
