@@ -14,32 +14,40 @@ export default function Welcome() {
         y: e.clientY / window.innerHeight,
       });
 
-      // Create sparkle effect on mouse move
-      const newSparkle = {
-        id: Date.now(),
-        x: e.clientX,
-        y: e.clientY,
-      };
-      setSparkles((prev) => [...prev, newSparkle]);
-      setTimeout(() => {
-        setSparkles((prev) => prev.filter((sparkle) => sparkle.id !== newSparkle.id));
-      }, 1000);
+      if (sparkles.length < 20) {
+        const newSparkle = {
+          id: Date.now(),
+          x: e.clientX,
+          y: e.clientY,
+        };
+        setSparkles((prev) => [...prev.slice(-19), newSparkle]);
+        setTimeout(() => {
+          setSparkles((prev) => prev.filter((sparkle) => sparkle.id !== newSparkle.id));
+        }, 1000);
+      }
     };
 
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+  }, [sparkles]);
 
   return (
     <div className="welcome-container">
-      <div className="welcome-content">
-        <div className="bubble">
-          <Link to="/projects" className="welcome-link">
-            <h1 className="welcome-title">Welcome to My Portfolio 🌟</h1>
-          </Link>
-          <p className="bounce-text">Hover around to see the magic ✨</p>
-        </div>
+      {/* Updated Hero Section for Recruiters */}
+      <div className="hero-section">
+        <h1 className="hero-title">Jaqueline Smith 💖</h1>
+        <p className="hero-subtitle">✨ Software Engineer | Full-Stack Magic | React & Firebase ✨</p>
+        <p className="hero-description">
+
+            I craft dreamy, high-performance applications with beautiful UI/UX & seamless functionality.
+            Passionate about building delightful user experiences that feel as magical as they look! 🎀
+        </p>
+        <Link to="/projects" className="cta-button">
+        See My Creations ✨
+        </Link>
       </div>
+
+      {/* Sparkle Effects */}
       {sparkles.map((sparkle) => (
         <div
           key={sparkle.id}
@@ -52,23 +60,20 @@ export default function Welcome() {
           ✨
         </div>
       ))}
+
+      {/* Background Image with Parallax Effect */}
       <div
         className="background-image"
         style={{
           backgroundImage: `url(${myImage})`,
-          transform: `translate(
-            ${mousePosition.x * -10}px, 
-            ${mousePosition.y * -10}px
-          ) scale(1.1)`,
+          transform: `translate(${mousePosition.x * -10}px, ${mousePosition.y * -10}px) scale(1.1)`,
         }}
       />
+
+      {/* Floating Hearts */}
       <div className="floating-hearts">
         {'💖💝💕'.split('').map((heart, i) => (
-          <div
-            key={i}
-            className="floating-heart"
-            style={{ animationDelay: `${i * 0.5}s` }}
-          >
+          <div key={i} className="floating-heart" style={{ animationDelay: `${i * 0.5}s` }}>
             {heart}
           </div>
         ))}
@@ -76,3 +81,4 @@ export default function Welcome() {
     </div>
   );
 }
+

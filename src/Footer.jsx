@@ -24,22 +24,28 @@ export default function Footer() {
         </Link>
       </nav>
       <nav className="social-icons">
-        <button className="social-button twitter">
-          <span className="social-icon">🐦</span>
-          <span className="social-tooltip">Twitter</span>
-        </button>
-        <button className="social-button youtube">
-          <span className="social-icon">📺</span>
-          <span className="social-tooltip">YouTube</span>
-        </button>
-        <button className="social-button github">
-          <span className="social-icon">🐱</span>
-          <span className="social-tooltip">GitHub</span>
-        </button>
-      </nav>
+          <div className="social-button">
+            <div className="icon-wrapper">
+              <span className="social-icon">🐦</span>
+            </div>
+            <span className="social-tooltip">Twitter</span>
+          </div>
+          <div className="social-button">
+            <div className="icon-wrapper">
+              <span className="social-icon">📺</span>
+            </div>
+            <span className="social-tooltip">YouTube</span>
+          </div>
+          <div className="social-button">
+            <div className="icon-wrapper">
+              <span className="social-icon">🐱</span>
+            </div>
+            <span className="social-tooltip">GitHub</span>
+          </div>
+        </nav>
       <aside className="footer-copyright">
         <span className="heart-icon">♥</span>
-        <p>Copyright © 2023 - All rights reserved by Jaqueline Smith</p>
+        <p>Copyright © {new Date().getFullYear()} - All Rights Reserved by Jaqueline Smith.</p>
         <span className="heart-icon">♥</span>
       </aside>
     </footer>

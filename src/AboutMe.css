@@ -1,14 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Raleway:wght@400;700&display=swap');
-
 .about-me-container {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  padding: 50px;
+  padding: clamp(1rem, 4vw, 50px);
   background-color: #fbd7e4;
   font-family: 'Raleway', sans-serif;
-  flex-wrap: wrap; /* Allows wrapping on smaller screens */
+  min-height: calc(100vh - 200px);
+  gap: clamp(1rem, 3vw, 3rem);
 }
 
 /* Paragraph Content Container */
@@ -16,15 +16,14 @@
   flex: 1;
   max-width: 600px;
   background-color: #fff0f6;
-  padding: 20px;
+  padding: clamp(1rem, 3vw, 2rem);
   border-radius: 15px;
   border: 3px solid #ffb6c1;
   box-shadow: 0 8px 12px rgba(255, 105, 180, 0.2);
   position: relative;
   text-align: center;
-  margin: 10px; /* Adds margin to prevent items from touching on small screens */
+  margin: clamp(0.5rem, 2vw, 1rem);
 }
-
 /* Adding bows and hearts to content container */
 .content::before, 
 .content::after {
@@ -42,9 +41,10 @@
   right: 10px;
 }
 
+
 /* Text Styling */
 p {
-  font-size: 1.1rem;
+  font-size: clamp(1.1rem, 1.3vw, 1.3rem);
   color: #c75e8f;
   margin-bottom: 0;
   line-height: 1.6;
