@@ -24,25 +24,25 @@ export default function Footer() {
         </Link>
       </nav>
       <nav className="social-icons">
-          <div className="social-button">
-            <div className="icon-wrapper">
-              <span className="social-icon">🐦</span>
-            </div>
-            <span className="social-tooltip">Twitter</span>
+        <a href="https://www.linkedin.com/in/your-linkedin" target="_blank" rel="noopener noreferrer" className="social-button">
+          <div className="icon-wrapper">
+            <span className="social-icon">💼</span>
           </div>
-          <div className="social-button">
-            <div className="icon-wrapper">
-              <span className="social-icon">📺</span>
-            </div>
-            <span className="social-tooltip">YouTube</span>
+          <span className="social-tooltip">LinkedIn</span>
+        </a>
+        <a href="https://github.com/BunniBooXx" target="_blank" rel="noopener noreferrer" className="social-button">
+          <div className="icon-wrapper">
+            <span className="social-icon">🐱</span>
           </div>
-          <div className="social-button">
-            <div className="icon-wrapper">
-              <span className="social-icon">🐱</span>
-            </div>
-            <span className="social-tooltip">GitHub</span>
+          <span className="social-tooltip">GitHub</span>
+        </a>
+        <a href="https://medium.com/@your-medium" target="_blank" rel="noopener noreferrer" className="social-button">
+          <div className="icon-wrapper">
+            <span className="social-icon">📝</span>
           </div>
-        </nav>
+          <span className="social-tooltip">Medium Blog</span>
+        </a>
+      </nav>
       <aside className="footer-copyright">
         <span className="heart-icon">♥</span>
         <p>Copyright © {new Date().getFullYear()} - All Rights Reserved by Jaqueline Smith.</p>
@@ -51,5 +51,3 @@ export default function Footer() {
     </footer>
   );
 }
-
-

@@ -1,6 +1,6 @@
 // AboutMe.jsx
 import React from 'react';
-import myImage from '../src/images/headshot.jpg';
+import myImage from '../src/images/headshot.webp';
 import './AboutMe.css'; // Import the CSS file for styling
 
 export default function AboutMe() {

@@ -10,7 +10,7 @@ const Resume = () => {
         <iframe
           src="/Jaqueline-Smith-Resume.pdf"
           title="Resume"
-          frameBorder="0"
+          style={{ border: 'none' }}
         ></iframe>
       </div>
     </div>

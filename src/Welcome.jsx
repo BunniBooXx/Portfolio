@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import myImage from './images/cotton-candy.png';
+import myImage from './images/cotton-candy-castle.webp';
 import './Welcome.css';
 
 export default function Welcome() {
