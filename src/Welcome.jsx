@@ -4,14 +4,6 @@ import './Welcome.css';
 
 export default function Welcome() {
   const [sparkles, setSparkles] = useState([]);
-  const [backgroundLoaded, setBackgroundLoaded] = useState(false);
-
-  // Preload Background Image
-  useEffect(() => {
-    const img = new Image();
-    img.src = '/cotton-candy-castle.webp';
-    img.onload = () => setBackgroundLoaded(true);
-  }, []);
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -34,19 +26,31 @@ export default function Welcome() {
 
   return (
     <div className="welcome-container">
+      {/* ✅ LCP-Optimized Image (Replaces background-image) */}
+      <img 
+        src="/cotton-candy-castle.webp" 
+        alt="Cotton Candy Castle" 
+        className="background-image"
+        width="1920"
+        height="1080"
+        loading="eager"
+        fetchpriority="high"
+      />
+
       {/* Hero Section */}
       <div className="hero-section">
         <h1 className="hero-title">Jaqueline Smith 💖</h1>
         <p className="hero-subtitle">✨ Software Engineer | Full-Stack Magic | React & Firebase ✨</p>
         <p className="hero-description">
-            I craft dreamy, high-performance applications with beautiful UI/UX & seamless functionality.
-            Passionate about building delightful user experiences that feel as magical as they look! 🎀
+          I craft dreamy, high-performance applications with beautiful UI/UX & seamless functionality.
+          Passionate about building delightful user experiences that feel as magical as they look! 🎀
         </p>
         <Link to="/projects" className="cta-button">
           See My Creations ✨
         </Link>
       </div>
 
+      {/* Sparkle Effect */}
       {sparkles.map((sparkle) => (
         <div
           key={sparkle.id}
@@ -60,14 +64,6 @@ export default function Welcome() {
         </div>
       ))}
 
-      {/* Background Image Lazy Loaded */}
-      {backgroundLoaded && (
-        <div 
-          className="background-image"
-          style={{ backgroundImage: `url('/cotton-candy-castle.webp')` }}
-        />
-      )}
-
       <div className="floating-hearts">
         {'💖💝💕'.split('').map((heart, i) => (
           <div key={i} className="floating-heart" style={{ animationDelay: `${i * 0.5}s` }}>
@@ -78,5 +74,7 @@ export default function Welcome() {
     </div>
   );
 }
+
+
 
 
