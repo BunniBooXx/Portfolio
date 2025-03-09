@@ -4,6 +4,14 @@ import './Welcome.css';
 
 export default function Welcome() {
   const [sparkles, setSparkles] = useState([]);
+  const [backgroundLoaded, setBackgroundLoaded] = useState(false);
+
+  // Preload Background Image
+  useEffect(() => {
+    const img = new Image();
+    img.src = '/cotton-candy-castle.webp';
+    img.onload = () => setBackgroundLoaded(true);
+  }, []);
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -52,11 +60,13 @@ export default function Welcome() {
         </div>
       ))}
 
-<div 
-  className="background-image"
-  style={{ backgroundImage: `url('/cotton-candy-castle.webp')` }}
-/>
-
+      {/* Background Image Lazy Loaded */}
+      {backgroundLoaded && (
+        <div 
+          className="background-image"
+          style={{ backgroundImage: `url('/cotton-candy-castle.webp')` }}
+        />
+      )}
 
       <div className="floating-hearts">
         {'💖💝💕'.split('').map((heart, i) => (
@@ -68,4 +78,5 @@ export default function Welcome() {
     </div>
   );
 }
+
 
