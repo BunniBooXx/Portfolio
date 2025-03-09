@@ -126,7 +126,6 @@
   100% { transform: translateY(0); opacity: 1; }
 }
 
-/* Background Image */
 .background-image {
   position: absolute;
   top: 0;
@@ -135,8 +134,27 @@
   height: 100%;
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
   z-index: 1;
+  will-change: transform;
 }
+
+/* Add responsive adjustments */
+@media screen and (max-width: 768px) {
+  .background-image {
+    background-size: contain;
+    height: 100vh;
+  }
+}
+
+@media screen and (min-width: 769px) {
+  .background-image {
+    background-size: cover;
+    height: 100vh;
+  }
+}
+
+
 
 /* Responsive Design for Mobile */
 @media screen and (max-width: 768px) {

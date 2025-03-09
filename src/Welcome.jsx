@@ -62,13 +62,15 @@ export default function Welcome() {
       ))}
 
       {/* Background Image with Parallax Effect */}
-      <div
-        className="background-image"
-        style={{
-          backgroundImage: `url(${myImage})`,
-          transform: `translate(${mousePosition.x * -10}px, ${mousePosition.y * -10}px) scale(1.1)`,
-        }}
-      />
+      
+<div
+  className="background-image"
+  style={{
+    backgroundImage: `url(${myImage})`,
+    transform: `translate(${mousePosition.x * -10}px, ${mousePosition.y * -10}px) scale(1.1)`,
+  }}
+  loading="lazy"
+/>
 
       {/* Floating Hearts */}
       <div className="floating-hearts">
