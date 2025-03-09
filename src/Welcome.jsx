@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import myImage from './images/cotton-candy-castle.webp';
 import './Welcome.css';
 
 export default function Welcome() {
@@ -53,12 +52,11 @@ export default function Welcome() {
         </div>
       ))}
 
-      <div
-        className="background-image"
-        style={{
-          backgroundImage: `url(${myImage})`
-        }}
-      />
+<div 
+  className="background-image"
+  style={{ backgroundImage: `url('/cotton-candy-castle.webp')` }}
+/>
+
 
       <div className="floating-hearts">
         {'💖💝💕'.split('').map((heart, i) => (
