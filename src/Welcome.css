@@ -75,19 +75,20 @@
   display: inline-block;
   padding: 12px 20px;
   margin-top: 10px;
-  background-color: #ff69b4; /* Soft pink */
-  color: white;
+  background-color: #d4126b; /* Darker pink for better contrast */
+  color: #ffffff; /* Pure white text */
   border-radius: 20px;
   font-size: 1.2rem;
   font-weight: bold;
-  box-shadow: 0 3px 10px rgba(255, 105, 180, 0.3);
+  box-shadow: 0 3px 10px rgba(212, 18, 107, 0.3);
   transition: 0.3s ease-in-out;
 }
 
 .cta-button:hover {
-  background-color: #ff4081;
-  box-shadow: 0 5px 15px rgba(255, 64, 129, 0.4);
+  background-color: #b30f5a; /* Even darker on hover */
+  box-shadow: 0 5px 15px rgba(179, 15, 90, 0.4);
 }
+
 
 /* Sparkle Effect */
 .sparkle {
