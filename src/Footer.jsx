@@ -24,7 +24,7 @@ export default function Footer() {
         </Link>
       </nav>
       <nav className="social-icons">
-        <a href="https://www.linkedin.com/in/your-linkedin" target="_blank" rel="noopener noreferrer" className="social-button">
+        <a href="https://www.linkedin.com/in/jaqueline-smith-237366238/" target="_blank" rel="noopener noreferrer" className="social-button">
           <div className="icon-wrapper">
             <span className="social-icon">💼</span>
           </div>

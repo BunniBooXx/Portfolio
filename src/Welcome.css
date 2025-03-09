@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap');
+
 
 /* Welcome Container */
 .welcome-container {
@@ -136,6 +136,8 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  backface-visibility: hidden;
+  will-change: transform;
   z-index: 1;
   will-change: transform;
 }
