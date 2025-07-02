@@ -70,7 +70,6 @@ export default function Welcome() {
         ))}
       </div>
 
-      {/* Keyframes */}
       <style>{`
         @keyframes float {
           0%, 100% { transform: translate(-50%, -50%) translateY(0); }
@@ -118,48 +117,50 @@ const styles = {
   },
   heroTitle: {
     position: 'absolute',
-    top: '42%',
+    top: '40%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
     fontFamily: "'Dancing Script', cursive",
-    fontSize: '2.5rem',
+    fontSize: 'clamp(2rem, 5vw + 1rem, 5rem)',
     color: '#f48fb1',
     fontWeight: 'bold',
     animation: 'float 3s ease-in-out infinite',
     textShadow: '2px 2px 4px rgba(0,0,0,0.4)',
-    padding: '8px 16px',
+    padding: '0.5em 1em',
     background: 'rgba(255, 255, 255, 0.4)',
     borderRadius: '12px',
     backdropFilter: 'blur(4px)',
+    textAlign: 'center',
   },
   subtitle: {
     position: 'absolute',
-    top: '48%',
+    top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
     fontFamily: "'Dancing Script', cursive",
-    fontSize: '1.5rem',
+    fontSize: 'clamp(1rem, 3vw + 0.5rem, 3rem)',
     color: '#fff',
     textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
     animation: 'float 3s ease-in-out infinite',
+    textAlign: 'center',
   },
   ctaButton: {
     position: 'absolute',
-    top: '55%',
+    top: '60%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
     fontFamily: "'Dancing Script', cursive",
-    display: 'inline-block',
-    padding: '12px 20px',
+    padding: '0.75em 1.5em',
     backgroundColor: '#d4126b',
     color: '#ffffff',
     borderRadius: '20px',
-    fontSize: '1.2rem',
+    fontSize: 'clamp(1rem, 2.5vw + 0.5rem, 2rem)',
     fontWeight: 'bold',
     boxShadow: '0 3px 10px rgba(212, 18, 107, 0.3)',
     textDecoration: 'none',
     transition: '0.3s ease-in-out',
     animation: 'float 3s ease-in-out infinite',
+    textAlign: 'center',
   },
   sparkle: {
     position: 'absolute',
