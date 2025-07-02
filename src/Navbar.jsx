@@ -18,14 +18,6 @@ export default function Navbar() {
         </Link>
 
         <div className="navbar-menu">
-          <Link
-            to="/aboutme"
-            className={`navbar-item ${activeItem === 'about' ? 'active' : ''}`}
-            onMouseEnter={() => setActiveItem('about')}
-          >
-            <span className="icon">👩‍💻</span>About Me
-          </Link>
-
           <div className="navbar-dropdown">
             <span
               className={`navbar-item navbar-dropdown-toggle ${
@@ -36,6 +28,9 @@ export default function Navbar() {
               <span className="icon">✨</span>More
             </span>
             <div className="dropdown-content">
+              <Link to="/aboutme" className="dropdown-item">
+                <span className="icon">👩‍💻</span>About Me
+              </Link>
               <Link to="/projects" className="dropdown-item">
                 <span className="icon">🚀</span>Projects
               </Link>
