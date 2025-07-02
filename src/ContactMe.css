@@ -4,6 +4,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  text-align:center;
   min-height: 100vh;
   padding: 2rem;
 }
@@ -40,7 +41,14 @@
   box-sizing: border-box;
   font-size: 14px;
   font-family: 'Raleway', sans-serif;
+  background-color: #fff; /* 🌸 Ensure light background */
+  color: #333; /* 🌸 Ensure dark text */
 }
+
+.input-field::placeholder {
+  color: #aaa; /* Optional: soft placeholder color */
+}
+
 
 .submit-button {
   background-color: #ff4d72;
