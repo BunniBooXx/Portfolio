@@ -1,7 +1,7 @@
 // Projects.jsx
 
-import React from 'react';
-import './Projects.css';
+import React from "react";
+import "./Projects.css";
 
 const Projects = () => {
   return (
@@ -9,33 +9,76 @@ const Projects = () => {
       <h1 className="kawaii-title">Kawaii Projects</h1>
 
       <div className="project-card">
+        <h2 className="project-title">Gentle Sprout</h2>
+        <p className="project-bio">
+          A DBT-inspired full-stack app with a companion chatbot and step-by-step DBT coach.
+          Powered by Google Voice for a more supportive, guided experience. The current beta is live
+          and uses RAG — and I’ll be remaking it later into a true AI bot.
+        </p>
+        <a
+          href="https://my-dbt-ai-frontend.onrender.com/"
+          className="project-link"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Explore Gentle Sprout Beta
+        </a>
+      </div>
+
+      <div className="project-card">
         <h2 className="project-title">Petite Planner</h2>
-        <p className="project-bio">A delightful to do list app to keep track of your daily tasks.</p>
-        <a href="https://petite-planner.netlify.app/" className="project-link" target="_blank" rel="noopener noreferrer">
+        <p className="project-bio">
+          A delightful to do list app to keep track of your daily tasks.
+        </p>
+        <a
+          href="https://petite-planner.netlify.app/"
+          className="project-link"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           Explore To Do List
         </a>
       </div>
 
       <div className="project-card">
         <h2 className="project-title">Bunny Bubble Nails</h2>
-        <p className="project-bio"> Custom Press On Nails Shopping Site</p>
-        <a href="https://bunnybubblenails.com" className="project-link" target="_blank" rel="noopener noreferrer">
+        <p className="project-bio">Custom Press On Nails Shopping Site</p>
+        <a
+          href="https://bunnybubblenails.com"
+          className="project-link"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           Discover Ecommerce App
         </a>
       </div>
 
       <div className="project-card">
         <h2 className="project-title">Otome Game</h2>
-        <p className="project-bio">Immerse yourself in a charming otome game with captivating characters.</p>
-        <a href="https://arielles-code.netlify.app/" className="project-link" target="_blank" rel="noopener noreferrer">
+        <p className="project-bio">
+          Immerse yourself in a charming otome game with captivating characters.
+        </p>
+        <a
+          href="https://arielles-code.netlify.app/"
+          className="project-link"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           Play Otome Game
         </a>
       </div>
 
       <div className="project-card">
         <h2 className="project-title">Pretty Links</h2>
-        <p className="project-bio">A Chrome bookmarks extension for managing your links.</p>
-        <a href="https://pretty-links.netlify.app" className="project-link" target="_blank" rel="noopener noreferrer">
+        <p className="project-bio">
+          A Chrome bookmarks extension for managing your links.
+        </p>
+        <a
+          href="https://pretty-links.netlify.app"
+          className="project-link"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           Explore Pretty Links
         </a>
       </div>
