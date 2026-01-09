@@ -1,6 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
+/** ✅ Move these OUTSIDE the component to satisfy react-hooks/exhaustive-deps */
+const ENABLE_ORBS = true;
+const ENABLE_FALLING_SPARKLES = false;
+
 export default function Welcome() {
   const orbsCanvasRef = useRef(null);
   const sparkCanvasRef = useRef(null);
@@ -12,9 +16,6 @@ export default function Welcome() {
   const sparklesRef = useRef([]);
 
   const [reducedMotion, setReducedMotion] = useState(false);
-
-  const ENABLE_ORBS = true;
-  const ENABLE_FALLING_SPARKLES = false;
 
   const theme = useMemo(
     () => ({
@@ -348,16 +349,13 @@ export default function Welcome() {
       <div aria-hidden="true" style={styles.texture} />
 
       <canvas ref={orbsCanvasRef} style={styles.canvasOrbs} />
-      {ENABLE_FALLING_SPARKLES && <canvas ref={sparkCanvasRef} style={styles.canvasSpark} />}
+      {ENABLE_FALLING_SPARKLES && (
+        <canvas ref={sparkCanvasRef} style={styles.canvasSpark} />
+      )}
 
       <main className="gs-centerWrap" style={styles.centerWrap}>
         <section className="gs-heartWrap" style={styles.heartWrap} aria-label="Welcome">
-          <svg
-            viewBox="0 0 600 520"
-            className="gs-heartSvg"
-            style={styles.heartSvg}
-            aria-hidden="true"
-          >
+          <svg viewBox="0 0 600 520" className="gs-heartSvg" style={styles.heartSvg} aria-hidden="true">
             <defs>
               <linearGradient id="glassFill" x1="0" y1="0" x2="1" y2="1">
                 <stop offset="0" stopColor="rgba(255,255,255,0.78)" />
@@ -419,7 +417,6 @@ export default function Welcome() {
             />
           </svg>
 
-          {/* ✅ moved deeper into the heart + heart is slightly bigger */}
           <div className="gs-heartContent" style={styles.heartContent}>
             <div style={styles.badgeRow}>
               <span style={styles.badge}>✨ Full Stack Engineer</span>
@@ -437,7 +434,6 @@ export default function Welcome() {
               <Link to="/projects" style={styles.primaryBtn}>
                 See My Creations →
               </Link>
-              
             </div>
 
             <div style={styles.hintRow}>
@@ -447,7 +443,6 @@ export default function Welcome() {
         </section>
       </main>
 
-      {/* ✅ Responsive sizing + content sits more INSIDE the heart */}
       <style>{`
         .gs-page{
           min-height: 100vh;
@@ -456,24 +451,22 @@ export default function Welcome() {
           overflow-x: hidden;
         }
 
-        /* give the navbar breathing room without changing your navbar */
         .gs-centerWrap{
           min-height: 100vh;
           min-height: 100dvh;
           display: grid;
           place-items: center;
           padding: clamp(12px, 2.8vh, 28px);
-          padding-top: clamp(64px, 10vh, 104px); /* ✅ pushes heart down from sticky nav */
+          padding-top: clamp(64px, 10vh, 104px);
           overflow-y: auto;
           -webkit-overflow-scrolling: touch;
         }
 
-        /* single source of truth via CSS vars */
         .gs-heartWrap{
-          --heartMaxH: min(860px, 84dvh);        /* ✅ slightly bigger than before */
-          --contentW: min(700px, 78%);           /* ✅ a touch wider */
-          --contentY: 2.2%;                      /* ✅ moves content DOWN into heart */
-          width: min(1020px, 96vw);              /* ✅ a bit wider */
+          --heartMaxH: min(860px, 84dvh);
+          --contentW: min(700px, 78%);
+          --contentY: 2.2%;
+          width: min(1020px, 96vw);
           aspect-ratio: 600 / 520;
           max-height: var(--heartMaxH);
           position: relative;
@@ -486,7 +479,6 @@ export default function Welcome() {
           transform: translateY(var(--contentY));
         }
 
-        /* Tablets / small laptops */
         @media (max-width: 900px){
           .gs-heartWrap{
             --heartMaxH: min(840px, 80dvh);
@@ -496,7 +488,6 @@ export default function Welcome() {
           }
         }
 
-        /* Mobile */
         @media (max-width: 640px){
           .gs-centerWrap{
             padding-top: clamp(56px, 9vh, 90px);
@@ -519,7 +510,6 @@ export default function Welcome() {
           }
         }
 
-        /* Tiny phones */
         @media (max-width: 420px){
           .gs-heartWrap{
             --heartMaxH: min(720px, 76dvh);
@@ -537,9 +527,7 @@ export default function Welcome() {
 
 const styles = {
   page: { position: "relative", width: "100%", minHeight: "100dvh", overflowX: "hidden" },
-
   backdrop: { position: "fixed", inset: 0, zIndex: 0 },
-
   texture: {
     position: "fixed",
     inset: 0,
@@ -555,7 +543,6 @@ const styles = {
     opacity: 0.5,
     mixBlendMode: "multiply",
   },
-
   canvasOrbs: { position: "fixed", inset: 0, zIndex: 2, pointerEvents: "none" },
   canvasSpark: { position: "fixed", inset: 0, zIndex: 3, pointerEvents: "none" },
 
@@ -571,7 +558,7 @@ const styles = {
 
   heartWrap: {
     position: "relative",
-    width: "min(1020px, 96vw)", // ✅ bigger
+    width: "min(1020px, 96vw)",
     aspectRatio: "600 / 520",
     display: "grid",
     placeItems: "center",
@@ -581,7 +568,7 @@ const styles = {
 
   heartContent: {
     position: "relative",
-    width: "78%",              // ✅ slightly wider
+    width: "78%",
     maxWidth: "700px",
     textAlign: "center",
     display: "flex",
@@ -590,7 +577,7 @@ const styles = {
     justifyContent: "center",
     gap: "12px",
     padding: "22px 10px",
-    transform: "translateY(2.2%)", // ✅ moved DOWN into the heart (more inside)
+    transform: "translateY(2.2%)",
   },
 
   badgeRow: { display: "flex", gap: "10px", flexWrap: "wrap", justifyContent: "center" },
