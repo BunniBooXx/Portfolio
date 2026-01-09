@@ -1,152 +1,304 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 export default function Navbar() {
+  const location = useLocation();
+
+  // ✅ click-to-toggle dropdown (stays open until you click outside or choose an item)
   const [open, setOpen] = useState(false);
+  const dropRef = useRef(null);
+
+  // close dropdown on route change
+  useEffect(() => setOpen(false), [location.pathname]);
+
+  // close on outside click / touch
+  useEffect(() => {
+    const onDown = (e) => {
+      if (!dropRef.current) return;
+      if (!dropRef.current.contains(e.target)) setOpen(false);
+    };
+
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("touchstart", onDown, { passive: true });
+
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("touchstart", onDown);
+    };
+  }, []);
+
+  // close on Escape
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, []);
+
+  const links = useMemo(
+    () => [
+      { to: "/aboutme", label: "About Me", icon: "👩‍💻" },
+      { to: "/projects", label: "Projects", icon: "🚀" },
+      { to: "/resume", label: "Resume", icon: "📝" },
+    ],
+    []
+  );
+
+  const isActive = (path) => location.pathname === path;
+  const isHome = location.pathname === "/" || location.pathname === "";
 
   return (
     <>
-      <nav className="navbar-container">
-        <Link
-          to="/"
-          className="navbar-brand"
-        >
-          <span className="heart-icon">♥</span>
-          <span className="brand-text">Home</span>
-          <span className="heart-icon">♥</span>
-        </Link>
+      <nav
+        className={`lav-navbar ${isHome ? "not-sticky" : "is-sticky"}`}
+        aria-label="Primary"
+      >
+        <div className="lav-inner">
+          <Link to="/" className="lav-brand" aria-label="Home">
+            <span className="lav-heart">♥</span>
+            <span className="lav-brandText">Home</span>
+            <span className="lav-heart">♥</span>
+          </Link>
 
-        <div
-          className="navbar-menu"
-        >
-          <div
-            className={`navbar-dropdown ${open ? 'open' : ''}`}
-            onMouseEnter={() => setOpen(true)}
-            onMouseLeave={() => setOpen(false)}
-          >
-            <button
-              type="button"
-              className={`navbar-item navbar-dropdown-toggle ${open ? 'active' : ''}`}
-              onClick={() => setOpen(v => !v)}
-              aria-haspopup="true"
-              aria-expanded={open}
+          <div className="lav-right">
+            <Link
+              to="/projects"
+              className={`lav-link ${isActive("/projects") ? "active" : ""}`}
             >
-              <span className="icon">✨</span>More
-            </button>
+              🚀 <span className="lav-linkText">Projects</span>
+            </Link>
 
-            <div className="dropdown-content" role="menu">
-              <Link to="/aboutme" className="dropdown-item" role="menuitem">
-                <span className="icon">👩‍💻</span>About Me
-              </Link>
-              <Link to="/projects" className="dropdown-item" role="menuitem">
-                <span className="icon">🚀</span>Projects
-              </Link>
-              <Link to="/resume" className="dropdown-item" role="menuitem">
-                <span className="icon">📝</span>Resume
-              </Link>
+            {/* ✅ CLICK dropdown */}
+            <div className="lav-drop" ref={dropRef}>
+              <button
+                type="button"
+                className={`lav-btn ${open ? "active" : ""}`}
+                onClick={() => setOpen((v) => !v)}
+                aria-haspopup="menu"
+                aria-expanded={open}
+              >
+                ✨ <span className="lav-moreText">More</span>{" "}
+                <span className="lav-caret">▾</span>
+              </button>
+
+              {/* ✅ stays visible when open */}
+              <div className={`lav-menu ${open ? "open" : ""}`} role="menu">
+                {links.map((l) => (
+                  <Link
+                    key={l.to}
+                    to={l.to}
+                    className="lav-item"
+                    role="menuitem"
+                    onClick={() => setOpen(false)} // ✅ closes after choosing
+                  >
+                    <span className="lav-itemIcon">{l.icon}</span>
+                    <span className="lav-itemLabel">{l.label}</span>
+                    <span className="lav-dot" aria-hidden />
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </nav>
 
       <style>{`
-        .navbar-container {
+        /* ✅ FULL-WIDTH LAVENDER BACKDROP */
+        .lav-navbar{
+          z-index: 1000;
           width: 100%;
           display: flex;
-          justify-content: space-between;
-          align-items: center;
-          background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
-          padding: clamp(1rem, 3vw, 1.5rem) clamp(1rem, 4vw, 2rem);
-          border-bottom: 3px solid #f48fb1;
-          box-shadow: 0 4px 20px rgba(233, 129, 143, 0.9);
+          justify-content: center;
+          pointer-events: auto;
+          margin-top: 0;
+          padding: 14px 12px 16px;
+          box-sizing: border-box;
+
+          background:
+            radial-gradient(900px 220px at 18% 0%, rgba(255,255,255,0.60) 0%, rgba(255,255,255,0) 60%),
+            radial-gradient(900px 220px at 82% 0%, rgba(255,255,255,0.50) 0%, rgba(255,255,255,0) 60%),
+            linear-gradient(135deg, #F6F1FF 0%, #EDE2FF 48%, #E7D7FF 100%);
+
+          box-shadow: 0 10px 24px rgba(40, 20, 80, 0.10);
+        }
+
+        .lav-navbar.is-sticky{
           position: sticky;
           top: 0;
-          z-index: 1000;
         }
 
-        .navbar-brand {
-          font-size: 1.5rem;
-          font-weight: 600;
-          color: #e91e63;
-          text-decoration: none;
+        .lav-navbar.not-sticky{
+          position: relative;
+          top: auto;
+        }
+
+        /* PILL */
+        .lav-inner{
+          position: relative;
+          width: min(1100px, 100%);
+          padding: 14px 18px;
+          padding-right: 22px;
           display: flex;
           align-items: center;
-          gap: 0.3rem;
-          transition: transform 0.2s ease, text-shadow 0.2s ease;
+          justify-content: space-between;
+          gap: 12px;
+
+          border-radius: 999px;
+          background:
+            radial-gradient(1200px 220px at 20% 20%, rgba(255,255,255,0.7), transparent 60%),
+            linear-gradient(135deg, #f3eaff, #e6d9ff, #d7c7ff);
+
+          border: 1px solid rgba(255,255,255,0.65);
+          box-shadow:
+            0 20px 60px rgba(140, 90, 200, 0.22),
+            0 6px 18px rgba(140, 90, 200, 0.16);
+
+          backdrop-filter: blur(14px);
+          overflow: visible;
         }
-        .navbar-brand:hover { transform: scale(1.05); text-shadow: 0 0 5px #f8bbd0; }
 
-        .heart-icon { color: #e91e63; animation: pulse 1.5s infinite; display: inline-block; }
-        @keyframes pulse { 0%,100%{transform:scale(1);}50%{transform:scale(1.2);} }
-        .brand-text { font-family: 'Cursive', sans-serif; }
+        .lav-inner::before{
+          content: "";
+          position: absolute;
+          inset: 0;
+          border-radius: 999px;
+          pointer-events: none;
 
-        .navbar-menu { display: flex; align-items: center; gap: clamp(1rem, 2vw, 2rem); }
+          background:
+            radial-gradient(260px 260px at 0% 0%, rgba(217,201,255,0.45), transparent 65%),
+            radial-gradient(260px 260px at 100% 0%, rgba(198,230,255,0.45), transparent 65%),
+            radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px);
 
-        .navbar-item {
-          color: #e91e63;
-          text-decoration: none;
-          font-size: clamp(0.9rem, 1.5vw, 1.1rem);
-          padding: 0.6rem 1.2rem;
-          border-radius: 20px;
-          background: rgba(255, 255, 255, 0.7);
-          backdrop-filter: blur(5px);
-          transition: all 0.3s ease;
+          background-size: auto, auto, 18px 18px;
+          opacity: 0.28;
+
+          -webkit-mask: radial-gradient(#000 98%, transparent 100%);
+          mask: radial-gradient(#000 98%, transparent 100%);
+        }
+
+        /* BRAND */
+        .lav-brand{
           display: inline-flex;
           align-items: center;
-          gap: 0.5rem;
-          white-space: nowrap;
-          border: 0;
-          cursor: pointer;
-        }
-        .navbar-item:hover, .navbar-item.active {
-          color: #efa5b0;
-          background: rgba(255, 255, 255, 0.9);
-          transform: translateY(-3px);
-          box-shadow: 0 5px 15px rgba(233, 30, 99, 0.2);
-        }
-
-        .navbar-dropdown { position: relative; }
-        .navbar-dropdown-toggle::after { content: ' ▼'; font-size: 0.7rem; }
-
-        .dropdown-content {
-          position: absolute;
-          top: 100%;           /* was 110% (gap causes hover loss) */
-          margin-top: 0.35rem; /* small, clickable spacing */
-          right: 0;
-          background: rgba(255, 255, 255, 0.95);
-          border: 1px solid #f8bbd0;
-          border-radius: 0.75rem;
-          box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-          display: flex;
-          flex-direction: column;
-          min-width: 180px;
-          max-height: 70vh;
-          overflow: auto;
-          opacity: 0;
-          visibility: hidden;
-          transform: translateY(-6px);
-          transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
-          z-index: 2000;       /* make sure it sits above page content */
-        }
-
-        /* show when open OR focused (keyboard) */
-        .navbar-dropdown.open .dropdown-content,
-        .navbar-dropdown:focus-within .dropdown-content {
-          opacity: 1;
-          visibility: visible;
-          transform: translateY(0);
-        }
-
-        .dropdown-item {
-          padding: 0.6rem 0.9rem;
+          gap: 6px;
           text-decoration: none;
-          color: #e91e63;
-          transition: background 0.2s ease, color 0.2s ease;
-          background: rgba(255, 255, 255, 0.7);
+          color: #5a2fa8;
+          font-weight: 800;
+          padding: 7px 12px;
+          border-radius: 999px;
+          background: rgba(255,255,255,0.45);
+          border: 1px solid rgba(255,255,255,0.55);
+          white-space: nowrap;
+          position: relative;
+          z-index: 1;
         }
-        .dropdown-item:hover { background: rgba(255, 255, 255, 0.9); color: #efa5b0; }
 
-        .icon { margin-right: 0.25rem; }
+        .lav-heart{ animation: pulse 1.6s infinite; }
+        @keyframes pulse{ 0%,100%{transform:scale(1)} 50%{transform:scale(1.15)} }
+
+        /* RIGHT */
+        .lav-right{
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          flex: 0 1 auto;
+          min-width: 0;
+          position: relative;
+          z-index: 1;
+        }
+
+        .lav-link,
+        .lav-btn{
+          border-radius: 999px;
+          padding: 8px 14px;
+          background: rgba(255,255,255,0.45);
+          border: 1px solid rgba(255,255,255,0.55);
+          font-weight: 700;
+          color: #5a2fa8;
+          cursor: pointer;
+          text-decoration: none;
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          white-space: nowrap;
+          transform: translateZ(0);
+        }
+
+        .lav-link.active,
+        .lav-link:hover,
+        .lav-btn:hover,
+        .lav-btn.active{
+          background: rgba(255,255,255,0.68);
+        }
+
+        .lav-btn:focus-visible,
+        .lav-link:focus-visible,
+        .lav-brand:focus-visible{
+          outline: 3px solid rgba(123,92,255,0.35);
+          outline-offset: 3px;
+        }
+
+        /* ✅ DROPDOWN (CLICK-OPEN) */
+        .lav-drop{ position: relative; }
+
+        .lav-menu{
+          position: absolute;
+          right: 0;
+          top: calc(100% + 10px);
+          width: 230px;
+          padding: 8px;
+          border-radius: 22px;
+          background: rgba(255,255,255,0.86);
+          backdrop-filter: blur(16px);
+          border: 1px solid rgba(123,92,255,0.16);
+          box-shadow: 0 24px 60px rgba(120, 70, 180, 0.25);
+
+          opacity: 0;
+          transform: translateY(-6px) scale(0.98);
+          pointer-events: none;
+          transition: 0.18s ease;
+          z-index: 3000;
+        }
+
+        .lav-menu.open{
+          opacity: 1;
+          transform: translateY(0) scale(1);
+          pointer-events: auto;
+        }
+
+        .lav-item{
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 10px 14px;
+          border-radius: 16px;
+          color: #5a2fa8;
+          text-decoration: none;
+          background: rgba(255,255,255,0.62);
+          border: 1px solid rgba(123,92,255,0.10);
+        }
+
+        .lav-item:hover{ background: rgba(255,255,255,0.78); }
+
+        .lav-dot{
+          margin-left: auto;
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: #cbb6ff;
+        }
+
+        @media (max-width: 520px){
+          .lav-linkText{ display: none; }
+          .lav-moreText{ display: none; }
+          .lav-inner{ padding: 12px 14px; padding-right: 16px; }
+          .lav-navbar{ padding: 12px 10px 14px; }
+        }
+
+        @media (prefers-reduced-motion: reduce){
+          .lav-menu{ transition: none; }
+        }
       `}</style>
     </>
   );

@@ -1,0 +1,36 @@
+/* Make the whole app exactly 1 viewport tall */
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+}
+
+/* App layout: header + main + footer */
+.app-shell{
+  min-height: 100vh;
+  min-height: 100dvh;          /* modern mobile safe */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Navbar area: do NOT sticky here (we're removing the behavior) */
+.app-header{
+  flex: 0 0 auto;
+}
+
+/* Main area takes remaining height */
+.app-main{
+  flex: 1 1 auto;
+  min-height: 0;               /* IMPORTANT: prevents weird overflow */
+  display: grid;
+  place-items: center;         /* centers your Welcome naturally */
+  overflow: hidden;            /* stops “micro-scroll” on homepage */
+}
+
+/* Footer stays at bottom but does not create extra scroll */
+.app-footer{
+  flex: 0 0 auto;
+}

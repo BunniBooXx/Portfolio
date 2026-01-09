@@ -1,100 +1,137 @@
-
+/* Resume.css — Lavender + glassy kawaii frame 💜✨ */
 
 .resume-container {
+  /* layout */
+  min-height: 100dvh;
+  width: 100%;
+  padding: clamp(16px, 3.5vh, 34px);
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 20px;
+  justify-content: flex-start;
   text-align: center;
-  min-height: 100vh;
-  background-color: #fff0f5; /* Soft pink background */
-  font-family: 'Raleway', sans-serif;
+
+  /* typography */
+  font-family: "Nunito", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+
+  /* lavender background */
+  background:
+    radial-gradient(900px 650px at 18% 18%, rgba(123,92,255,0.12), transparent 56%),
+    radial-gradient(780px 600px at 86% 70%, rgba(184,164,255,0.22), transparent 60%),
+    radial-gradient(720px 520px at 60% 12%, rgba(110,201,255,0.10), transparent 62%),
+    linear-gradient(135deg, #ffffff 0%, #f8f3ff 40%, #efe6ff 72%, #e7d8ff 100%);
+
+  overflow-x: hidden;
 }
 
-/* Heading Style */
+/* Heading */
 .resume-container h1 {
-  font-size: 2.8rem;
-  color: #ea5fa4;
-  margin-bottom: 20px;
-  font-family: 'Dancing Script', cursive;
-  text-shadow: 1px 1px #ffb6c1;
+  margin: 6px 0 10px;
+  font-family: "Grand Hotel", cursive;
+  font-size: clamp(2.6rem, 4vw + 1rem, 4.2rem);
+  line-height: 0.95;
+  font-weight: 400;
+
+  color: #7b5cff;
+  text-shadow: 0 12px 30px rgba(123, 92, 255, 0.18);
+  letter-spacing: 0.2px;
   position: relative;
 }
 
-/* Add small heart icons around the heading */
+/* Little hearts around heading */
 .resume-container h1::before,
 .resume-container h1::after {
-  content: "♡";
-  font-size: 1.8rem;
-  color: #ff69b4;
-  margin: 0 10px;
+  content: "♥";
+  display: inline-block;
+  margin: 0 12px;
+  font-size: 1.25rem;
+  color: rgba(123, 92, 255, 0.65);
+  transform: translateY(-6px);
+  animation: resumePulse 1.6s infinite;
 }
 
-/* Description paragraph with subtle styling */
+@keyframes resumePulse {
+  0%,
+  100% { transform: translateY(-6px) scale(1); }
+  50% { transform: translateY(-6px) scale(1.18); }
+}
+
+/* Description */
 .resume-container p {
-  font-size: 1.2rem;
-  color:  #ea5fa4;;
-  margin-bottom: 20px;
-  font-family: 'CuteFont', cursive;
-  position: relative;
+  margin: 0 0 18px;
+  max-width: 65ch;
+  font-size: clamp(1rem, 0.8vw + 0.85rem, 1.2rem);
+  line-height: 1.6;
+  font-weight: 700;
+  color: rgba(26, 22, 48, 0.74);
 }
 
-/* PDF Viewer container */
+/* PDF viewer glass card */
 .pdf-viewer {
-  width: 80%;
-  height: 80vh;
-  background-color: white;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border-radius: 15px;
+  width: min(980px, 92vw);
+  height: min(82dvh, 980px);
+
+  padding: 10px;
+  border-radius: 24px;
   overflow: hidden;
-  padding: 15px;
-  border: 2px solid #ffb6c1;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  background: rgba(255, 255, 255, 0.68);
+  border: 1px solid rgba(123, 92, 255, 0.18);
+
+  box-shadow:
+    0 22px 70px rgba(140, 90, 200, 0.18),
+    0 8px 22px rgba(140, 90, 200, 0.14);
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
 }
 
-/* Subtle hover effect for PDF Viewer */
+/* Subtle hover */
 .pdf-viewer:hover {
-  transform: scale(1.02);
-  box-shadow: 0 6px 18px rgba(255, 182, 193, 0.3);
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow:
+    0 28px 90px rgba(140, 90, 200, 0.22),
+    0 10px 28px rgba(140, 90, 200, 0.16);
 }
 
-/* PDF iframe styling */
+/* iframe */
 .pdf-viewer iframe {
   width: 100%;
   height: 100%;
-  border: none;
+  border: 0;
+  border-radius: 16px;
+  background: #ffffff;
 }
 
-/* Responsive adjustments */
+/* Tablet */
 @media (max-width: 768px) {
-  .resume-container h1 {
-    font-size: 2.2rem;
-  }
-
-  .resume-container p {
-    font-size: 1rem;
+  .resume-container {
+    padding: 18px;
   }
 
   .pdf-viewer {
-    width: 90%;
-    height: 70vh;
+    width: 94vw;
+    height: 76dvh;
     padding: 10px;
+    border-radius: 22px;
   }
 }
 
+/* Mobile */
 @media (max-width: 480px) {
-  .resume-container h1 {
-    font-size: 1.8rem;
-  }
-
-  .resume-container p {
-    font-size: 0.9rem;
+  .resume-container h1::before,
+  .resume-container h1::after {
+    margin: 0 8px;
+    font-size: 1.1rem;
   }
 
   .pdf-viewer {
-    width: 100%;
-    height: 60vh;
-    padding: 10px;
+    width: 96vw;
+    height: 72dvh;
+    padding: 9px;
+    border-radius: 20px;
   }
 }
