@@ -115,7 +115,6 @@ export default function Welcome() {
     };
 
     const drawOrb = (o) => {
-      // glow
       ctx.beginPath();
       ctx.arc(o.x, o.y, o.r * 3.2, 0, Math.PI * 2);
       const g = ctx.createRadialGradient(o.x, o.y, 0, o.x, o.y, o.r * 3.2);
@@ -124,7 +123,6 @@ export default function Welcome() {
       ctx.fillStyle = g;
       ctx.fill();
 
-      // core
       ctx.beginPath();
       ctx.arc(o.x, o.y, o.r, 0, Math.PI * 2);
       const rg = ctx.createRadialGradient(
@@ -141,7 +139,6 @@ export default function Welcome() {
       ctx.fillStyle = rg;
       ctx.fill();
 
-      // rim
       ctx.strokeStyle = "rgba(123,92,255,0.10)";
       ctx.lineWidth = 1;
       ctx.stroke();
@@ -332,12 +329,12 @@ export default function Welcome() {
   }, [reducedMotion]);
 
   return (
-    <div className="gs-page" style={styles.page}>
+    <div className="gs-page">
       {/* Background */}
       <div
         aria-hidden="true"
+        className="gs-backdrop"
         style={{
-          ...styles.backdrop,
           background: `
             radial-gradient(900px 650px at 18% 18%, rgba(123,92,255,0.10), transparent 56%),
             radial-gradient(780px 600px at 86% 70%, rgba(184,164,255,0.18), transparent 60%),
@@ -346,16 +343,14 @@ export default function Welcome() {
           `,
         }}
       />
-      <div aria-hidden="true" style={styles.texture} />
+      <div aria-hidden="true" className="gs-texture" />
 
-      <canvas ref={orbsCanvasRef} style={styles.canvasOrbs} />
-      {ENABLE_FALLING_SPARKLES && (
-        <canvas ref={sparkCanvasRef} style={styles.canvasSpark} />
-      )}
+      <canvas ref={orbsCanvasRef} className="gs-canvasOrbs" />
+      {ENABLE_FALLING_SPARKLES && <canvas ref={sparkCanvasRef} className="gs-canvasSpark" />}
 
-      <main className="gs-centerWrap" style={styles.centerWrap}>
-        <section className="gs-heartWrap" style={styles.heartWrap} aria-label="Welcome">
-          <svg viewBox="0 0 600 520" className="gs-heartSvg" style={styles.heartSvg} aria-hidden="true">
+      <main className="gs-centerWrap">
+        <section className="gs-heartWrap" aria-label="Welcome">
+          <svg viewBox="0 0 600 520" className="gs-heartSvg" aria-hidden="true">
             <defs>
               <linearGradient id="glassFill" x1="0" y1="0" x2="1" y2="1">
                 <stop offset="0" stopColor="rgba(255,255,255,0.78)" />
@@ -404,7 +399,7 @@ export default function Welcome() {
               opacity="0.94"
               stroke="rgba(123,92,255,0.22)"
               strokeWidth="2.5"
-              filter={theme.heartGlow}
+              style={{ filter: theme.heartGlow }}
             />
 
             <path
@@ -417,250 +412,269 @@ export default function Welcome() {
             />
           </svg>
 
-          <div className="gs-heartContent" style={styles.heartContent}>
-            <div style={styles.badgeRow}>
-              <span style={styles.badge}>✨ Full Stack Engineer</span>
-              <span style={styles.badge}>🤖 AI + UX</span>
+          <div className="gs-heartContent">
+            <div className="gs-badgeRow">
+              <span className="gs-badge">✨ Full Stack Engineer</span>
+              <span className="gs-badge">🤖 AI + UX</span>
             </div>
 
-            <h1 style={styles.name}>Jaqueline Smith</h1>
+            <h1 className="gs-name">Jaqueline Smith</h1>
 
-            <p style={styles.blurb}>
+            <p className="gs-blurb">
               I build cozy, high-quality products — from delightful frontends to reliable backends — with a
               special love for interactive UI and human-friendly design.
             </p>
 
-            <div style={styles.ctaRow}>
-              <Link to="/projects" style={styles.primaryBtn}>
+            <div className="gs-ctaRow">
+              <Link to="/projects" className="gs-primaryBtn">
                 See My Creations →
               </Link>
             </div>
 
-            <div style={styles.hintRow}>
-              <span style={styles.hint}>✨</span>
+            <div className="gs-hintRow" aria-hidden="true">
+              ✨
             </div>
           </div>
         </section>
       </main>
 
       <style>{`
+        /* ======================
+           PAGE / BACKGROUND
+        ====================== */
         .gs-page{
+          position: relative;
+          width: 100%;
           min-height: 100vh;
           min-height: 100dvh;
-          width: 100%;
           overflow-x: hidden;
         }
 
+        .gs-backdrop{
+          position: fixed;
+          inset: 0;
+          z-index: 0;
+        }
+
+        .gs-texture{
+          position: fixed;
+          inset: 0;
+          z-index: 1;
+          pointer-events: none;
+          background-image:
+            radial-gradient(circle at 18% 22%, rgba(0,0,0,0.03) 0 1px, transparent 2px),
+            radial-gradient(circle at 70% 32%, rgba(0,0,0,0.025) 0 1px, transparent 2px),
+            radial-gradient(circle at 44% 74%, rgba(0,0,0,0.02) 0 1px, transparent 2px),
+            radial-gradient(circle at 84% 82%, rgba(0,0,0,0.025) 0 1px, transparent 2px);
+          background-size: 260px 260px;
+          opacity: 0.5;
+          mix-blend-mode: multiply;
+        }
+
+        .gs-canvasOrbs{
+          position: fixed;
+          inset: 0;
+          z-index: 2;
+          pointer-events: none;
+        }
+        .gs-canvasSpark{
+          position: fixed;
+          inset: 0;
+          z-index: 3;
+          pointer-events: none;
+        }
+
+        /* ======================
+           LAYOUT (RESPONSIVE)
+           - uses svh/dvh for mobile address bar stability
+        ====================== */
         .gs-centerWrap{
+          position: relative;
+          z-index: 4;
+
+          /* ✅ avoids getting hidden under your sticky navbar */
+          --nav-pad: clamp(72px, 10svh, 112px);
+
           min-height: 100vh;
           min-height: 100dvh;
           display: grid;
           place-items: center;
-          padding: clamp(12px, 2.8vh, 28px);
-          padding-top: clamp(64px, 10vh, 104px);
+
+          padding:
+            clamp(14px, 2.8svh, 28px)
+            clamp(12px, 2.2vw, 22px);
+
+          padding-top: calc(var(--nav-pad) + env(safe-area-inset-top, 0px));
+
+          /* ✅ scroll only if needed (tiny phones) */
           overflow-y: auto;
           -webkit-overflow-scrolling: touch;
         }
 
+        /* The heart scales by both width AND height so it never overflows on short screens */
         .gs-heartWrap{
-          --heartMaxH: min(860px, 84dvh);
-          --contentW: min(700px, 78%);
+          --heartW: min(980px, 96vw);
+          --heartH: min(78svh, 840px);
+          --contentW: min(720px, 78%);
           --contentY: 2.2%;
-          width: min(1020px, 96vw);
+
+          width: var(--heartW);
+          max-height: var(--heartH);
           aspect-ratio: 600 / 520;
-          max-height: var(--heartMaxH);
+
           position: relative;
           display: grid;
           place-items: center;
         }
 
+        .gs-heartSvg{
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+        }
+
         .gs-heartContent{
+          position: relative;
           width: var(--contentW);
           transform: translateY(var(--contentY));
+          text-align: center;
+
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+
+          gap: clamp(10px, 1.2vw, 14px);
+          padding: clamp(14px, 2.2vw, 26px) clamp(10px, 1.6vw, 18px);
         }
 
-        @media (max-width: 900px){
-          .gs-heartWrap{
-            --heartMaxH: min(840px, 80dvh);
-            --contentW: min(680px, 80%);
-            --contentY: 2.8%;
-            width: 96vw;
-          }
+        /* ======================
+           TYPOGRAPHY + UI
+        ====================== */
+        .gs-badgeRow{
+          display: flex;
+          gap: 10px;
+          flex-wrap: wrap;
+          justify-content: center;
         }
 
+        .gs-badge{
+          border: 1px solid rgba(123,92,255,0.18);
+          background: rgba(255,255,255,0.62);
+          padding: 6px 10px;
+          border-radius: 999px;
+          font-size: clamp(0.82rem, 1.6vw, 0.95rem);
+          color: #241B45;
+          font-family: Nunito, ui-sans-serif, system-ui;
+          font-weight: 700;
+          user-select: none;
+        }
+
+        .gs-name{
+          margin: 0;
+          font-family: "Grand Hotel", cursive;
+          font-size: clamp(2.6rem, 7.2vw, 6.2rem);
+          line-height: 0.92;
+          letter-spacing: 0.2px;
+          font-weight: 400;
+          color: #7B5CFF;
+          text-shadow: 0 10px 30px rgba(123,92,255,0.16);
+        }
+
+        .gs-blurb{
+          margin: 0;
+          font-family: Nunito, ui-sans-serif, system-ui;
+          font-size: clamp(0.98rem, 2.6vw, 1.28rem);
+          line-height: 1.55;
+          max-width: 60ch;
+          font-weight: 500;
+          color: rgba(26,22,48,0.72);
+        }
+
+        .gs-ctaRow{
+          display: flex;
+          justify-content: center;
+          margin-top: 4px;
+          width: 100%;
+        }
+
+        .gs-primaryBtn{
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+
+          padding: 12px 16px;
+          border-radius: 14px;
+          border: 1px solid rgba(123,92,255,0.24);
+          text-decoration: none;
+
+          font-family: Nunito, ui-sans-serif, system-ui;
+          font-weight: 800;
+          color: #241B45;
+
+          background: rgba(123,92,255,0.12);
+          box-shadow: 0 10px 30px rgba(123,92,255,0.14);
+          transition: transform 160ms ease, background 160ms ease;
+
+          width: fit-content;
+          min-width: 220px;
+          max-width: min(360px, 92vw);
+        }
+
+        .gs-primaryBtn:hover{
+          transform: translateY(-1px);
+          background: rgba(123,92,255,0.16);
+        }
+
+        .gs-hintRow{
+          margin-top: 6px;
+          height: 18px;
+          font-family: Nunito, ui-sans-serif, system-ui;
+          font-size: 0.92rem;
+          opacity: 0.6;
+          user-select: none;
+          font-weight: 700;
+          color: rgba(26,22,48,0.72);
+        }
+
+        /* ======================
+           MOBILE TUNING
+        ====================== */
         @media (max-width: 640px){
           .gs-centerWrap{
-            padding-top: clamp(56px, 9vh, 90px);
+            --nav-pad: clamp(62px, 9svh, 96px);
+            padding-top: calc(var(--nav-pad) + env(safe-area-inset-top, 0px));
           }
 
           .gs-heartWrap{
-            --heartMaxH: min(760px, 78dvh);
-            --contentW: min(560px, 88%);
-            --contentY: 3.6%;
-            width: 96vw;
+            --heartW: 98vw;
+            --heartH: min(74svh, 760px);
+            --contentW: 90%;
+            --contentY: 3.8%;
           }
 
-          .gs-heartContent{
-            padding: 16px 10px !important;
-            gap: 10px !important;
-          }
-
-          .gs-heartContent a{
-            width: min(260px, 88vw);
+          .gs-primaryBtn{
+            width: min(320px, 90vw);
+            min-width: 0;
           }
         }
 
+        /* tiny phones: keep everything inside the heart */
         @media (max-width: 420px){
           .gs-heartWrap{
-            --heartMaxH: min(720px, 76dvh);
-            --contentW: min(520px, 90%);
-            --contentY: 4.2%;
-            width: 98vw;
+            --heartH: min(72svh, 720px);
+            --contentY: 4.6%;
+          }
+          .gs-heartContent{
+            gap: 10px;
+            padding: 14px 10px;
           }
         }
 
-        a:hover{ transform: translateY(-1px); }
+        @media (prefers-reduced-motion: reduce){
+          .gs-primaryBtn{ transition: none; }
+        }
       `}</style>
     </div>
   );
 }
-
-const styles = {
-  page: { position: "relative", width: "100%", minHeight: "100dvh", overflowX: "hidden" },
-  backdrop: { position: "fixed", inset: 0, zIndex: 0 },
-  texture: {
-    position: "fixed",
-    inset: 0,
-    zIndex: 1,
-    pointerEvents: "none",
-    backgroundImage: `
-      radial-gradient(circle at 18% 22%, rgba(0,0,0,0.03) 0 1px, transparent 2px),
-      radial-gradient(circle at 70% 32%, rgba(0,0,0,0.025) 0 1px, transparent 2px),
-      radial-gradient(circle at 44% 74%, rgba(0,0,0,0.02) 0 1px, transparent 2px),
-      radial-gradient(circle at 84% 82%, rgba(0,0,0,0.025) 0 1px, transparent 2px)
-    `,
-    backgroundSize: "260px 260px",
-    opacity: 0.5,
-    mixBlendMode: "multiply",
-  },
-  canvasOrbs: { position: "fixed", inset: 0, zIndex: 2, pointerEvents: "none" },
-  canvasSpark: { position: "fixed", inset: 0, zIndex: 3, pointerEvents: "none" },
-
-  centerWrap: {
-    position: "relative",
-    zIndex: 4,
-    width: "100%",
-    minHeight: "100dvh",
-    display: "grid",
-    placeItems: "center",
-    padding: "18px",
-  },
-
-  heartWrap: {
-    position: "relative",
-    width: "min(1020px, 96vw)",
-    aspectRatio: "600 / 520",
-    display: "grid",
-    placeItems: "center",
-  },
-
-  heartSvg: { position: "absolute", inset: 0, width: "100%", height: "100%" },
-
-  heartContent: {
-    position: "relative",
-    width: "78%",
-    maxWidth: "700px",
-    textAlign: "center",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: "12px",
-    padding: "22px 10px",
-    transform: "translateY(2.2%)",
-  },
-
-  badgeRow: { display: "flex", gap: "10px", flexWrap: "wrap", justifyContent: "center" },
-  badge: {
-    border: "1px solid rgba(123,92,255,0.18)",
-    background: "rgba(255,255,255,0.62)",
-    padding: "6px 10px",
-    borderRadius: "999px",
-    fontSize: "0.9rem",
-    color: "#241B45",
-    fontFamily: "Nunito, ui-sans-serif, system-ui",
-    fontWeight: 700,
-    userSelect: "none",
-  },
-
-  name: {
-    margin: 0,
-    fontFamily: "'Grand Hotel', cursive",
-    fontSize: "clamp(3.0rem, 5.2vw + 1rem, 6.2rem)",
-    lineHeight: 0.92,
-    letterSpacing: "0.2px",
-    fontWeight: 400,
-    color: "#7B5CFF",
-    textShadow: "0 10px 30px rgba(123,92,255,0.16)",
-  },
-
-  blurb: {
-    margin: 0,
-    fontFamily: "Nunito, ui-sans-serif, system-ui",
-    fontSize: "clamp(1.0rem, 1vw + 0.72rem, 1.28rem)",
-    lineHeight: 1.55,
-    maxWidth: "60ch",
-    fontWeight: 500,
-    color: "rgba(26,22,48,0.72)",
-  },
-
-  ctaRow: {
-    display: "flex",
-    gap: "12px",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: "6px",
-  },
-
-  primaryBtn: {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: "12px 16px",
-    borderRadius: "14px",
-    border: "1px solid rgba(123,92,255,0.24)",
-    textDecoration: "none",
-    fontFamily: "Nunito, ui-sans-serif, system-ui",
-    fontWeight: 800,
-    color: "#241B45",
-    background: "rgba(123,92,255,0.12)",
-    boxShadow: "0 10px 30px rgba(123,92,255,0.14)",
-    transition: "transform 160ms ease, background 160ms ease",
-  },
-
-  secondaryBtn: {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: "12px 14px",
-    borderRadius: "14px",
-    border: "1px solid rgba(123,92,255,0.20)",
-    textDecoration: "none",
-    fontFamily: "Nunito, ui-sans-serif, system-ui",
-    fontWeight: 800,
-    color: "rgba(26,22,48,0.72)",
-    background: "transparent",
-    transition: "transform 160ms ease",
-  },
-
-  hintRow: { marginTop: "8px", height: "18px" },
-  hint: {
-    fontFamily: "Nunito, ui-sans-serif, system-ui",
-    fontSize: "0.92rem",
-    opacity: 0.6,
-    userSelect: "none",
-    fontWeight: 700,
-    color: "rgba(26,22,48,0.72)",
-  },
-};
