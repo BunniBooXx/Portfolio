@@ -1,61 +1,304 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "./Footer.css";
 
 export default function Footer() {
   return (
-    <footer className="footer">
-      <div className="footer-card">
-        {/* Navigation */}
-        <nav className="footer-links">
-          <Link to="/" className="footer-link">🏠 Home</Link>
-          <Link to="/aboutme" className="footer-link">👩‍💻 About</Link>
-          <Link to="/projects" className="footer-link">🚀 Projects</Link>
-          <Link to="/contact" className="footer-link">✉️ Contact</Link>
-        </nav>
+    <>
+      <footer className="footer">
+        <div className="footer-card">
+          {/* Navigation */}
+          <nav className="footer-links" aria-label="Footer navigation">
+            <Link to="/" className="footer-link">
+              <span className="ico" aria-hidden="true">🏠</span>
+              <span className="txt">Home</span>
+            </Link>
+            <Link to="/aboutme" className="footer-link">
+              <span className="ico" aria-hidden="true">👩‍💻</span>
+              <span className="txt">About</span>
+            </Link>
+            <Link to="/projects" className="footer-link">
+              <span className="ico" aria-hidden="true">🚀</span>
+              <span className="txt">Projects</span>
+            </Link>
+            <Link to="/contact" className="footer-link">
+              <span className="ico" aria-hidden="true">✉️</span>
+              <span className="txt">Contact</span>
+            </Link>
+          </nav>
 
-        {/* Socials */}
-        <nav className="footer-socials">
-          <a
-            href="https://www.linkedin.com/in/jaqueline-smith-237366238/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="social-btn"
-            aria-label="LinkedIn"
-          >
-            💼
-          </a>
+          {/* Socials */}
+          <nav className="footer-socials" aria-label="Social links">
+            <a
+              href="https://www.linkedin.com/in/jaqueline-smith-237366238/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="social-btn"
+              aria-label="LinkedIn"
+              title="LinkedIn"
+            >
+              💼
+            </a>
 
-          <a
-            href="https://github.com/BunniBooXx"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="social-btn"
-            aria-label="GitHub"
-          >
-            🐱
-          </a>
+            <a
+              href="https://github.com/BunniBooXx"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="social-btn"
+              aria-label="GitHub"
+              title="GitHub"
+            >
+              🐱
+            </a>
 
-          <a
-            href="https://medium.com/@your-medium"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="social-btn"
-            aria-label="Medium"
-          >
-            📝
-          </a>
-        </nav>
+            <a
+              href="https://medium.com/@your-medium"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="social-btn"
+              aria-label="Medium"
+              title="Medium"
+            >
+              📝
+            </a>
+          </nav>
 
-        {/* Copyright */}
-        <div className="footer-copy">
-          <span className="heart">♥</span>
-          <span>
-            © {new Date().getFullYear()} Jaqueline Smith
-          </span>
-          <span className="heart">♥</span>
+          {/* Copyright */}
+          <div className="footer-copy">
+            <span className="heart" aria-hidden="true">♥</span>
+            <span>© {new Date().getFullYear()} Jaqueline Smith</span>
+            <span className="heart" aria-hidden="true">♥</span>
+          </div>
         </div>
-      </div>
-    </footer>
+      </footer>
+
+      <style>{`
+        /* =========================
+           Footer — Responsive (Desktop -> Mobile)
+           ========================= */
+
+        footer,
+        .footer,
+        .footer-container {
+          background: transparent !important;
+          background-image: none !important;
+          box-shadow: none !important;
+          border: 0 !important;
+        }
+
+        /* ✅ Lift footer up more to cover any dark gap under content */
+        .footer {
+          width: 100%;
+          padding: 0;
+          margin: -3.25rem 0 0 0; /* was -2.25rem */
+          display: block;
+          background: transparent;
+          overflow-x: hidden;
+          position: relative;
+          z-index: 50;
+        }
+
+        .footer-card {
+          width: 100%;
+          max-width: none;
+          margin: 0;
+
+          background: #ede9fe;
+          border-top: 1px solid rgba(139, 92, 246, 0.2);
+          box-shadow: 0 14px 34px rgba(139, 92, 246, 0.14);
+
+          border-radius: 40px 40px 0 0;
+          padding: 1.15rem 1.25rem 1.05rem;
+
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+
+          gap: 0.9rem;
+          text-align: center;
+        }
+
+        /* LINKS (Desktop/tablet) */
+        .footer-links {
+          width: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 0.75rem;
+          margin: 0;
+          padding: 0;
+        }
+
+        .footer-link {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.45rem;
+
+          padding: 0.46rem 0.95rem;
+          border-radius: 999px;
+
+          text-decoration: none;
+          color: #4c1d95;
+          font-size: 0.95rem;
+
+          background: rgba(255, 255, 255, 0.78);
+          border: 1px solid rgba(139, 92, 246, 0.14);
+
+          transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+          white-space: nowrap;
+          line-height: 1;
+        }
+
+        .footer-link:hover {
+          background: rgba(255, 255, 255, 0.96);
+          transform: translateY(-2px);
+          box-shadow: 0 10px 20px rgba(139, 92, 246, 0.18);
+        }
+
+        .footer-link .ico {
+          font-size: 1.05em;
+          line-height: 1;
+          transform: translateY(-0.5px);
+        }
+
+        .footer-link .txt {
+          font-size: 1em;
+          line-height: 1;
+        }
+
+        /* SOCIAL */
+        .footer-socials {
+          width: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 0.75rem;
+        }
+
+        .social-btn {
+          width: 40px;
+          height: 40px;
+          border-radius: 999px;
+
+          display: grid;
+          place-items: center;
+
+          font-size: 1.2rem;
+          line-height: 1;
+
+          background: rgba(255, 255, 255, 0.94);
+          border: 1px solid rgba(139, 92, 246, 0.14);
+
+          text-decoration: none;
+          box-shadow: 0 10px 18px rgba(139, 92, 246, 0.14);
+
+          transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+        }
+
+        .social-btn:hover {
+          transform: translateY(-3px) scale(1.05);
+          background: #f5f3ff;
+          box-shadow: 0 14px 26px rgba(139, 92, 246, 0.2);
+        }
+
+        /* COPYRIGHT */
+        .footer-copy {
+          width: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 0.4rem;
+
+          color: #5b21b6;
+          font-size: 0.88rem;
+          text-align: center;
+        }
+
+        .heart {
+          display: inline-block;
+          animation: pulse 1.6s infinite;
+        }
+
+        @keyframes pulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.22); }
+        }
+
+        /* =========================
+           ✅ MOBILE: nav links side-by-side (like socials)
+           - 2 columns grid
+           - smaller pills + smaller icon/text
+           ========================= */
+        @media (max-width: 520px) {
+          .footer {
+            margin-top: -3.75rem; /* lift more on mobile to hide black gap */
+          }
+
+          .footer-card {
+            border-radius: 30px 30px 0 0;
+            padding: 0.95rem 0.85rem 0.9rem;
+            gap: 0.75rem;
+          }
+
+          /* ✅ Make links side-by-side */
+          .footer-links {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.55rem;
+            justify-content: center;
+            align-items: stretch;
+            max-width: 420px;
+            margin: 0 auto;
+          }
+
+          .footer-link {
+            width: 100%;
+            padding: 0.38rem 0.55rem;
+            font-size: 0.82rem;
+            gap: 0.35rem;
+          }
+
+          .footer-link .ico {
+            font-size: 0.95em;
+          }
+
+          .social-btn {
+            width: 34px;
+            height: 34px;
+            font-size: 1.05rem;
+          }
+
+          .footer-copy {
+            font-size: 0.82rem;
+          }
+        }
+
+        /* Extra tiny phones: still 2 columns, just tighter */
+        @media (max-width: 360px) {
+          .footer {
+            margin-top: -4.1rem;
+          }
+
+          .footer-links {
+            gap: 0.45rem;
+          }
+
+          .footer-link {
+            padding: 0.34rem 0.48rem;
+            font-size: 0.78rem;
+          }
+
+          .social-btn {
+            width: 32px;
+            height: 32px;
+            font-size: 1rem;
+          }
+        }
+      `}</style>
+    </>
   );
 }
