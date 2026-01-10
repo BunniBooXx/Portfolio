@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
-/** ✅ Static flags outside the component (fixes exhaustive-deps warning) */
+/** ✅ Static flag outside component (keeps deps clean) */
 const ENABLE_ORBS = true;
 
 export default function Welcome() {
@@ -23,7 +23,7 @@ export default function Welcome() {
     []
   );
 
-  // Fonts: cute script but readable + clean body font
+  // Fonts
   useEffect(() => {
     const id = "welcome-fonts";
     if (document.getElementById(id)) return;
@@ -35,6 +35,7 @@ export default function Welcome() {
     document.head.appendChild(link);
   }, []);
 
+  // reduced motion
   useEffect(() => {
     const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
     const set = () => setReducedMotion(Boolean(mq?.matches));
@@ -206,7 +207,7 @@ export default function Welcome() {
       cancelAnimationFrame(rafOrbsRef.current);
       window.removeEventListener("resize", onResize);
     };
-  }, [reducedMotion]); // ✅ no warning now
+  }, [reducedMotion]);
 
   return (
     <div className="gs-page" style={styles.page}>
@@ -225,7 +226,7 @@ export default function Welcome() {
       />
       <div aria-hidden="true" style={styles.texture} />
 
-      {/* falling colorful balls */}
+      {/* falling orbs */}
       <canvas ref={orbsCanvasRef} style={styles.canvasOrbs} />
 
       <main className="gs-centerWrap" style={styles.centerWrap}>
@@ -292,30 +293,32 @@ export default function Welcome() {
             />
           </svg>
 
+          {/* ✅ CONTENT INSIDE HEART ONLY */}
           <div className="gs-heartContent" style={styles.heartContent}>
+            {/* badges */}
             <div className="gs-badges" style={styles.badgeRow}>
-              <span className="gs-badge" style={styles.badge}>✨ Full Stack Engineer</span>
-              <span className="gs-badge" style={styles.badge}>🤖 AI + UX</span>
+              <span className="gs-badge" style={styles.badge}>
+                ✨ Full Stack Software Engineer
+              </span>
+              <span className="gs-badge" style={styles.badge}>
+                🤖 AI + UX
+              </span>
             </div>
 
-            <h1 className="gs-name" style={styles.name}>Jaqueline Smith</h1>
+            <h1 className="gs-name" style={styles.name}>
+              Jaqueline Smith
+            </h1>
 
-            <p className="gs-blurb" style={styles.blurb}>
-              I build cozy, high-quality products — from delightful frontends to reliable backends — with a
-              special love for interactive UI and human-friendly design.
+            {/* ✅ one short sentence (fills space, not wordy) */}
+            <p className="gs-oneLiner" style={styles.oneLiner}>
+              Cozy full-stack builds with a soft spot for interactive, human-friendly UI.
             </p>
 
+            {/* ✅ single CTA button (not too wide) */}
             <div className="gs-cta" style={styles.ctaRow}>
               <Link to="/projects" className="gs-btn gs-btnPrimary" style={styles.primaryBtn}>
                 See My Creations →
               </Link>
-              <Link to="/about" className="gs-btn gs-btnSecondary" style={styles.secondaryBtn}>
-                About Me
-              </Link>
-            </div>
-
-            <div style={styles.hintRow}>
-              <span style={styles.hint}>✨</span>
             </div>
           </div>
         </section>
@@ -323,6 +326,7 @@ export default function Welcome() {
 
       <style>{`
         .gs-page { min-height: 100svh; }
+
         .gs-centerWrap{
           min-height: 100svh;
           padding: clamp(10px, 3vh, 28px);
@@ -334,50 +338,84 @@ export default function Welcome() {
 
         .gs-heartWrap{
           width: min(980px, 96vw);
-          max-height: min(820px, 74svh);
           aspect-ratio: 600 / 520;
           display: grid;
           place-items: center;
           margin: 0 auto;
         }
 
+        /* ✅ content constrained INSIDE the heart */
         .gs-heartContent{
-          width: min(520px, 78%);
+          width: min(520px, 74%);
           max-width: 520px;
           text-align: center;
-          transform: translateY(-2.2%);
-        }
-
-        .gs-badges{ max-width: 100%; justify-content: center; gap: 10px; }
-        .gs-badge{ max-width: 100%; white-space: nowrap; }
-
-        .gs-cta{
-          width: min(520px, 92%);
-          display: grid;
-          grid-template-columns: repeat(2, minmax(0, 1fr));
+          transform: translateY(-1%);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
           gap: 12px;
+          padding: 10px 6px;
         }
-        .gs-btn{
+
+        .gs-badges{
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 10px;
+          max-width: 100%;
+        }
+
+        .gs-badge{
+          max-width: 100%;
+          white-space: nowrap;
+        }
+
+        .gs-oneLiner{
+          margin-top: -2px;
+        }
+
+        /* ✅ CTA no longer forces wide layout */
+        .gs-cta{
           width: 100%;
-          min-height: 44px;
+          display: flex;
+          justify-content: center;
+          margin-top: 2px;
+        }
+
+        .gs-btn{
           display: inline-flex;
           align-items: center;
           justify-content: center;
           text-align: center;
+          min-height: 46px;
         }
 
         @media (max-width: 640px){
-          .gs-heartWrap{ max-height: 66svh; }
           .gs-heartContent{
-            width: min(520px, 86%);
-            transform: translateY(-4.6%);
-            gap: 10px;
-            padding: 14px 8px;
+            width: min(420px, 78%);
+            transform: translateY(-4%);
+            gap: 12px;
+            padding: 8px 6px;
           }
-          .gs-cta{
-            grid-template-columns: 1fr;
-            width: min(420px, 92%);
+
+          .gs-badge{
+            font-size: 0.86rem;
+            padding: 6px 10px;
+          }
+        }
+
+        @media (max-width: 380px){
+          .gs-heartContent{
+            width: min(360px, 80%);
+            transform: translateY(-5.5%);
             gap: 10px;
+          }
+          .gs-badge{
+            font-size: 0.82rem;
+          }
+          .gs-name{
+            font-size: clamp(2.6rem, 8.3vw + 0.8rem, 4.2rem) !important;
           }
         }
 
@@ -388,8 +426,10 @@ export default function Welcome() {
 }
 
 const styles = {
-  page: { position: "relative", width: "100%", height: "100vh", overflow: "hidden" },
+  page: { position: "relative", width: "100%", height: "100svh", overflow: "hidden" },
+
   backdrop: { position: "absolute", inset: 0, zIndex: 0 },
+
   texture: {
     position: "absolute",
     inset: 0,
@@ -405,6 +445,7 @@ const styles = {
     opacity: 0.5,
     mixBlendMode: "multiply",
   },
+
   canvasOrbs: { position: "absolute", inset: 0, zIndex: 2, pointerEvents: "none" },
 
   centerWrap: {
@@ -430,7 +471,7 @@ const styles = {
 
   heartContent: {
     position: "relative",
-    width: "min(520px, 78%)",
+    width: "min(520px, 74%)",
     maxWidth: "520px",
     textAlign: "center",
     display: "flex",
@@ -438,10 +479,11 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     gap: "12px",
-    padding: "18px 10px",
+    padding: "10px 6px",
   },
 
   badgeRow: { display: "flex", gap: "10px", flexWrap: "wrap", justifyContent: "center" },
+
   badge: {
     border: "1px solid rgba(123,92,255,0.18)",
     background: "rgba(255,255,255,0.62)",
@@ -450,7 +492,7 @@ const styles = {
     fontSize: "0.9rem",
     color: "#241B45",
     fontFamily: "Nunito, ui-sans-serif, system-ui",
-    fontWeight: 700,
+    fontWeight: 800,
     userSelect: "none",
   },
 
@@ -465,69 +507,42 @@ const styles = {
     textShadow: "0 10px 30px rgba(123,92,255,0.16)",
   },
 
-  blurb: {
+  oneLiner: {
     margin: 0,
     fontFamily: "Nunito, ui-sans-serif, system-ui",
-    fontSize: "clamp(1.0rem, 1vw + 0.72rem, 1.22rem)",
-    lineHeight: 1.52,
-    maxWidth: "56ch",
-    fontWeight: 700,
-    color: "rgba(26,22,48,0.72)",
+    fontSize: "clamp(0.95rem, 0.6vw + 0.8rem, 1.08rem)",
+    lineHeight: 1.35,
+    fontWeight: 800,
+    color: "rgba(26,22,48,0.66)",
+    maxWidth: "34ch",
   },
 
   ctaRow: {
-    width: "min(520px, 92%)",
-    display: "grid",
-    gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-    gap: "12px",
-    alignItems: "stretch",
-    justifyItems: "stretch",
-    marginTop: "6px",
+    display: "flex",
+    justifyContent: "center",
+    width: "100%",
+    marginTop: "4px",
   },
 
   primaryBtn: {
-    borderRadius: "14px",
+    borderRadius: "999px",
     border: "1px solid rgba(123,92,255,0.24)",
     textDecoration: "none",
     fontFamily: "Nunito, ui-sans-serif, system-ui",
-    fontWeight: 800,
+    fontWeight: 900,
     color: "#241B45",
     background: "rgba(123,92,255,0.12)",
     boxShadow: "0 10px 30px rgba(123,92,255,0.14)",
     transition: "transform 160ms ease, background 160ms ease",
-    padding: "12px 14px",
+    padding: "12px 18px",
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
-    minHeight: "44px",
-    width: "100%",
-  },
+    minHeight: "46px",
 
-  secondaryBtn: {
-    borderRadius: "14px",
-    border: "1px solid rgba(123,92,255,0.20)",
-    textDecoration: "none",
-    fontFamily: "Nunito, ui-sans-serif, system-ui",
-    fontWeight: 800,
-    color: "rgba(26,22,48,0.72)",
-    background: "transparent",
-    transition: "transform 160ms ease",
-    padding: "12px 14px",
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    minHeight: "44px",
-    width: "100%",
-  },
-
-  hintRow: { marginTop: "8px", height: "18px" },
-  hint: {
-    fontFamily: "Nunito, ui-sans-serif, system-ui",
-    fontSize: "0.92rem",
-    opacity: 0.6,
-    userSelect: "none",
-    fontWeight: 700,
-    color: "rgba(26,22,48,0.72)",
+    // ✅ key part: not full width
+    width: "fit-content",
+    maxWidth: "min(320px, 86%)",
+    whiteSpace: "nowrap",
   },
 };
-

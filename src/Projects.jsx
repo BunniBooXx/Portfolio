@@ -76,7 +76,7 @@ function ProjectCard({ p, featured = false }) {
       <div className="cardBottom">
         <a className="cta" href={p.href} target="_blank" rel="noopener noreferrer">
           <span aria-hidden="true">🌸</span>
-          {p.cta}
+          <span className="ctaText">{p.cta}</span>
         </a>
         {featured ? <span className="ctaHint">Opens in a new tab</span> : null}
       </div>
@@ -101,10 +101,8 @@ export default function Projects() {
       </header>
 
       <main className="projectsLayout" aria-label="Project list">
-        {/* ✅ FEATURED ON TOP */}
         <ProjectCard p={featured} featured />
 
-        {/* ✅ 4 BELOW IN A 2x2 GRID */}
         <section className="gridTwoByTwo" aria-label="More projects">
           {rest.map((p) => (
             <ProjectCard key={p.title} p={p} />
@@ -126,6 +124,7 @@ export default function Projects() {
             radial-gradient(900px 520px at 82% 92%, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0) 60%),
             linear-gradient(135deg, #F6F1FF 0%, #EDE2FF 48%, #E7D7FF 100%);
           color: rgba(25,18,40,0.88);
+          overflow-x:hidden;
         }
 
         /* HERO */
@@ -175,7 +174,7 @@ export default function Projects() {
           color: rgba(30,18,60,0.72);
         }
 
-        /* ✅ LAYOUT: FEATURED ON TOP, GRID BELOW */
+        /* LAYOUT */
         .projectsLayout{
           width:100%;
           max-width:1100px;
@@ -239,6 +238,7 @@ export default function Projects() {
           display:flex;
           flex-direction:column;
           gap: 2px;
+          min-width: 0;
         }
 
         .cardTitle{
@@ -247,6 +247,7 @@ export default function Projects() {
           font-size: clamp(1.55rem,2vw,1.9rem);
           color:#7A3EF0;
           line-height: 1.1;
+          overflow-wrap:anywhere;
         }
 
         .cardKicker{
@@ -264,7 +265,7 @@ export default function Projects() {
           font-size: 1rem;
         }
 
-        /* ✅ keep the 4 small cards tidy */
+        /* keep the 4 small cards tidy (desktop/tablet) */
         .cardSmall .cardBio{
           display: -webkit-box;
           -webkit-line-clamp: 4;
@@ -315,11 +316,18 @@ export default function Projects() {
           border: 1px solid rgba(255,255,255,0.18);
 
           transition: transform 160ms ease, filter 160ms ease;
+          min-width: 0;
         }
 
         .cta:hover{
           transform: translateY(-2px);
           filter: brightness(1.06);
+        }
+
+        .ctaText{
+          min-width: 0;
+          overflow-wrap:anywhere;
+          text-align:center;
         }
 
         .ctaHint{
@@ -329,9 +337,8 @@ export default function Projects() {
           text-align:center;
         }
 
-        /* FEATURED CARD tweaks */
+        /* FEATURED CARD */
         .cardFeatured{
-          /* nice “hero card” presence without being comically tall */
           padding: clamp(18px, 2.6vw, 26px);
         }
 
@@ -351,10 +358,121 @@ export default function Projects() {
           pointer-events:none;
         }
 
-        /* RESPONSIVE */
+        /* =========================
+           ✅ RESPONSIVE FIXES
+           ========================= */
+
+        /* Tablet down: grid becomes 1 column (you already had this at 820) */
         @media (max-width: 820px){
-          .gridTwoByTwo{
-            grid-template-columns: 1fr;
+          .gridTwoByTwo{ grid-template-columns: 1fr; }
+        }
+
+        /* ✅ Phone: tighten spacing + stop huge paddings + make CTA smaller */
+        @media (max-width: 520px){
+          .projectsPage{
+            padding: 18px 12px 26px;
+          }
+
+          .projectsHero{
+            margin-bottom: 14px;
+          }
+
+          .heroPill{
+            padding: 7px 12px;
+            font-size: 0.9rem;
+          }
+
+          .heroTitle{
+            margin: 10px 0 6px;
+            font-size: clamp(2rem, 10vw, 2.6rem);
+          }
+
+          .heroTitle::before,
+          .heroTitle::after{
+            margin: 0 6px;
+          }
+
+          .heroSubtitle{
+            font-size: 0.98rem;
+            line-height: 1.55;
+            padding: 0 2px;
+          }
+
+          .projectsLayout{
+            gap: 14px;
+          }
+
+          .card{
+            border-radius: 18px;
+            padding: 14px;
+            gap: 10px;
+          }
+
+          .iconChip{
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            font-size: 1.15rem;
+          }
+
+          /* ✅ Let bios show more lines on phones (so it doesn't feel chopped) */
+          .cardSmall .cardBio{
+            -webkit-line-clamp: 6;
+          }
+
+          .cardBio{
+            font-size: 0.98rem;
+            line-height: 1.6;
+          }
+
+          .tag{
+            padding: 6px 9px;
+            font-size: 0.86rem;
+          }
+
+          /* ✅ CTA becomes a compact pill on mobile */
+          .cta{
+            padding: 10px 12px;
+            font-size: 1.1rem;
+            gap: 8px;
+          }
+
+          .ctaHint{
+            font-size: 0.85rem;
+          }
+
+          /* ✅ Featured: don't look enormous on mobile */
+          .cardFeatured{
+            padding: 14px;
+          }
+
+          .cardFeatured .cardTitle{
+            font-size: 1.85rem;
+          }
+
+          /* ✅ Pull glow away so it doesn't wash out text */
+          .glow{
+            right:-160px;
+            top:-160px;
+            width: 320px;
+            height: 320px;
+            opacity: 0.7;
+          }
+        }
+
+        /* ✅ Tiny phones (320-360px): ultra-tight */
+        @media (max-width: 360px){
+          .projectsPage{ padding: 16px 10px 24px; }
+
+          .heroPill{ font-size: 0.86rem; }
+          .heroSubtitle{ font-size: 0.95rem; }
+
+          .card{ padding: 12px; }
+          .cardTitle{ font-size: 1.45rem; }
+
+          .cta{
+            font-size: 1.05rem;
+            padding: 9px 10px;
           }
         }
 
