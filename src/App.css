@@ -27,6 +27,13 @@ html, body, #root {
   z-index: 10;
 }
 
+.app-footer {
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+
+
 /* ✅ ONLY main scrolls when needed */
 .app-main{
   min-height: 0;               /* critical for grid scrolling */

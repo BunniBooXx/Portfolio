@@ -54,7 +54,7 @@ export default function Welcome() {
     const canvas = orbsCanvasRef.current;
     if (!canvas) return;
 
-    // ✅ Use the hero as the sizing host (doesn't include footer)
+    // ✅ Use the hero as the sizing host (this is the main area, not footer)
     const host = canvas.closest(".gs-hero");
     if (!host) return;
 
@@ -317,6 +317,10 @@ export default function Welcome() {
       <style>{`
         .gs-hero, .gs-hero * , .gs-hero *::before, .gs-hero *::after { box-sizing: border-box; }
 
+        /* ✅ KEY IDEA:
+           This component lives inside .app-main (NOT full viewport).
+           So we size using 100% of available parent height, not vh.
+        */
         .gs-hero{
           position: relative;
           width: 100%;
@@ -324,6 +328,9 @@ export default function Welcome() {
           min-height: 0;
           overflow: hidden;
           display: grid;
+
+          /* ✅ Reserve room so footer never visually “covers” the heart */
+          --footerSafe: clamp(150px, 18vh, 220px);
         }
 
         .gs-bg, .gs-texture, .gs-orbs{
@@ -351,59 +358,66 @@ export default function Welcome() {
           z-index: 3;
           height: 100%;
           min-height: 0;
+
           display: grid;
           place-items: center;
+
           padding: 10px 12px;
 
-          /* ✅ IMPORTANT: extra bottom room so the heart tip isn't clipped */
-          padding-bottom: clamp(28px, 6vh, 64px);
+          /* ✅ This is what prevents “footer overlap” on laptop:
+             it biases the center up by reserving space at bottom.
+          */
+          padding-bottom: var(--footerSafe);
         }
 
-        /* ✅ Stage owns the "push up so footer doesn't overlap" behavior */
         .gs-heartStage{
-          --nudgeY: 0%;
           width: 100%;
           height: 100%;
           min-height: 0;
           display: grid;
           place-items: center;
-          padding: clamp(6px, 1.2vh, 14px) 0;
+
+          /* ✅ tiny up-nudge for desktop/laptop */
+          transform: translateY(-1.5%);
         }
 
-        /* ✅ Heart wrapper: scale to fit + apply nudge for small screens */
+        /* ✅ Heart wrapper:
+           height now depends on available parent height (100%),
+           minus footerSafe, so it fits on 13" screens.
+        */
         .gs-heartWrap{
           position: relative;
           width: min(980px, 96vw);
           aspect-ratio: 600 / 520;
+
           display: grid;
           place-items: center;
 
-          /* cap by available height */
-          height: min(78vh, 100%);
+          height: min(
+            72vh,
+            max(320px, calc(100% - var(--footerSafe)))
+          );
+
           max-height: 100%;
-
-          transform: translateY(var(--nudgeY));
           transform-origin: center;
-
-          /* smooth width-based downscale */
-          scale: clamp(0.62, 0.90 + 0.10 * (100vw / 520), 1);
+          scale: clamp(0.64, 0.92, 1);
         }
 
-        /* ✅ PUSH UP on small/short screens so footer never covers it */
+        /* responsive tighter heights */
+        @media (max-height: 760px){
+          .gs-hero{ --footerSafe: clamp(160px, 20vh, 240px); }
+          .gs-heartStage{ transform: translateY(-3%); }
+          .gs-heartWrap{ scale: 0.92; }
+        }
+
+        @media (max-height: 700px){
+          .gs-heartStage{ transform: translateY(-5%); }
+          .gs-heartWrap{ scale: 0.86; }
+        }
+
         @media (max-width: 520px){
-          .gs-heartStage{ --nudgeY: -6%; }
-        }
-        @media (max-height: 740px){
-          .gs-heartStage{ --nudgeY: -8%; }
-          .gs-heartWrap{ height: min(70vh, 100%); scale: 0.90; }
-        }
-        @media (max-height: 680px){
-          .gs-heartStage{ --nudgeY: -11%; }
-          .gs-heartWrap{ height: min(64vh, 100%); scale: 0.84; }
-        }
-        @media (max-height: 620px){
-          .gs-heartStage{ --nudgeY: -14%; }
-          .gs-heartWrap{ height: min(58vh, 100%); scale: 0.78; }
+          .gs-hero{ --footerSafe: clamp(170px, 22vh, 260px); }
+          .gs-heartStage{ transform: translateY(-3.5%); }
         }
 
         .gs-heartSvg{
@@ -417,13 +431,16 @@ export default function Welcome() {
           position: relative;
           width: min(520px, 74%);
           max-width: 520px;
+
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
           text-align: center;
+
           gap: 12px;
           padding: 10px 6px;
+
           transform: translateY(-1%);
         }
 
@@ -450,7 +467,7 @@ export default function Welcome() {
         .gs-name{
           margin: 0;
           font-family: 'Grand Hotel', cursive;
-          font-size: clamp(3.2rem, 7.4vw, 5.6rem);
+          font-size: clamp(3.1rem, 7.0vw, 5.6rem);
           line-height: 0.92;
           font-weight: 400;
           color: #7B5CFF;
@@ -483,6 +500,7 @@ export default function Welcome() {
           background: rgba(123,92,255,0.12);
           box-shadow: 0 10px 30px rgba(123,92,255,0.14);
           transition: transform 160ms ease, background 160ms ease;
+
           padding: 12px 18px;
           display: inline-flex;
           align-items: center;
@@ -496,13 +514,11 @@ export default function Welcome() {
           background: rgba(123,92,255,0.16);
         }
 
-        /* phone: tighten */
         @media (max-width: 520px){
           .gs-heartContent{ gap: 10px; }
           .gs-btn{ padding: 10px 16px; min-height: 40px; }
         }
 
-        /* short heights: tighten */
         @media (max-height: 680px){
           .gs-heartContent{ gap: 9px; }
           .gs-btn{ padding: 9px 14px; min-height: 38px; }
@@ -515,4 +531,3 @@ export default function Welcome() {
     </section>
   );
 }
-
