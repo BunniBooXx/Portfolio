@@ -317,10 +317,7 @@ export default function Welcome() {
       <style>{`
         .gs-hero, .gs-hero * , .gs-hero *::before, .gs-hero *::after { box-sizing: border-box; }
 
-        /* ✅ KEY IDEA:
-           This component lives inside .app-main (NOT full viewport).
-           So we size using 100% of available parent height, not vh.
-        */
+        /* ✅ Welcome fills .app-main */
         .gs-hero{
           position: relative;
           width: 100%;
@@ -329,8 +326,8 @@ export default function Welcome() {
           overflow: hidden;
           display: grid;
 
-          /* ✅ Reserve room so footer never visually “covers” the heart */
-          --footerSafe: clamp(150px, 18vh, 220px);
+          /* ✅ default: no lift */
+          --liftY: 0px;
         }
 
         .gs-bg, .gs-texture, .gs-orbs{
@@ -363,11 +360,6 @@ export default function Welcome() {
           place-items: center;
 
           padding: 10px 12px;
-
-          /* ✅ This is what prevents “footer overlap” on laptop:
-             it biases the center up by reserving space at bottom.
-          */
-          padding-bottom: var(--footerSafe);
         }
 
         .gs-heartStage{
@@ -377,14 +369,10 @@ export default function Welcome() {
           display: grid;
           place-items: center;
 
-          /* ✅ tiny up-nudge for desktop/laptop */
-          transform: translateY(-1.5%);
+          /* ✅ lift is controlled by media queries */
+          transform: translateY(var(--liftY));
         }
 
-        /* ✅ Heart wrapper:
-           height now depends on available parent height (100%),
-           minus footerSafe, so it fits on 13" screens.
-        */
         .gs-heartWrap{
           position: relative;
           width: min(980px, 96vw);
@@ -393,31 +381,35 @@ export default function Welcome() {
           display: grid;
           place-items: center;
 
-          height: min(
-            72vh,
-            max(320px, calc(100% - var(--footerSafe)))
-          );
-
+          /* ✅ stable sizing based on actual container */
+          height: min(72vh, max(320px, 100%));
           max-height: 100%;
+
           transform-origin: center;
           scale: clamp(0.64, 0.92, 1);
         }
 
-        /* responsive tighter heights */
-        @media (max-height: 760px){
-          .gs-hero{ --footerSafe: clamp(160px, 20vh, 240px); }
-          .gs-heartStage{ transform: translateY(-3%); }
-          .gs-heartWrap{ scale: 0.92; }
+        /* ✅ 13" laptop sweet spot (common: 1366×768, 1440×900) */
+        @media (min-width: 900px) and (max-width: 1500px) and (max-height: 860px){
+          .gs-hero{
+            /* lift the heart up a bit */
+            --liftY: clamp(-78px, -7vh, -34px);
+          }
+
+          .gs-heartWrap{
+            /* slightly reduce so it doesn't kiss the footer */
+            scale: clamp(0.78, 0.88, 0.95);
+          }
         }
 
-        @media (max-height: 700px){
-          .gs-heartStage{ transform: translateY(-5%); }
-          .gs-heartWrap{ scale: 0.86; }
+        /* extra-tight laptop heights */
+        @media (min-width: 900px) and (max-width: 1500px) and (max-height: 760px){
+          .gs-hero{ --liftY: clamp(-92px, -9vh, -44px); }
+          .gs-heartWrap{ scale: 0.84; }
         }
 
         @media (max-width: 520px){
-          .gs-hero{ --footerSafe: clamp(170px, 22vh, 260px); }
-          .gs-heartStage{ transform: translateY(-3.5%); }
+          .gs-heartWrap{ width: min(980px, 96vw); }
         }
 
         .gs-heartSvg{
