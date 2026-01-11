@@ -1,37 +1,25 @@
 /* =========================
-   GLOBAL: stop black bars + overflow
+   GLOBAL
    ========================= */
-
-html, body {
+html, body, #root {
   width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;
-
-  /* ✅ prevents glow/gradients from creating side scroll */
   overflow-x: hidden;
-
-  /* ✅ match your site background so no “edge bars” show */
   background: #F6F1FF;
 }
 
-#root {
-  width: 100%;
-  height: 100%;
-  overflow-x: hidden;
-}
-
 /* =========================
-   APP LAYOUT: header + footer fixed, main scrolls
+   APP LAYOUT
+   - header + footer take their own height
+   - main fills the rest
    ========================= */
-
 .app-shell {
-  height: 100svh; /* ✅ best for mobile browser UI */
+  height: 100svh;
   width: 100%;
   display: flex;
   flex-direction: column;
-
-  /* ✅ important: allow main to scroll without weird clipping */
   overflow: hidden;
 }
 
@@ -40,31 +28,39 @@ html, body {
   flex: 0 0 auto;
 }
 
-/* Only main scrolls */
+/* ✅ main fills remaining space */
 .app-main {
   flex: 1 1 auto;
-  min-height: 0; /* ✅ critical for nested scrolling */
+  min-height: 0;
+
+  /* IMPORTANT: allow pages to fill height correctly */
+  display: flex;
+  overflow: hidden; /* <-- stop main itself from being a scroll container */
+}
+
+/* ✅ route-shell is the ONLY scroll container (when needed) */
+.route-shell {
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
-
-  /* ✅ prevents “side bleed” on some browsers */
   width: 100%;
   max-width: 100vw;
 }
 
 /* =========================
-   OPTIONAL: hide scrollbar (scroll still works)
+   HIDE SCROLLBAR (scroll still works)
    ========================= */
 
 /* Firefox */
-.app-main {
+.route-shell {
   scrollbar-width: none;
 }
 
 /* Chrome/Safari/Edge */
-.app-main::-webkit-scrollbar {
+.route-shell::-webkit-scrollbar {
   width: 0;
   height: 0;
   display: none;

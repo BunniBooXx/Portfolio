@@ -45,7 +45,7 @@ export default function Welcome() {
   }, []);
 
   // =========================
-  // ORBS CANVAS (inside welcome ONLY)
+  // ORBS CANVAS (scoped to Welcome)
   // =========================
   useEffect(() => {
     if (!ENABLE_ORBS) return;
@@ -53,7 +53,8 @@ export default function Welcome() {
     const canvas = orbsCanvasRef.current;
     if (!canvas) return;
 
-    const host = canvas.parentElement; // ✅ the .gs-hero section
+    // ✅ Use the hero as the sizing host (doesn't include footer)
+    const host = canvas.closest(".gs-hero");
     if (!host) return;
 
     const ctx = canvas.getContext("2d", { alpha: true });
@@ -155,7 +156,6 @@ export default function Welcome() {
         o.vx += Math.sin(o.wobble) * 0.003;
 
         o.vy += gravity;
-
         o.x += o.vx;
         o.y += o.vy;
 
@@ -172,7 +172,7 @@ export default function Welcome() {
           o.vx = -Math.abs(o.vx) * bounce;
         }
 
-        // floor: bounce then respawn from top
+        // floor + respawn
         if (o.y + o.r > h) {
           o.y = h - o.r;
           o.vy = -Math.abs(o.vy) * bounce;
@@ -209,7 +209,6 @@ export default function Welcome() {
     ro.observe(host);
 
     window.addEventListener("resize", resize);
-
     return () => {
       cancelAnimationFrame(rafOrbsRef.current);
       window.removeEventListener("resize", resize);
@@ -219,7 +218,7 @@ export default function Welcome() {
 
   return (
     <section className="gs-hero" aria-label="Welcome">
-      {/* Background (scoped to hero, not the whole page) */}
+      {/* Background */}
       <div
         aria-hidden="true"
         className="gs-bg"
@@ -233,113 +232,100 @@ export default function Welcome() {
         }}
       />
       <div aria-hidden="true" className="gs-texture" />
-
-      {/* Orbs scoped to hero */}
       <canvas ref={orbsCanvasRef} className="gs-orbs" aria-hidden="true" />
 
       {/* Content */}
       <div className="gs-inner">
-        <div className="gs-heartWrap">
-          <svg viewBox="0 0 600 520" className="gs-heartSvg" aria-hidden="true">
-            <defs>
-              <linearGradient id="glassFill" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stopColor="rgba(255,255,255,0.78)" />
-                <stop offset="1" stopColor="rgba(255,255,255,0.46)" />
-              </linearGradient>
+        <div className="gs-heartStage">
+          <div className="gs-heartWrap">
+            <svg viewBox="0 0 600 520" className="gs-heartSvg" aria-hidden="true">
+              <defs>
+                <linearGradient id="glassFill" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stopColor="rgba(255,255,255,0.78)" />
+                  <stop offset="1" stopColor="rgba(255,255,255,0.46)" />
+                </linearGradient>
 
-              <linearGradient id="strokeGrad" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stopColor="rgba(123,92,255,0.34)" />
-                <stop offset="0.55" stopColor="rgba(184,164,255,0.22)" />
-                <stop offset="1" stopColor="rgba(123,92,255,0.28)" />
-              </linearGradient>
+                <linearGradient id="strokeGrad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stopColor="rgba(123,92,255,0.34)" />
+                  <stop offset="0.55" stopColor="rgba(184,164,255,0.22)" />
+                  <stop offset="1" stopColor="rgba(123,92,255,0.28)" />
+                </linearGradient>
 
-              <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
-                <feGaussianBlur stdDeviation="2.2" result="blur" />
-                <feMerge>
-                  <feMergeNode in="blur" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-            </defs>
+                <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="2.2" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+              </defs>
 
-            <path
-              d="M300 482
-                 C230 430 110 330 78 230
-                 C52 145 105 78 180 78
-                 C238 78 278 114 300 152
-                 C322 114 362 78 420 78
-                 C495 78 548 145 522 230
-                 C490 330 370 430 300 482 Z"
-              fill="none"
-              stroke="url(#strokeGrad)"
-              strokeWidth="12"
-              opacity="0.55"
-              filter="url(#softGlow)"
-            />
+              <path
+                d="M300 482
+                   C230 430 110 330 78 230
+                   C52 145 105 78 180 78
+                   C238 78 278 114 300 152
+                   C322 114 362 78 420 78
+                   C495 78 548 145 522 230
+                   C490 330 370 430 300 482 Z"
+                fill="none"
+                stroke="url(#strokeGrad)"
+                strokeWidth="12"
+                opacity="0.55"
+                filter="url(#softGlow)"
+              />
 
-            <path
-              d="M300 482
-                 C230 430 110 330 78 230
-                 C52 145 105 78 180 78
-                 C238 78 278 114 300 152
-                 C322 114 362 78 420 78
-                 C495 78 548 145 522 230
-                 C490 330 370 430 300 482 Z"
-              fill="url(#glassFill)"
-              opacity="0.94"
-              stroke="rgba(123,92,255,0.22)"
-              strokeWidth="2.5"
-              filter={theme.heartGlow}
-            />
+              <path
+                d="M300 482
+                   C230 430 110 330 78 230
+                   C52 145 105 78 180 78
+                   C238 78 278 114 300 152
+                   C322 114 362 78 420 78
+                   C495 78 548 145 522 230
+                   C490 330 370 430 300 482 Z"
+                fill="url(#glassFill)"
+                opacity="0.94"
+                stroke="rgba(123,92,255,0.22)"
+                strokeWidth="2.5"
+                filter={theme.heartGlow}
+              />
+            </svg>
 
-            <path
-              d="M205 150 C150 152 120 212 140 255"
-              fill="none"
-              stroke="rgba(255,255,255,0.75)"
-              strokeWidth="7"
-              strokeLinecap="round"
-              opacity="0.22"
-            />
-          </svg>
+            <div className="gs-heartContent">
+              <div className="gs-badges">
+                <span className="gs-badge">✨ Full Stack Software Engineer</span>
+                <span className="gs-badge">🤖 AI + UX</span>
+              </div>
 
-          <div className="gs-heartContent">
-            <div className="gs-badges">
-              <span className="gs-badge">✨ Full Stack Software Engineer</span>
-              <span className="gs-badge">🤖 AI + UX</span>
-            </div>
+              <h1 className="gs-name">Jaqueline Smith</h1>
 
-            <h1 className="gs-name">Jaqueline Smith</h1>
+              <p className="gs-oneLiner">
+                Cozy full-stack builds with a soft spot for interactive, human-friendly UI.
+              </p>
 
-            <p className="gs-oneLiner">
-              Cozy full-stack builds with a soft spot for interactive, human-friendly UI.
-            </p>
-
-            <div className="gs-cta">
-              <Link to="/projects" className="gs-btn">
-                See My Creations →
-              </Link>
+              <div className="gs-cta">
+                <Link to="/projects" className="gs-btn">
+                  See My Creations →
+                </Link>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       <style>{`
-        /* ✅ This component fits inside .app-main (between navbar + footer).
-           No 100vh. No body/html edits. No internal scroll. */
+        .gs-hero, .gs-hero * , .gs-hero *::before, .gs-hero *::after { box-sizing: border-box; }
 
         .gs-hero{
           position: relative;
           width: 100%;
-          height: 100%;        /* ✅ fills .app-main only */
+          height: 100%;
           min-height: 0;
-          overflow: hidden;    /* ✅ prevents micro-scrollbars */
+          overflow: hidden;
           display: grid;
         }
 
-        /* Background layers are ABSOLUTE to the hero (not fixed to viewport) */
-        .gs-bg,
-        .gs-texture,
-        .gs-orbs{
+        .gs-bg, .gs-texture, .gs-orbs{
           position: absolute;
           inset: 0;
           pointer-events: none;
@@ -358,7 +344,7 @@ export default function Welcome() {
         }
         .gs-orbs{ z-index: 2; }
 
-        /* Center content inside available space */
+        /* ✅ main stage */
         .gs-inner{
           position: relative;
           z-index: 3;
@@ -366,52 +352,91 @@ export default function Welcome() {
           min-height: 0;
           display: grid;
           place-items: center;
-          padding: clamp(10px, 2.4vh, 22px) 12px;
-          box-sizing: border-box;
+          padding: 10px 12px;
         }
 
-        /* HEART: scale to both width + height so it NEVER forces scroll */
+        /* ✅ Stage owns the "push up so footer doesn't overlap" behavior */
+        .gs-heartStage{
+          --nudgeY: 0%;
+
+          width: 100%;
+          height: 100%;
+          min-height: 0;
+
+          display: grid;
+          place-items: center;
+
+          /* keep away from navbar/footer edges */
+          padding: clamp(6px, 1.2vh, 14px) 0;
+        }
+
+        /* ✅ Heart wrapper: scale to fit + apply nudge for small screens */
         .gs-heartWrap{
           position: relative;
           width: min(980px, 96vw);
           aspect-ratio: 600 / 520;
+
           display: grid;
           place-items: center;
 
-          /* ✅ Critical: cap by available height */
-          height: min(100%, 78vh);
+          /* cap by available height */
+          height: min(78vh, 100%);
           max-height: 100%;
+
+          transform: translateY(var(--nudgeY));
+          transform-origin: center;
+
+          /* smooth width-based downscale */
+          scale: clamp(0.62, 0.90 + 0.10 * (100vw / 520), 1);
         }
 
-        /* If parent gives less height, make the heart fit it */
+        /* ✅ PUSH UP on small screens so footer never covers it */
+        @media (max-width: 520px){
+          .gs-heartStage{ --nudgeY: -6%; }
+        }
+        @media (max-height: 740px){
+          .gs-heartStage{ --nudgeY: -8%; }
+          .gs-heartWrap{ height: min(70vh, 100%); scale: 0.90; }
+        }
+        @media (max-height: 680px){
+          .gs-heartStage{ --nudgeY: -11%; }
+          .gs-heartWrap{ height: min(64vh, 100%); scale: 0.84; }
+        }
+        @media (max-height: 620px){
+          .gs-heartStage{ --nudgeY: -14%; }
+          .gs-heartWrap{ height: min(58vh, 100%); scale: 0.78; }
+        }
+
         .gs-heartSvg{
-          position: absolute;
-          inset: 0;
-          width: 100%;
-          height: 100%;
+          position:absolute;
+          inset:0;
+          width:100%;
+          height:100%;
         }
 
         .gs-heartContent{
           position: relative;
           width: min(520px, 74%);
           max-width: 520px;
+
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
           text-align: center;
+
           gap: 12px;
           padding: 10px 6px;
+
+          /* tiny optical center inside the heart */
           transform: translateY(-1%);
-          box-sizing: border-box;
         }
 
         .gs-badges{
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: center;
+          display:flex;
+          flex-wrap:wrap;
+          justify-content:center;
           gap: 10px;
-          max-width: 100%;
         }
 
         .gs-badge{
@@ -419,23 +444,19 @@ export default function Welcome() {
           background: rgba(255,255,255,0.62);
           padding: 6px 10px;
           border-radius: 999px;
-          font-size: clamp(0.78rem, 0.25vw + 0.78rem, 0.9rem);
+          font-size: clamp(0.78rem, 0.35vw + 0.72rem, 0.92rem);
           color: #241B45;
           font-family: Nunito, ui-sans-serif, system-ui;
           font-weight: 800;
-          user-select: none;
           white-space: nowrap;
+          user-select: none;
         }
 
         .gs-name{
           margin: 0;
           font-family: 'Grand Hotel', cursive;
-
-          /* ✅ scales down on short heights */
-          font-size: clamp(2.2rem, 4.4vw + 0.9rem, 5.6rem);
-
+          font-size: clamp(3.2rem, 7.4vw, 5.6rem);
           line-height: 0.92;
-          letter-spacing: 0.2px;
           font-weight: 400;
           color: #7B5CFF;
           text-shadow: 0 10px 30px rgba(123,92,255,0.16);
@@ -444,7 +465,7 @@ export default function Welcome() {
         .gs-oneLiner{
           margin: 0;
           font-family: Nunito, ui-sans-serif, system-ui;
-          font-size: clamp(0.86rem, 0.35vw + 0.78rem, 1.06rem);
+          font-size: clamp(0.86rem, 1.5vw, 1.06rem);
           line-height: 1.32;
           font-weight: 800;
           color: rgba(26,22,48,0.66);
@@ -455,7 +476,6 @@ export default function Welcome() {
           width: 100%;
           display: flex;
           justify-content: center;
-          margin-top: 2px;
         }
 
         .gs-btn{
@@ -468,13 +488,12 @@ export default function Welcome() {
           background: rgba(123,92,255,0.12);
           box-shadow: 0 10px 30px rgba(123,92,255,0.14);
           transition: transform 160ms ease, background 160ms ease;
+
           padding: 12px 18px;
           display: inline-flex;
           align-items: center;
           justify-content: center;
           min-height: 44px;
-          width: fit-content;
-          max-width: min(320px, 86%);
           white-space: nowrap;
         }
 
@@ -483,21 +502,16 @@ export default function Welcome() {
           background: rgba(123,92,255,0.16);
         }
 
-        /* Smaller screens tighten spacing */
-        @media (max-width: 640px){
-          .gs-heartContent{
-            width: min(420px, 78%);
-            transform: translateY(-4%);
-            padding: 8px 6px;
-            gap: 10px;
-          }
+        /* phone: tighten */
+        @media (max-width: 520px){
+          .gs-heartContent{ gap: 10px; }
+          .gs-btn{ padding: 10px 16px; min-height: 40px; }
         }
 
-        /* Short heights: shrink more so footer is ALWAYS visible */
-        @media (max-height: 700px){
-          .gs-heartWrap{ height: min(100%, 70vh); }
-          .gs-heartContent{ gap: 9px; transform: translateY(-4.5%); }
-          .gs-btn{ padding: 10px 16px; min-height: 40px; }
+        /* short heights: tighten */
+        @media (max-height: 680px){
+          .gs-heartContent{ gap: 9px; }
+          .gs-btn{ padding: 9px 14px; min-height: 38px; }
         }
 
         @media (prefers-reduced-motion: reduce){

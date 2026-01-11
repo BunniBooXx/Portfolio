@@ -17,13 +17,16 @@ export default function App() {
         </header>
 
         <main className="app-main">
-          <Routes>
-            <Route path="/" element={<Welcome />} />
-            <Route path="/aboutme" element={<AboutMe />} />
-            <Route path="/contact" element={<ContactMe />} />
-            <Route path="/projects" element={<Projects />} />
-            <Route path="/resume" element={<Resume />} />
-          </Routes>
+          {/* ✅ this wrapper is what we make "fill" */}
+          <div className="route-shell">
+            <Routes>
+              <Route path="/" element={<Welcome />} />
+              <Route path="/aboutme" element={<AboutMe />} />
+              <Route path="/contact" element={<ContactMe />} />
+              <Route path="/projects" element={<Projects />} />
+              <Route path="/resume" element={<Resume />} />
+            </Routes>
+          </div>
         </main>
 
         <footer className="app-footer">

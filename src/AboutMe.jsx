@@ -8,7 +8,6 @@ export default function AboutMe() {
   useEffect(() => {
     const id = "aboutme-fonts";
     if (document.getElementById(id)) return;
-
     const link = document.createElement("link");
     link.id = id;
     link.rel = "stylesheet";
@@ -84,25 +83,28 @@ export default function AboutMe() {
 
       <style>{`
         /* =========================================================
-           AboutMe route: fits INSIDE .app-main (nav + footer exist)
-           Default: no scroll on desktop
-           Mobile: allow scroll for this page only
+           ABOUT ME
+           Key fix for "bottom cuts off":
+           ✅ On small screens we DO NOT use inner scroll containers.
+           ✅ We remove max-height/overflow clipping so the parent (.app-main)
+              can scroll normally and the bottom never gets chopped.
            ========================================================= */
+
+        .am-page,
+        .am-page * ,
+        .am-page *::before,
+        .am-page *::after{
+          box-sizing: border-box;
+        }
 
         .am-page{
           position: relative;
           width: 100%;
           height: 100%;
           min-height: 0;
-
-          /* default: no scroll here */
-          overflow: hidden;
-
-          /* prevent horizontal bleed from glows/textures */
-          overflow-x: hidden;
-
+          overflow: hidden;     /* default: no scroll on desktop */
+          overflow-x: hidden;   /* prevent horizontal bleed */
           display: grid;
-          box-sizing: border-box;
         }
 
         /* Background scoped to this page only */
@@ -132,22 +134,16 @@ export default function AboutMe() {
           mix-blend-mode: multiply;
         }
 
-        /* Centering wrapper */
         .am-center{
           position: relative;
           z-index: 2;
-
           height: 100%;
           min-height: 0;
-
           display: grid;
           place-items: center;
-
           padding: clamp(12px, 2.6vh, 22px) clamp(12px, 3vw, 28px);
-          box-sizing: border-box;
         }
 
-        /* Card */
         .am-card{
           width: min(1050px, 100%);
           background: rgba(255, 255, 255, 0.78);
@@ -155,11 +151,9 @@ export default function AboutMe() {
           border: 1px solid rgba(169, 135, 255, 0.20);
           box-shadow: 0 12px 30px rgba(40, 20, 80, 0.12);
           backdrop-filter: blur(8px);
-
           padding: clamp(14px, 2.6vh, 26px);
-          box-sizing: border-box;
 
-          /* fits within available space */
+          /* desktop: keep it neat between nav + footer */
           max-height: 100%;
           overflow: hidden;
 
@@ -236,8 +230,11 @@ export default function AboutMe() {
           padding: clamp(12px, 1.8vh, 16px);
           border-radius: 18px;
           border: 1px solid rgba(156, 122, 255, 0.22);
-          background:
-            linear-gradient(180deg, rgba(243, 237, 255, 0.85) 0%, rgba(255, 255, 255, 0.85) 100%);
+          background: linear-gradient(
+            180deg,
+            rgba(243, 237, 255, 0.85) 0%,
+            rgba(255, 255, 255, 0.85) 100%
+          );
           box-shadow: 0 10px 22px rgba(40, 20, 80, 0.08);
         }
 
@@ -268,54 +265,50 @@ export default function AboutMe() {
           to{ opacity: 1; transform: translateY(0); }
         }
 
-        /* ✅ Short height screens: shrink more */
+        /* =========================================================
+           ✅ MOBILE FIX (prevents bottom cut-off)
+           - Let the page/content be naturally tall
+           - Remove max-height + overflow clipping
+           - Add extra bottom padding so last section is always visible
+           ========================================================= */
+
+        @media (max-width: 768px){
+          .am-page{
+            height: auto;
+            min-height: 100%;
+            overflow: visible; /* IMPORTANT: no inner scrolling container */
+          }
+
+          .am-center{
+            height: auto;
+            min-height: 100%;
+            place-items: start center;
+
+            /* extra room so the very bottom never gets hidden */
+            padding-top: 18px;
+            padding-bottom: calc(42px + env(safe-area-inset-bottom));
+          }
+
+          .am-card{
+            max-height: none;     /* remove clip */
+            overflow: visible;    /* remove clip */
+          }
+        }
+
+        /* ✅ Extra small phones */
+        @media (max-width: 420px){
+          .am-head{ min-width: 100%; }
+          .am-img{ width: 110px; height: 110px; }
+          .am-card{ border-radius: 18px; padding: 14px; }
+          .am-center{ padding-left: 12px; padding-right: 12px; }
+        }
+
+        /* ✅ Short height screens: tighten spacing */
         @media (max-height: 720px){
-          .am-card{ padding: 14px; }
           .am-img{ width: 112px; height: 112px; }
           .am-p{ line-height: 1.55; }
           .am-callout{ padding: 12px; }
           .am-list li{ margin-bottom: 5px; }
-        }
-
-        /* ✅ Small phones: tighten spacing */
-        @media (max-width: 420px){
-          .am-head{ min-width: 100%; }
-          .am-img{ width: 110px; height: 110px; }
-          .am-card{ border-radius: 18px; }
-        }
-
-        /* ✅ MOBILE ONLY: allow scroll for this page */
-        @media (max-width: 768px){
-          .am-page{
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-
-            /* hide scrollbar but keep scroll */
-            scrollbar-width: none;
-          }
-          .am-page::-webkit-scrollbar{
-            width: 0;
-            height: 0;
-            display: none;
-          }
-
-          /* When page can scroll, let the card grow naturally */
-          .am-card{
-            max-height: none;
-            overflow: visible;
-          }
-
-          /* Make sure center doesn't force vertical centering that fights scrolling */
-          .am-center{
-            place-items: start center;
-            padding-top: 18px;
-            padding-bottom: 18px;
-          }
-        }
-
-        /* ✅ Safety: consistent sizing */
-        .am-page *, .am-page *::before, .am-page *::after{
-          box-sizing: border-box;
         }
       `}</style>
     </section>
