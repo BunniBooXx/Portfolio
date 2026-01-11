@@ -1,8 +1,5 @@
-/* App.css — add the anti-overlay footer guard */
+/* App.css — grid layout that NEVER hides the footer ✅ */
 
-/* =========================
-   GLOBAL
-   ========================= */
 html, body, #root {
   width: 100%;
   height: 100%;
@@ -12,52 +9,26 @@ html, body, #root {
   background: #F6F1FF;
 }
 
-/* =========================
-   APP LAYOUT (GRID)
-   header | main | footer
-   ========================= */
 .app-shell{
   height: 100svh;
+  min-height: 100dvh;
   width: 100%;
   display: grid;
   grid-template-rows: auto 1fr auto;
-  overflow: hidden; /* keep background clean */
+
+  /* ✅ do NOT clip footer */
+  overflow: visible;
 }
 
-.app-header,
-.app-footer{
-  z-index: 10;
+.app-main{
+  min-height: 0;   /* ✅ critical for grid scroll */
+  overflow: auto;  /* ✅ main scrolls, footer stays reachable */
 }
 
-/* ✅ Hard-protect footer wrapper from any fixed/sticky defaults in production */
 .app-footer{
   position: relative !important;
   inset: auto !important;
-  top: auto !important;
-  right: auto !important;
-  bottom: auto !important;
-  left: auto !important;
   transform: none !important;
-
   margin: 0;
   padding: 0;
-}
-
-/* ✅ ONLY main scrolls when needed */
-.app-main{
-  min-height: 0;               /* critical for grid scrolling */
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
-}
-
-/* Hide scrollbar (scroll still works) */
-.app-main{
-  scrollbar-width: none;       /* Firefox */
-}
-.app-main::-webkit-scrollbar{
-  width: 0;
-  height: 0;
-  display: none;               /* Chrome/Safari/Edge */
 }

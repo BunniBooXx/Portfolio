@@ -1,33 +1,31 @@
+// Navbar.jsx — lavender pill + sticky-safe + production-guarded ✅
+// ✅ Sticky works (not fixed)
+// ✅ Guard prevents “global fixed header” CSS from breaking layout
+// ✅ Dropdown click-open + closes on outside + escape
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 export default function Navbar() {
   const location = useLocation();
 
-  // ✅ click-to-toggle dropdown (stays open until you click outside or choose an item)
   const [open, setOpen] = useState(false);
   const dropRef = useRef(null);
 
-  // close dropdown on route change
   useEffect(() => setOpen(false), [location.pathname]);
 
-  // close on outside click / touch
   useEffect(() => {
     const onDown = (e) => {
       if (!dropRef.current) return;
       if (!dropRef.current.contains(e.target)) setOpen(false);
     };
-
     document.addEventListener("mousedown", onDown);
     document.addEventListener("touchstart", onDown, { passive: true });
-
     return () => {
       document.removeEventListener("mousedown", onDown);
       document.removeEventListener("touchstart", onDown);
     };
   }, []);
 
-  // close on Escape
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === "Escape") setOpen(false);
@@ -56,9 +54,9 @@ export default function Navbar() {
       >
         <div className="lav-inner">
           <Link to="/" className="lav-brand" aria-label="Home">
-            <span className="lav-heart">♥</span>
+            <span className="lav-heart" aria-hidden="true">♥</span>
             <span className="lav-brandText">Home</span>
-            <span className="lav-heart">♥</span>
+            <span className="lav-heart" aria-hidden="true">♥</span>
           </Link>
 
           <div className="lav-right">
@@ -69,7 +67,6 @@ export default function Navbar() {
               🚀 <span className="lav-linkText">Projects</span>
             </Link>
 
-            {/* ✅ CLICK dropdown */}
             <div className="lav-drop" ref={dropRef}>
               <button
                 type="button"
@@ -79,10 +76,9 @@ export default function Navbar() {
                 aria-expanded={open}
               >
                 ✨ <span className="lav-moreText">More</span>{" "}
-                <span className="lav-caret">▾</span>
+                <span className="lav-caret" aria-hidden="true">▾</span>
               </button>
 
-              {/* ✅ stays visible when open */}
               <div className={`lav-menu ${open ? "open" : ""}`} role="menu">
                 {links.map((l) => (
                   <Link
@@ -90,7 +86,7 @@ export default function Navbar() {
                     to={l.to}
                     className="lav-item"
                     role="menuitem"
-                    onClick={() => setOpen(false)} // ✅ closes after choosing
+                    onClick={() => setOpen(false)}
                   >
                     <span className="lav-itemIcon">{l.icon}</span>
                     <span className="lav-itemLabel">{l.label}</span>
@@ -104,16 +100,26 @@ export default function Navbar() {
       </nav>
 
       <style>{`
-        /* ✅ FULL-WIDTH LAVENDER BACKDROP */
+        .lav-navbar, .lav-navbar * { box-sizing: border-box; }
+
+        /* ✅ PRODUCTION GUARD:
+           Prevent any global “header { position: fixed }” / “nav { position: fixed }”
+           from hijacking this element. Keeps sticky behavior via the class rules below. */
         .lav-navbar{
+          position: relative !important;     /* base: normal flow */
+          inset: auto !important;
+          left: auto !important;
+          right: auto !important;
+          bottom: auto !important;
+          transform: none !important;
+
           z-index: 1000;
           width: 100%;
           display: flex;
           justify-content: center;
           pointer-events: auto;
-          margin-top: 0;
+          margin: 0;
           padding: 14px 12px 16px;
-          box-sizing: border-box;
 
           background:
             radial-gradient(900px 220px at 18% 0%, rgba(255,255,255,0.60) 0%, rgba(255,255,255,0) 60%),
@@ -123,14 +129,15 @@ export default function Navbar() {
           box-shadow: 0 10px 24px rgba(40, 20, 80, 0.10);
         }
 
+        /* ✅ Sticky when not on Home */
         .lav-navbar.is-sticky{
-          position: sticky;
-          top: 0;
+          position: sticky !important;
+          top: 0 !important;
         }
 
         .lav-navbar.not-sticky{
-          position: relative;
-          top: auto;
+          position: relative !important;
+          top: auto !important;
         }
 
         /* PILL */
@@ -222,7 +229,6 @@ export default function Navbar() {
           align-items: center;
           gap: 8px;
           white-space: nowrap;
-          transform: translateZ(0);
         }
 
         .lav-link.active,
@@ -239,7 +245,7 @@ export default function Navbar() {
           outline-offset: 3px;
         }
 
-        /* ✅ DROPDOWN (CLICK-OPEN) */
+        /* DROPDOWN */
         .lav-drop{ position: relative; }
 
         .lav-menu{
@@ -298,6 +304,7 @@ export default function Navbar() {
 
         @media (prefers-reduced-motion: reduce){
           .lav-menu{ transition: none; }
+          .lav-heart{ animation: none; }
         }
       `}</style>
     </>

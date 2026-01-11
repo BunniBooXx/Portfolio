@@ -1,4 +1,10 @@
-// Welcome.jsx
+// Welcome.jsx — TRUE FIT + CENTER (NO scroll hint, NO internal scrolling) ✅
+// ✅ Heart ALWAYS centered in available main area
+// ✅ Scales up on big desktop, scales down on small screens
+// ✅ Tight-height screens: scales DOWN (no cut-off, no extra scrollbars)
+// ✅ Orbs canvas scoped to Welcome only
+// ✅ FIX: heart sizing is HEIGHT-FIRST (prevents “pushed down” overflow)
+
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -32,7 +38,7 @@ export default function Welcome() {
     link.id = id;
     link.rel = "stylesheet";
     link.href =
-      "https://fonts.googleapis.com/css2?family=Grand+Hotel&family=Nunito:wght@500;700;800&display=swap";
+      "https://fonts.googleapis.com/css2?family=Grand+Hotel&family=Nunito:wght@500;700;800;900&display=swap";
     document.head.appendChild(link);
   }, []);
 
@@ -54,7 +60,6 @@ export default function Welcome() {
     const canvas = orbsCanvasRef.current;
     if (!canvas) return;
 
-    // ✅ Use the hero as the sizing host (this is the main area, not footer)
     const host = canvas.closest(".gs-hero");
     if (!host) return;
 
@@ -105,7 +110,6 @@ export default function Welcome() {
     };
 
     const drawOrb = (o) => {
-      // glow
       ctx.beginPath();
       ctx.arc(o.x, o.y, o.r * 3.1, 0, Math.PI * 2);
       const g = ctx.createRadialGradient(o.x, o.y, 0, o.x, o.y, o.r * 3.1);
@@ -114,7 +118,6 @@ export default function Welcome() {
       ctx.fillStyle = g;
       ctx.fill();
 
-      // core
       ctx.beginPath();
       ctx.arc(o.x, o.y, o.r, 0, Math.PI * 2);
       const rg = ctx.createRadialGradient(
@@ -131,7 +134,6 @@ export default function Welcome() {
       ctx.fillStyle = rg;
       ctx.fill();
 
-      // rim
       ctx.strokeStyle = "rgba(123,92,255,0.10)";
       ctx.lineWidth = 1;
       ctx.stroke();
@@ -139,7 +141,7 @@ export default function Welcome() {
 
     const init = () => {
       orbsRef.current = [];
-      const count = clamp(Math.floor(w / 140), 9, 16);
+      const count = clamp(Math.floor(w / 150), 8, 16);
       for (let i = 0; i < count; i++) {
         orbsRef.current.push(makeOrb(rand(40, w - 40), rand(-h * 0.2, h)));
       }
@@ -163,7 +165,6 @@ export default function Welcome() {
         o.vx *= air;
         o.vy *= air;
 
-        // walls
         if (o.x - o.r < 0) {
           o.x = o.r;
           o.vx = Math.abs(o.vx) * bounce;
@@ -173,7 +174,6 @@ export default function Welcome() {
           o.vx = -Math.abs(o.vx) * bounce;
         }
 
-        // floor + respawn
         if (o.y + o.r > h) {
           o.y = h - o.r;
           o.vy = -Math.abs(o.vy) * bounce;
@@ -219,7 +219,6 @@ export default function Welcome() {
 
   return (
     <section className="gs-hero" aria-label="Welcome">
-      {/* Background */}
       <div
         aria-hidden="true"
         className="gs-bg"
@@ -235,7 +234,6 @@ export default function Welcome() {
       <div aria-hidden="true" className="gs-texture" />
       <canvas ref={orbsCanvasRef} className="gs-orbs" aria-hidden="true" />
 
-      {/* Content */}
       <div className="gs-inner">
         <div className="gs-heartStage">
           <div className="gs-heartWrap">
@@ -317,17 +315,16 @@ export default function Welcome() {
       <style>{`
         .gs-hero, .gs-hero * , .gs-hero *::before, .gs-hero *::after { box-sizing: border-box; }
 
-        /* ✅ Welcome fills .app-main */
         .gs-hero{
           position: relative;
           width: 100%;
-          height: 100%;
-          min-height: 0;
-          overflow: hidden;
-          display: grid;
+          height: 100%;          /* fill app-main */
+          min-height: 0;         /* IMPORTANT inside grid area */
+          overflow: hidden;      /* never create a second scrollbar */
 
-          /* ✅ default: no lift */
+          --pad: clamp(10px, 1.8vmin, 22px);
           --liftY: 0px;
+          --heartScale: 1;
         }
 
         .gs-bg, .gs-texture, .gs-orbs{
@@ -349,17 +346,15 @@ export default function Welcome() {
         }
         .gs-orbs{ z-index: 2; }
 
-        /* ✅ main stage */
         .gs-inner{
           position: relative;
           z-index: 3;
           height: 100%;
           min-height: 0;
-
+          width: 100%;
           display: grid;
           place-items: center;
-
-          padding: 10px 12px;
+          padding: var(--pad);
         }
 
         .gs-heartStage{
@@ -368,48 +363,26 @@ export default function Welcome() {
           min-height: 0;
           display: grid;
           place-items: center;
-
-          /* ✅ lift is controlled by media queries */
           transform: translateY(var(--liftY));
         }
 
+        /* ✅ FIX: HEIGHT-FIRST sizing to prevent “pushed down” overflow */
         .gs-heartWrap{
           position: relative;
-          width: min(980px, 96vw);
           aspect-ratio: 600 / 520;
-
           display: grid;
           place-items: center;
 
-          /* ✅ stable sizing based on actual container */
-          height: min(72vh, max(320px, 100%));
-          max-height: 100%;
+          /* height drives size */
+          height: min(720px, calc(100% - (var(--pad) * 2)));
+          max-height: calc(100% - (var(--pad) * 2));
 
+          /* width follows aspect ratio, but is capped */
+          width: auto;
+          max-width: min(1100px, 92vw);
+
+          transform: translateZ(0) scale(var(--heartScale));
           transform-origin: center;
-          scale: clamp(0.64, 0.92, 1);
-        }
-
-        /* ✅ 13" laptop sweet spot (common: 1366×768, 1440×900) */
-        @media (min-width: 900px) and (max-width: 1500px) and (max-height: 860px){
-          .gs-hero{
-            /* lift the heart up a bit */
-            --liftY: clamp(-78px, -7vh, -34px);
-          }
-
-          .gs-heartWrap{
-            /* slightly reduce so it doesn't kiss the footer */
-            scale: clamp(0.78, 0.88, 0.95);
-          }
-        }
-
-        /* extra-tight laptop heights */
-        @media (min-width: 900px) and (max-width: 1500px) and (max-height: 760px){
-          .gs-hero{ --liftY: clamp(-92px, -9vh, -44px); }
-          .gs-heartWrap{ scale: 0.84; }
-        }
-
-        @media (max-width: 520px){
-          .gs-heartWrap{ width: min(980px, 96vw); }
         }
 
         .gs-heartSvg{
@@ -419,20 +392,79 @@ export default function Welcome() {
           height:100%;
         }
 
+        /* ✅ Small phones */
+        @media (max-width: 520px){
+          .gs-hero{ --pad: 10px; --heartScale: 0.78; }
+          .gs-heartWrap{
+            height: min(620px, calc(100% - 20px));
+            max-width: min(980px, 96vw);
+          }
+        }
+
+        /* ✅ Small tablets */
+        @media (min-width: 521px) and (max-width: 820px){
+          .gs-hero{ --heartScale: 0.92; }
+          .gs-heartWrap{
+            height: min(700px, calc(100% - (var(--pad) * 2)));
+            max-width: min(1100px, 92vw);
+          }
+        }
+
+        /* ✅ Tablets / iPad */
+        @media (min-width: 821px) and (max-width: 1180px){
+          .gs-hero{ --heartScale: 1.02; }
+          .gs-heartWrap{
+            height: min(740px, calc(100% - (var(--pad) * 2)));
+            max-width: min(1180px, 86vw);
+          }
+        }
+
+        /* ✅ Laptops: gentle nudge up so it feels centered vs footer */
+        @media (min-width: 1024px) and (max-width: 1440px){
+          .gs-hero{ --liftY: -28px; --heartScale: 1.02; }
+        }
+
+        /* ✅ Tight-height screens: scale down more (NO scrolling, NO cut-off) */
+        @media (max-height: 860px){
+          .gs-hero{ --pad: 10px; --heartScale: 0.90; --liftY: -18px; }
+        }
+        @media (max-height: 760px){
+          .gs-hero{ --pad: 8px; --heartScale: 0.82; --liftY: -12px; }
+        }
+        @media (max-height: 700px){
+          .gs-hero{ --pad: 6px; --heartScale: 0.74; --liftY: -8px; }
+        }
+
+        /* ✅ Desktops / big monitors: scale UP */
+        @media (min-width: 1501px) and (max-width: 2200px){
+          .gs-hero{ --heartScale: 1.14; }
+          .gs-heartWrap{
+            height: min(860px, calc(100% - (var(--pad) * 2)));
+            max-width: min(1320px, 70vw);
+          }
+        }
+
+        /* ✅ Ultra-wide */
+        @media (min-width: 2201px){
+          .gs-hero{ --heartScale: 1.20; }
+          .gs-heartWrap{
+            height: min(920px, calc(100% - (var(--pad) * 2)));
+            max-width: min(1500px, 64vw);
+          }
+        }
+
         .gs-heartContent{
           position: relative;
-          width: min(520px, 74%);
-          max-width: 520px;
-
+          width: min(560px, 78%);
+          max-width: 680px;
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
           text-align: center;
 
-          gap: 12px;
-          padding: 10px 6px;
-
+          gap: clamp(10px, 1.2vh, 14px);
+          padding: clamp(8px, 1vh, 14px) clamp(6px, 1vw, 14px);
           transform: translateY(-1%);
         }
 
@@ -448,7 +480,7 @@ export default function Welcome() {
           background: rgba(255,255,255,0.62);
           padding: 6px 10px;
           border-radius: 999px;
-          font-size: clamp(0.78rem, 0.35vw + 0.72rem, 0.92rem);
+          font-size: clamp(0.78rem, 0.35vw + 0.72rem, 0.98rem);
           color: #241B45;
           font-family: Nunito, ui-sans-serif, system-ui;
           font-weight: 800;
@@ -459,7 +491,7 @@ export default function Welcome() {
         .gs-name{
           margin: 0;
           font-family: 'Grand Hotel', cursive;
-          font-size: clamp(3.1rem, 7.0vw, 5.6rem);
+          font-size: clamp(3.0rem, 6.2vw, 6.6rem);
           line-height: 0.92;
           font-weight: 400;
           color: #7B5CFF;
@@ -469,11 +501,11 @@ export default function Welcome() {
         .gs-oneLiner{
           margin: 0;
           font-family: Nunito, ui-sans-serif, system-ui;
-          font-size: clamp(0.86rem, 1.5vw, 1.06rem);
+          font-size: clamp(0.90rem, 1.15vw, 1.22rem);
           line-height: 1.32;
           font-weight: 800;
           color: rgba(26,22,48,0.66);
-          max-width: 34ch;
+          max-width: 42ch;
         }
 
         .gs-cta{
@@ -507,13 +539,7 @@ export default function Welcome() {
         }
 
         @media (max-width: 520px){
-          .gs-heartContent{ gap: 10px; }
           .gs-btn{ padding: 10px 16px; min-height: 40px; }
-        }
-
-        @media (max-height: 680px){
-          .gs-heartContent{ gap: 9px; }
-          .gs-btn{ padding: 9px 14px; min-height: 38px; }
         }
 
         @media (prefers-reduced-motion: reduce){

@@ -1,3 +1,4 @@
+// App.jsx — fixed structure (no nested <main>) ✅
 import "./App.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Welcome from "./Welcome";
@@ -16,7 +17,7 @@ export default function App() {
           <Navbar />
         </header>
 
-        <main className="app-main">
+        <main className="app-main" aria-label="Main content">
           <Routes>
             <Route path="/" element={<Welcome />} />
             <Route path="/aboutme" element={<AboutMe />} />
@@ -26,7 +27,6 @@ export default function App() {
           </Routes>
         </main>
 
-        {/* ✅ NOT a footer tag (prevents global footer rules from messing with it) */}
         <div className="app-footer" role="contentinfo">
           <Footer />
         </div>
