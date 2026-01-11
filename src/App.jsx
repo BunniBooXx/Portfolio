@@ -16,7 +16,6 @@ export default function App() {
           <Navbar />
         </header>
 
-        {/* ✅ ONE scroll container for everything */}
         <main className="app-main">
           <Routes>
             <Route path="/" element={<Welcome />} />
@@ -27,9 +26,10 @@ export default function App() {
           </Routes>
         </main>
 
-        <footer className="app-footer">
+        {/* ✅ NOT a footer tag (prevents global footer rules from messing with it) */}
+        <div className="app-footer" role="contentinfo">
           <Footer />
-        </footer>
+        </div>
       </div>
     </Router>
   );

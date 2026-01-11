@@ -1,3 +1,5 @@
+/* App.css — add the anti-overlay footer guard */
+
 /* =========================
    GLOBAL
    ========================= */
@@ -27,12 +29,19 @@ html, body, #root {
   z-index: 10;
 }
 
-.app-footer {
-  position: relative;
+/* ✅ Hard-protect footer wrapper from any fixed/sticky defaults in production */
+.app-footer{
+  position: relative !important;
+  inset: auto !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  transform: none !important;
+
   margin: 0;
   padding: 0;
 }
-
 
 /* ✅ ONLY main scrolls when needed */
 .app-main{

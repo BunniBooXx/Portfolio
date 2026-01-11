@@ -1,10 +1,12 @@
+// Footer.jsx (fixed: no nested <footer> tags issues)
 import React from "react";
 import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
     <>
-      <footer className="footer" role="contentinfo">
+      {/* ✅ Use a div instead of footer to avoid footer{} global CSS + nested footer problems */}
+      <div className="footer" role="contentinfo">
         <div className="footer-card">
           {/* Navigation */}
           <nav className="footer-links" aria-label="Footer navigation">
@@ -84,24 +86,31 @@ export default function Footer() {
             </span>
           </div>
         </div>
-      </footer>
+      </div>
 
       <style>{`
         /* =========================
-           Footer — NO lavender rectangle bridge
+           Footer — stable flow (no overlay)
            ========================= */
 
         .footer, .footer * { box-sizing: border-box; }
 
-        /* ✅ Footer stays in flow */
+        /* ✅ Explicitly prevent sticky/fixed footer behavior (some deploy CSS resets do this) */
         .footer{
           width: 100%;
-          position: relative;
+          position: relative !important;
+          inset: auto !important;
+          top: auto !important;
+          right: auto !important;
+          bottom: auto !important;
+          left: auto !important;
+          transform: none !important;
+
           margin: 0;
           padding: 0;
           background: transparent;
           border: 0;
-          z-index: 20;
+          z-index: 1;
         }
 
         .footer-card{
