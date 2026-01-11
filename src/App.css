@@ -1,36 +1,71 @@
-/* Make the whole app exactly 1 viewport tall */
-html, body, #root {
+/* =========================
+   GLOBAL: stop black bars + overflow
+   ========================= */
+
+html, body {
+  width: 100%;
   height: 100%;
+  margin: 0;
+  padding: 0;
+
+  /* ✅ prevents glow/gradients from creating side scroll */
+  overflow-x: hidden;
+
+  /* ✅ match your site background so no “edge bars” show */
+  background: #F6F1FF;
 }
 
-body {
-  margin: 0;
+#root {
+  width: 100%;
+  height: 100%;
   overflow-x: hidden;
 }
 
-/* App layout: header + main + footer */
-.app-shell{
-  min-height: 100vh;
-  min-height: 100dvh;          /* modern mobile safe */
+/* =========================
+   APP LAYOUT: header + footer fixed, main scrolls
+   ========================= */
+
+.app-shell {
+  height: 100svh; /* ✅ best for mobile browser UI */
+  width: 100%;
   display: flex;
   flex-direction: column;
+
+  /* ✅ important: allow main to scroll without weird clipping */
+  overflow: hidden;
 }
 
-/* Navbar area: do NOT sticky here (we're removing the behavior) */
-.app-header{
+.app-header,
+.app-footer {
   flex: 0 0 auto;
 }
 
-/* Main area takes remaining height */
-.app-main{
+/* Only main scrolls */
+.app-main {
   flex: 1 1 auto;
-  min-height: 0;               /* IMPORTANT: prevents weird overflow */
-  display: grid;
-  place-items: center;         /* centers your Welcome naturally */
-  overflow: hidden;            /* stops “micro-scroll” on homepage */
+  min-height: 0; /* ✅ critical for nested scrolling */
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+
+  /* ✅ prevents “side bleed” on some browsers */
+  width: 100%;
+  max-width: 100vw;
 }
 
-/* Footer stays at bottom but does not create extra scroll */
-.app-footer{
-  flex: 0 0 auto;
+/* =========================
+   OPTIONAL: hide scrollbar (scroll still works)
+   ========================= */
+
+/* Firefox */
+.app-main {
+  scrollbar-width: none;
+}
+
+/* Chrome/Safari/Edge */
+.app-main::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
 }

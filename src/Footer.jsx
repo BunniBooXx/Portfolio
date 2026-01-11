@@ -9,19 +9,30 @@ export default function Footer() {
           {/* Navigation */}
           <nav className="footer-links" aria-label="Footer navigation">
             <Link to="/" className="footer-link">
-              <span className="ico" aria-hidden="true">🏠</span>
+              <span className="ico" aria-hidden="true">
+                🏠
+              </span>
               <span className="txt">Home</span>
             </Link>
+
             <Link to="/aboutme" className="footer-link">
-              <span className="ico" aria-hidden="true">👩‍💻</span>
+              <span className="ico" aria-hidden="true">
+                👩‍💻
+              </span>
               <span className="txt">About</span>
             </Link>
+
             <Link to="/projects" className="footer-link">
-              <span className="ico" aria-hidden="true">🚀</span>
+              <span className="ico" aria-hidden="true">
+                🚀
+              </span>
               <span className="txt">Projects</span>
             </Link>
+
             <Link to="/contact" className="footer-link">
-              <span className="ico" aria-hidden="true">✉️</span>
+              <span className="ico" aria-hidden="true">
+                ✉️
+              </span>
               <span className="txt">Contact</span>
             </Link>
           </nav>
@@ -64,16 +75,20 @@ export default function Footer() {
 
           {/* Copyright */}
           <div className="footer-copy">
-            <span className="heart" aria-hidden="true">♥</span>
+            <span className="heart" aria-hidden="true">
+              ♥
+            </span>
             <span>© {new Date().getFullYear()} Jaqueline Smith</span>
-            <span className="heart" aria-hidden="true">♥</span>
+            <span className="heart" aria-hidden="true">
+              ♥
+            </span>
           </div>
         </div>
       </footer>
 
       <style>{`
         /* =========================
-           Footer — Responsive (Desktop -> Mobile)
+           Footer — NO OVERLAP (mobile safe)
            ========================= */
 
         footer,
@@ -85,19 +100,34 @@ export default function Footer() {
           border: 0 !important;
         }
 
-        /* ✅ Lift footer up more to cover any dark gap under content */
+        /* ✅ Keep footer in normal document flow (NO negative margins) */
         .footer {
           width: 100%;
+          margin: 0;
           padding: 0;
-          margin: -3.25rem 0 0 0; /* was -2.25rem */
-          display: block;
-          background: transparent;
-          overflow-x: hidden;
           position: relative;
-          z-index: 50;
+          z-index: 20;
+          overflow: visible;
+        }
+
+        /* ✅ This visually “pulls up” lavender to cover any dark gap
+           WITHOUT moving the footer (so nothing gets cut off). */
+        .footer::before {
+          content: "";
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: -44px;           /* how far the lavender extends upward */
+          height: 44px;         /* must match */
+          background: #ede9fe;
+          z-index: 0;
+          pointer-events: none;
         }
 
         .footer-card {
+          position: relative;
+          z-index: 1;
+
           width: 100%;
           max-width: none;
           margin: 0;
@@ -118,7 +148,7 @@ export default function Footer() {
           text-align: center;
         }
 
-        /* LINKS (Desktop/tablet) */
+        /* LINKS */
         .footer-links {
           width: 100%;
           display: flex;
@@ -229,13 +259,13 @@ export default function Footer() {
         }
 
         /* =========================
-           ✅ MOBILE: nav links side-by-side (like socials)
-           - 2 columns grid
-           - smaller pills + smaller icon/text
+           ✅ MOBILE: links side-by-side (2 columns),
+           no overlap, smaller pills
            ========================= */
         @media (max-width: 520px) {
-          .footer {
-            margin-top: -3.75rem; /* lift more on mobile to hide black gap */
+          .footer::before {
+            top: -56px;
+            height: 56px; /* a bit more cover on mobile */
           }
 
           .footer-card {
@@ -244,13 +274,10 @@ export default function Footer() {
             gap: 0.75rem;
           }
 
-          /* ✅ Make links side-by-side */
           .footer-links {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 0.55rem;
-            justify-content: center;
-            align-items: stretch;
             max-width: 420px;
             margin: 0 auto;
           }
@@ -262,9 +289,7 @@ export default function Footer() {
             gap: 0.35rem;
           }
 
-          .footer-link .ico {
-            font-size: 0.95em;
-          }
+          .footer-link .ico { font-size: 0.95em; }
 
           .social-btn {
             width: 34px;
@@ -272,20 +297,16 @@ export default function Footer() {
             font-size: 1.05rem;
           }
 
-          .footer-copy {
-            font-size: 0.82rem;
-          }
+          .footer-copy { font-size: 0.82rem; }
         }
 
-        /* Extra tiny phones: still 2 columns, just tighter */
         @media (max-width: 360px) {
-          .footer {
-            margin-top: -4.1rem;
+          .footer::before {
+            top: -64px;
+            height: 64px;
           }
 
-          .footer-links {
-            gap: 0.45rem;
-          }
+          .footer-links { gap: 0.45rem; }
 
           .footer-link {
             padding: 0.34rem 0.48rem;

@@ -35,7 +35,7 @@ export default function Welcome() {
     document.head.appendChild(link);
   }, []);
 
-  // reduced motion
+  // Reduced motion
   useEffect(() => {
     const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
     const set = () => setReducedMotion(Boolean(mq?.matches));
@@ -45,13 +45,16 @@ export default function Welcome() {
   }, []);
 
   // =========================
-  // ORBS CANVAS (FALLING BALLS)
+  // ORBS CANVAS (inside welcome ONLY)
   // =========================
   useEffect(() => {
     if (!ENABLE_ORBS) return;
 
     const canvas = orbsCanvasRef.current;
     if (!canvas) return;
+
+    const host = canvas.parentElement; // ✅ the .gs-hero section
+    if (!host) return;
 
     const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
@@ -63,9 +66,11 @@ export default function Welcome() {
     const clamp = (n, a, b) => Math.min(b, Math.max(a, n));
 
     const resize = () => {
+      const rect = host.getBoundingClientRect();
       const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
-      w = Math.floor(window.innerWidth);
-      h = Math.floor(window.innerHeight);
+
+      w = Math.max(1, Math.floor(rect.width));
+      h = Math.max(1, Math.floor(rect.height));
 
       canvas.style.width = `${w}px`;
       canvas.style.height = `${h}px`;
@@ -197,25 +202,28 @@ export default function Welcome() {
       for (const o of orbsRef.current) drawOrb(o);
     }
 
-    const onResize = () => {
+    const ro = new ResizeObserver(() => {
       resize();
       init();
-    };
-    window.addEventListener("resize", onResize);
+    });
+    ro.observe(host);
+
+    window.addEventListener("resize", resize);
 
     return () => {
       cancelAnimationFrame(rafOrbsRef.current);
-      window.removeEventListener("resize", onResize);
+      window.removeEventListener("resize", resize);
+      ro.disconnect();
     };
   }, [reducedMotion]);
 
   return (
-    <div className="gs-page" style={styles.page}>
-      {/* background */}
+    <section className="gs-hero" aria-label="Welcome">
+      {/* Background (scoped to hero, not the whole page) */}
       <div
         aria-hidden="true"
+        className="gs-bg"
         style={{
-          ...styles.backdrop,
           background: `
             radial-gradient(900px 650px at 18% 18%, rgba(123,92,255,0.10), transparent 56%),
             radial-gradient(780px 600px at 86% 70%, rgba(184,164,255,0.18), transparent 60%),
@@ -224,14 +232,15 @@ export default function Welcome() {
           `,
         }}
       />
-      <div aria-hidden="true" style={styles.texture} />
+      <div aria-hidden="true" className="gs-texture" />
 
-      {/* falling orbs */}
-      <canvas ref={orbsCanvasRef} style={styles.canvasOrbs} />
+      {/* Orbs scoped to hero */}
+      <canvas ref={orbsCanvasRef} className="gs-orbs" aria-hidden="true" />
 
-      <main className="gs-centerWrap" style={styles.centerWrap}>
-        <section className="gs-heartWrap" style={styles.heartWrap} aria-label="Welcome">
-          <svg viewBox="0 0 600 520" className="gs-heartSvg" style={styles.heartSvg} aria-hidden="true">
+      {/* Content */}
+      <div className="gs-inner">
+        <div className="gs-heartWrap">
+          <svg viewBox="0 0 600 520" className="gs-heartSvg" aria-hidden="true">
             <defs>
               <linearGradient id="glassFill" x1="0" y1="0" x2="1" y2="1">
                 <stop offset="0" stopColor="rgba(255,255,255,0.78)" />
@@ -293,69 +302,108 @@ export default function Welcome() {
             />
           </svg>
 
-          {/* ✅ CONTENT INSIDE HEART ONLY */}
-          <div className="gs-heartContent" style={styles.heartContent}>
-            {/* badges */}
-            <div className="gs-badges" style={styles.badgeRow}>
-              <span className="gs-badge" style={styles.badge}>
-                ✨ Full Stack Software Engineer
-              </span>
-              <span className="gs-badge" style={styles.badge}>
-                🤖 AI + UX
-              </span>
+          <div className="gs-heartContent">
+            <div className="gs-badges">
+              <span className="gs-badge">✨ Full Stack Software Engineer</span>
+              <span className="gs-badge">🤖 AI + UX</span>
             </div>
 
-            <h1 className="gs-name" style={styles.name}>
-              Jaqueline Smith
-            </h1>
+            <h1 className="gs-name">Jaqueline Smith</h1>
 
-            {/* ✅ one short sentence (fills space, not wordy) */}
-            <p className="gs-oneLiner" style={styles.oneLiner}>
+            <p className="gs-oneLiner">
               Cozy full-stack builds with a soft spot for interactive, human-friendly UI.
             </p>
 
-            {/* ✅ single CTA button (not too wide) */}
-            <div className="gs-cta" style={styles.ctaRow}>
-              <Link to="/projects" className="gs-btn gs-btnPrimary" style={styles.primaryBtn}>
+            <div className="gs-cta">
+              <Link to="/projects" className="gs-btn">
                 See My Creations →
               </Link>
             </div>
           </div>
-        </section>
-      </main>
+        </div>
+      </div>
 
       <style>{`
-        .gs-page { min-height: 100svh; }
+        /* ✅ This component fits inside .app-main (between navbar + footer).
+           No 100vh. No body/html edits. No internal scroll. */
 
-        .gs-centerWrap{
-          min-height: 100svh;
-          padding: clamp(10px, 3vh, 28px);
+        .gs-hero{
+          position: relative;
+          width: 100%;
+          height: 100%;        /* ✅ fills .app-main only */
+          min-height: 0;
+          overflow: hidden;    /* ✅ prevents micro-scrollbars */
           display: grid;
-          place-items: center;
-          overflow: auto;
-          overscroll-behavior: contain;
         }
 
+        /* Background layers are ABSOLUTE to the hero (not fixed to viewport) */
+        .gs-bg,
+        .gs-texture,
+        .gs-orbs{
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+        }
+        .gs-bg{ z-index: 0; }
+        .gs-texture{
+          z-index: 1;
+          background-image:
+            radial-gradient(circle at 18% 22%, rgba(0,0,0,0.03) 0 1px, transparent 2px),
+            radial-gradient(circle at 70% 32%, rgba(0,0,0,0.025) 0 1px, transparent 2px),
+            radial-gradient(circle at 44% 74%, rgba(0,0,0,0.02) 0 1px, transparent 2px),
+            radial-gradient(circle at 84% 82%, rgba(0,0,0,0.025) 0 1px, transparent 2px);
+          background-size: 260px 260px;
+          opacity: 0.5;
+          mix-blend-mode: multiply;
+        }
+        .gs-orbs{ z-index: 2; }
+
+        /* Center content inside available space */
+        .gs-inner{
+          position: relative;
+          z-index: 3;
+          height: 100%;
+          min-height: 0;
+          display: grid;
+          place-items: center;
+          padding: clamp(10px, 2.4vh, 22px) 12px;
+          box-sizing: border-box;
+        }
+
+        /* HEART: scale to both width + height so it NEVER forces scroll */
         .gs-heartWrap{
+          position: relative;
           width: min(980px, 96vw);
           aspect-ratio: 600 / 520;
           display: grid;
           place-items: center;
-          margin: 0 auto;
+
+          /* ✅ Critical: cap by available height */
+          height: min(100%, 78vh);
+          max-height: 100%;
         }
 
-        /* ✅ content constrained INSIDE the heart */
+        /* If parent gives less height, make the heart fit it */
+        .gs-heartSvg{
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+        }
+
         .gs-heartContent{
+          position: relative;
           width: min(520px, 74%);
           max-width: 520px;
-          text-align: center;
-          transform: translateY(-1%);
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
+          text-align: center;
           gap: 12px;
           padding: 10px 6px;
+          transform: translateY(-1%);
+          box-sizing: border-box;
         }
 
         .gs-badges{
@@ -367,15 +415,42 @@ export default function Welcome() {
         }
 
         .gs-badge{
-          max-width: 100%;
+          border: 1px solid rgba(123,92,255,0.18);
+          background: rgba(255,255,255,0.62);
+          padding: 6px 10px;
+          border-radius: 999px;
+          font-size: clamp(0.78rem, 0.25vw + 0.78rem, 0.9rem);
+          color: #241B45;
+          font-family: Nunito, ui-sans-serif, system-ui;
+          font-weight: 800;
+          user-select: none;
           white-space: nowrap;
         }
 
-        .gs-oneLiner{
-          margin-top: -2px;
+        .gs-name{
+          margin: 0;
+          font-family: 'Grand Hotel', cursive;
+
+          /* ✅ scales down on short heights */
+          font-size: clamp(2.2rem, 4.4vw + 0.9rem, 5.6rem);
+
+          line-height: 0.92;
+          letter-spacing: 0.2px;
+          font-weight: 400;
+          color: #7B5CFF;
+          text-shadow: 0 10px 30px rgba(123,92,255,0.16);
         }
 
-        /* ✅ CTA no longer forces wide layout */
+        .gs-oneLiner{
+          margin: 0;
+          font-family: Nunito, ui-sans-serif, system-ui;
+          font-size: clamp(0.86rem, 0.35vw + 0.78rem, 1.06rem);
+          line-height: 1.32;
+          font-weight: 800;
+          color: rgba(26,22,48,0.66);
+          max-width: 34ch;
+        }
+
         .gs-cta{
           width: 100%;
           display: flex;
@@ -384,165 +459,51 @@ export default function Welcome() {
         }
 
         .gs-btn{
+          border-radius: 999px;
+          border: 1px solid rgba(123,92,255,0.24);
+          text-decoration: none;
+          font-family: Nunito, ui-sans-serif, system-ui;
+          font-weight: 900;
+          color: #241B45;
+          background: rgba(123,92,255,0.12);
+          box-shadow: 0 10px 30px rgba(123,92,255,0.14);
+          transition: transform 160ms ease, background 160ms ease;
+          padding: 12px 18px;
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          text-align: center;
-          min-height: 46px;
+          min-height: 44px;
+          width: fit-content;
+          max-width: min(320px, 86%);
+          white-space: nowrap;
         }
 
+        .gs-btn:hover{
+          transform: translateY(-1px);
+          background: rgba(123,92,255,0.16);
+        }
+
+        /* Smaller screens tighten spacing */
         @media (max-width: 640px){
           .gs-heartContent{
             width: min(420px, 78%);
             transform: translateY(-4%);
-            gap: 12px;
             padding: 8px 6px;
-          }
-
-          .gs-badge{
-            font-size: 0.86rem;
-            padding: 6px 10px;
-          }
-        }
-
-        @media (max-width: 380px){
-          .gs-heartContent{
-            width: min(360px, 80%);
-            transform: translateY(-5.5%);
             gap: 10px;
           }
-          .gs-badge{
-            font-size: 0.82rem;
-          }
-          .gs-name{
-            font-size: clamp(2.6rem, 8.3vw + 0.8rem, 4.2rem) !important;
-          }
         }
 
-        a:hover { transform: translateY(-1px); }
+        /* Short heights: shrink more so footer is ALWAYS visible */
+        @media (max-height: 700px){
+          .gs-heartWrap{ height: min(100%, 70vh); }
+          .gs-heartContent{ gap: 9px; transform: translateY(-4.5%); }
+          .gs-btn{ padding: 10px 16px; min-height: 40px; }
+        }
+
+        @media (prefers-reduced-motion: reduce){
+          .gs-btn{ transition: none; }
+        }
       `}</style>
-    </div>
+    </section>
   );
 }
-
-const styles = {
-  page: { position: "relative", width: "100%", height: "100svh", overflow: "hidden" },
-
-  backdrop: { position: "absolute", inset: 0, zIndex: 0 },
-
-  texture: {
-    position: "absolute",
-    inset: 0,
-    zIndex: 1,
-    pointerEvents: "none",
-    backgroundImage: `
-      radial-gradient(circle at 18% 22%, rgba(0,0,0,0.03) 0 1px, transparent 2px),
-      radial-gradient(circle at 70% 32%, rgba(0,0,0,0.025) 0 1px, transparent 2px),
-      radial-gradient(circle at 44% 74%, rgba(0,0,0,0.02) 0 1px, transparent 2px),
-      radial-gradient(circle at 84% 82%, rgba(0,0,0,0.025) 0 1px, transparent 2px)
-    `,
-    backgroundSize: "260px 260px",
-    opacity: 0.5,
-    mixBlendMode: "multiply",
-  },
-
-  canvasOrbs: { position: "absolute", inset: 0, zIndex: 2, pointerEvents: "none" },
-
-  centerWrap: {
-    position: "relative",
-    zIndex: 4,
-    width: "100%",
-    height: "100%",
-    display: "grid",
-    placeItems: "center",
-    padding: "18px",
-  },
-
-  heartWrap: {
-    position: "relative",
-    width: "min(980px, 96vw)",
-    aspectRatio: "600 / 520",
-    display: "grid",
-    placeItems: "center",
-    margin: "0 auto",
-  },
-
-  heartSvg: { position: "absolute", inset: 0, width: "100%", height: "100%" },
-
-  heartContent: {
-    position: "relative",
-    width: "min(520px, 74%)",
-    maxWidth: "520px",
-    textAlign: "center",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: "12px",
-    padding: "10px 6px",
-  },
-
-  badgeRow: { display: "flex", gap: "10px", flexWrap: "wrap", justifyContent: "center" },
-
-  badge: {
-    border: "1px solid rgba(123,92,255,0.18)",
-    background: "rgba(255,255,255,0.62)",
-    padding: "6px 10px",
-    borderRadius: "999px",
-    fontSize: "0.9rem",
-    color: "#241B45",
-    fontFamily: "Nunito, ui-sans-serif, system-ui",
-    fontWeight: 800,
-    userSelect: "none",
-  },
-
-  name: {
-    margin: 0,
-    fontFamily: "'Grand Hotel', cursive",
-    fontSize: "clamp(3.0rem, 5.2vw + 1rem, 6.0rem)",
-    lineHeight: 0.92,
-    letterSpacing: "0.2px",
-    fontWeight: 400,
-    color: "#7B5CFF",
-    textShadow: "0 10px 30px rgba(123,92,255,0.16)",
-  },
-
-  oneLiner: {
-    margin: 0,
-    fontFamily: "Nunito, ui-sans-serif, system-ui",
-    fontSize: "clamp(0.95rem, 0.6vw + 0.8rem, 1.08rem)",
-    lineHeight: 1.35,
-    fontWeight: 800,
-    color: "rgba(26,22,48,0.66)",
-    maxWidth: "34ch",
-  },
-
-  ctaRow: {
-    display: "flex",
-    justifyContent: "center",
-    width: "100%",
-    marginTop: "4px",
-  },
-
-  primaryBtn: {
-    borderRadius: "999px",
-    border: "1px solid rgba(123,92,255,0.24)",
-    textDecoration: "none",
-    fontFamily: "Nunito, ui-sans-serif, system-ui",
-    fontWeight: 900,
-    color: "#241B45",
-    background: "rgba(123,92,255,0.12)",
-    boxShadow: "0 10px 30px rgba(123,92,255,0.14)",
-    transition: "transform 160ms ease, background 160ms ease",
-    padding: "12px 18px",
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    minHeight: "46px",
-
-    // ✅ key part: not full width
-    width: "fit-content",
-    maxWidth: "min(320px, 86%)",
-    whiteSpace: "nowrap",
-  },
-};
