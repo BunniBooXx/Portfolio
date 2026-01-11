@@ -11,57 +11,37 @@ html, body, #root {
 }
 
 /* =========================
-   APP LAYOUT
-   - header + footer take their own height
-   - main fills the rest
+   APP LAYOUT (GRID)
+   header | main | footer
    ========================= */
-.app-shell {
+.app-shell{
   height: 100svh;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  overflow: hidden; /* keep background clean */
 }
 
 .app-header,
-.app-footer {
-  flex: 0 0 auto;
+.app-footer{
+  z-index: 10;
 }
 
-/* ✅ main fills remaining space */
-.app-main {
-  flex: 1 1 auto;
-  min-height: 0;
-
-  /* IMPORTANT: allow pages to fill height correctly */
-  display: flex;
-  overflow: hidden; /* <-- stop main itself from being a scroll container */
-}
-
-/* ✅ route-shell is the ONLY scroll container (when needed) */
-.route-shell {
-  flex: 1 1 auto;
-  min-height: 0;
+/* ✅ ONLY main scrolls when needed */
+.app-main{
+  min-height: 0;               /* critical for grid scrolling */
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
-  width: 100%;
-  max-width: 100vw;
 }
 
-/* =========================
-   HIDE SCROLLBAR (scroll still works)
-   ========================= */
-
-/* Firefox */
-.route-shell {
-  scrollbar-width: none;
+/* Hide scrollbar (scroll still works) */
+.app-main{
+  scrollbar-width: none;       /* Firefox */
 }
-
-/* Chrome/Safari/Edge */
-.route-shell::-webkit-scrollbar {
+.app-main::-webkit-scrollbar{
   width: 0;
   height: 0;
-  display: none;
+  display: none;               /* Chrome/Safari/Edge */
 }

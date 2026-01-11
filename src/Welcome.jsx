@@ -1,3 +1,4 @@
+// Welcome.jsx
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -353,20 +354,19 @@ export default function Welcome() {
           display: grid;
           place-items: center;
           padding: 10px 12px;
+
+          /* ✅ IMPORTANT: extra bottom room so the heart tip isn't clipped */
+          padding-bottom: clamp(28px, 6vh, 64px);
         }
 
         /* ✅ Stage owns the "push up so footer doesn't overlap" behavior */
         .gs-heartStage{
           --nudgeY: 0%;
-
           width: 100%;
           height: 100%;
           min-height: 0;
-
           display: grid;
           place-items: center;
-
-          /* keep away from navbar/footer edges */
           padding: clamp(6px, 1.2vh, 14px) 0;
         }
 
@@ -375,7 +375,6 @@ export default function Welcome() {
           position: relative;
           width: min(980px, 96vw);
           aspect-ratio: 600 / 520;
-
           display: grid;
           place-items: center;
 
@@ -390,7 +389,7 @@ export default function Welcome() {
           scale: clamp(0.62, 0.90 + 0.10 * (100vw / 520), 1);
         }
 
-        /* ✅ PUSH UP on small screens so footer never covers it */
+        /* ✅ PUSH UP on small/short screens so footer never covers it */
         @media (max-width: 520px){
           .gs-heartStage{ --nudgeY: -6%; }
         }
@@ -418,17 +417,13 @@ export default function Welcome() {
           position: relative;
           width: min(520px, 74%);
           max-width: 520px;
-
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
           text-align: center;
-
           gap: 12px;
           padding: 10px 6px;
-
-          /* tiny optical center inside the heart */
           transform: translateY(-1%);
         }
 
@@ -488,7 +483,6 @@ export default function Welcome() {
           background: rgba(123,92,255,0.12);
           box-shadow: 0 10px 30px rgba(123,92,255,0.14);
           transition: transform 160ms ease, background 160ms ease;
-
           padding: 12px 18px;
           display: inline-flex;
           align-items: center;
@@ -521,3 +515,4 @@ export default function Welcome() {
     </section>
   );
 }
+

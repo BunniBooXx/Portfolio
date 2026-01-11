@@ -16,17 +16,15 @@ export default function App() {
           <Navbar />
         </header>
 
+        {/* ✅ ONE scroll container for everything */}
         <main className="app-main">
-          {/* ✅ this wrapper is what we make "fill" */}
-          <div className="route-shell">
-            <Routes>
-              <Route path="/" element={<Welcome />} />
-              <Route path="/aboutme" element={<AboutMe />} />
-              <Route path="/contact" element={<ContactMe />} />
-              <Route path="/projects" element={<Projects />} />
-              <Route path="/resume" element={<Resume />} />
-            </Routes>
-          </div>
+          <Routes>
+            <Route path="/" element={<Welcome />} />
+            <Route path="/aboutme" element={<AboutMe />} />
+            <Route path="/contact" element={<ContactMe />} />
+            <Route path="/projects" element={<Projects />} />
+            <Route path="/resume" element={<Resume />} />
+          </Routes>
         </main>
 
         <footer className="app-footer">
