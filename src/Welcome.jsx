@@ -1,4 +1,3 @@
-
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -48,8 +47,9 @@ export default function Welcome() {
     const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
 
-    let w = 0,
-      h = 0;
+    let w = 0;
+    let h = 0;
+
     const rand = (min, max) => min + Math.random() * (max - min);
     const clamp = (n, a, b) => Math.min(b, Math.max(a, n));
 
@@ -127,9 +127,10 @@ export default function Welcome() {
 
     const step = () => {
       ctx.clearRect(0, 0, w, h);
-      const gravity = 0.012,
-        air = 0.994,
-        bounce = 0.72;
+      const gravity = 0.012;
+      const air = 0.994;
+      const bounce = 0.72;
+
       for (const o of orbsRef.current) {
         o.wobble += o.wobbleSpeed;
         o.vx += Math.sin(o.wobble) * 0.003;
@@ -138,6 +139,7 @@ export default function Welcome() {
         o.y += o.vy;
         o.vx *= air;
         o.vy *= air;
+
         if (o.x - o.r < 0) {
           o.x = o.r;
           o.vx = Math.abs(o.vx) * bounce;
@@ -150,6 +152,7 @@ export default function Welcome() {
           o.y = h - o.r;
           o.vy = -Math.abs(o.vy) * bounce;
           o.vx *= 0.92;
+
           if (Math.abs(o.vy) < 0.08) {
             o.x = rand(40, w - 40);
             o.y = rand(-160, -30);
@@ -158,13 +161,16 @@ export default function Welcome() {
             o.wobble = rand(0, Math.PI * 2);
           }
         }
+
         drawOrb(o);
       }
+
       rafOrbsRef.current = requestAnimationFrame(step);
     };
 
     resize();
     init();
+
     if (!reducedMotion) {
       rafOrbsRef.current = requestAnimationFrame(step);
     } else {
@@ -176,8 +182,10 @@ export default function Welcome() {
       resize();
       init();
     });
+
     ro.observe(host);
     window.addEventListener("resize", resize);
+
     return () => {
       cancelAnimationFrame(rafOrbsRef.current);
       window.removeEventListener("resize", resize);
@@ -361,12 +369,16 @@ export default function Welcome() {
           font-family: Nunito, ui-sans-serif, system-ui;
         }
 
-        .gs-bg, .gs-texture, .gs-orbs {
+        .gs-bg,
+        .gs-texture,
+        .gs-orbs {
           position: absolute;
           inset: 0;
           pointer-events: none;
         }
+
         .gs-bg { z-index: 0; }
+
         .gs-texture {
           z-index: 1;
           background-image:
@@ -378,6 +390,7 @@ export default function Welcome() {
           opacity: 0.46;
           mix-blend-mode: multiply;
         }
+
         .gs-orbs { z-index: 2; }
 
         .gs-inner {
@@ -459,27 +472,32 @@ export default function Welcome() {
         }
 
         @keyframes blobDrift {
-          0%   { transform: translate(0, 0)    scale(1);    }
+          0%   { transform: translate(0, 0) scale(1); }
           33%  { transform: translate(-8%, 6%) scale(1.06); }
           66%  { transform: translate(6%, -4%) scale(0.96); }
           100% { transform: translate(-4%, 8%) scale(1.04); }
         }
 
-        .gs-cornerTL, .gs-cornerBR {
+        .gs-cornerTL,
+        .gs-cornerBR {
           position: absolute;
           width: 28px;
           height: 28px;
           pointer-events: none;
           z-index: 1;
         }
+
         .gs-cornerTL {
-          top: 14px; left: 14px;
+          top: 14px;
+          left: 14px;
           border-top: 2px solid rgba(123,92,255,0.30);
           border-left: 2px solid rgba(123,92,255,0.30);
           border-radius: 4px 0 0 0;
         }
+
         .gs-cornerBR {
-          bottom: 14px; right: 14px;
+          bottom: 14px;
+          right: 14px;
           border-bottom: 2px solid rgba(123,92,255,0.30);
           border-right: 2px solid rgba(123,92,255,0.30);
           border-radius: 0 0 4px 0;
@@ -516,7 +534,7 @@ export default function Welcome() {
 
         @keyframes pulse {
           0%, 100% { box-shadow: 0 0 0 3px rgba(123,92,255,0.18); }
-          50%       { box-shadow: 0 0 0 6px rgba(123,92,255,0.08); }
+          50% { box-shadow: 0 0 0 6px rgba(123,92,255,0.08); }
         }
 
         .gs-name {
@@ -660,19 +678,43 @@ export default function Welcome() {
             padding: clamp(12px, 3vw, 28px);
           }
 
-          .gs-left, .gs-right { display: none; }
+          .gs-left,
+          .gs-right {
+            display: none;
+          }
 
           .gs-card {
             width: min(92vw, 480px);
           }
         }
 
-        /* mobile-specific improvements only */
+        /* MOBILE: allow natural page height + scrolling */
         @media (max-width: 640px) {
+          .gs-hero {
+            height: auto;
+            min-height: 100%;
+            overflow: visible;
+          }
+
+          .gs-bg,
+          .gs-texture,
+          .gs-orbs {
+            inset: 0;
+          }
+
           .gs-inner {
-            padding: 14px 12px 18px;
-            align-content: center;
+            height: auto;
+            min-height: 100%;
+            grid-template-columns: 1fr;
+            justify-items: center;
+            align-content: start;
             gap: 0;
+            padding: 18px 12px calc(34px + env(safe-area-inset-bottom));
+          }
+
+          .gs-left,
+          .gs-right {
+            display: none;
           }
 
           .gs-card {
@@ -734,8 +776,16 @@ export default function Welcome() {
         }
 
         @media (max-width: 480px) {
+          .gs-hero {
+            height: auto;
+            min-height: 100%;
+            overflow: visible;
+          }
+
           .gs-inner {
-            padding: 12px 10px 16px;
+            height: auto;
+            min-height: 100%;
+            padding: 16px 10px calc(28px + env(safe-area-inset-bottom));
           }
 
           .gs-card {
@@ -744,7 +794,10 @@ export default function Welcome() {
             border-radius: 20px;
           }
 
-          .gs-cornerTL, .gs-cornerBR { display: none; }
+          .gs-cornerTL,
+          .gs-cornerBR {
+            display: none;
+          }
 
           .gs-cardInner {
             gap: 11px;
@@ -787,7 +840,7 @@ export default function Welcome() {
 
         @media (max-width: 360px) {
           .gs-inner {
-            padding: 10px 8px 14px;
+            padding: 14px 8px calc(24px + env(safe-area-inset-bottom));
           }
 
           .gs-card {
@@ -808,7 +861,8 @@ export default function Welcome() {
         @media (prefers-reduced-motion: reduce) {
           .gs-blob { animation: none; }
           .gs-dot  { animation: none; }
-          .gs-btnPrimary, .gs-btnGhost { transition: none; }
+          .gs-btnPrimary,
+          .gs-btnGhost { transition: none; }
         }
       `}</style>
     </section>
