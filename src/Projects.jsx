@@ -57,7 +57,9 @@ const PROJECTS = [
 function ProjectCard({ project, featured = false }) {
   return (
     <article
-      className={`pj-card ${featured ? "pj-card-featured" : "pj-card-standard"} accent-${project.accent || "lavender"}`}
+      className={`pj-card ${
+        featured ? "pj-card-featured" : "pj-card-standard"
+      } accent-${project.accent || "lavender"}`}
     >
       <div className="pj-orb" aria-hidden="true" />
       <div className="pj-sparkle pj-sparkle-one" aria-hidden="true" />
@@ -70,9 +72,7 @@ function ProjectCard({ project, featured = false }) {
 
         <div className="pj-heading">
           <div className="pj-meta">
-            <span className="pj-pill">
-              {featured ? "Featured" : "Project"}
-            </span>
+            <span className="pj-pill">{featured ? "Featured" : "Project"}</span>
             <span className="pj-arrow">↗</span>
           </div>
 
@@ -135,7 +135,8 @@ export default function Projects() {
 
             <p className="projects-subtitle">
               I build thoughtful, interactive, visually memorable experiences —
-              from AI-powered wellness tools to ecommerce, productivity, and browser-based products.
+              from AI-powered wellness tools to ecommerce, productivity, and
+              browser-based products.
             </p>
           </header>
 
@@ -337,10 +338,6 @@ export default function Projects() {
           background:linear-gradient(145deg, rgba(255,255,255,0.92) 0%, rgba(248,242,255,0.88) 50%, rgba(255,248,253,0.92) 100%);
         }
 
-        .pj-card-standard{
-          min-height:0;
-        }
-
         .pj-top{
           position:relative;
           z-index:1;
@@ -416,7 +413,6 @@ export default function Projects() {
           font-size:0.84rem;
           line-height:1.48;
           color:rgba(38,27,61,0.66);
-
           display:-webkit-box;
           -webkit-box-orient:vertical;
           overflow:hidden;
@@ -565,7 +561,6 @@ export default function Projects() {
           border-color:rgba(114,157,255,0.14);
         }
 
-        /* roomy desktop */
         @media (min-width: 1380px){
           .projects-shell{
             width:min(1300px, 100%);
@@ -580,7 +575,6 @@ export default function Projects() {
           }
         }
 
-        /* shorter desktop screens */
         @media (max-height: 860px){
           .projects-center{
             padding-top:8px;
@@ -643,12 +637,13 @@ export default function Projects() {
           }
         }
 
-        /* laptop / tablet landscape */
+        /* tablet + smaller laptops: allow page to grow */
         @media (max-width: 1080px){
           .projects-page{
             height:auto;
             min-height:100%;
             overflow:visible;
+            overflow-x:hidden;
           }
 
           .projects-center{
@@ -681,11 +676,26 @@ export default function Projects() {
           }
         }
 
-        /* mobile */
+        /* mobile: let it scroll normally */
         @media (max-width: 760px){
+          .projects-page{
+            height:auto;
+            min-height:100%;
+            overflow:visible;
+            overflow-x:hidden;
+          }
+
           .projects-center{
-            padding-left:12px;
-            padding-right:12px;
+            height:auto;
+            min-height:100%;
+            place-items:start center;
+            padding:18px 12px calc(38px + env(safe-area-inset-bottom));
+          }
+
+          .projects-shell{
+            max-height:none;
+            overflow:visible;
+            gap:14px;
           }
 
           .projects-title{
@@ -698,8 +708,14 @@ export default function Projects() {
             line-height:1.5;
           }
 
+          .projects-content{
+            grid-template-columns:1fr;
+            gap:14px;
+          }
+
           .projects-grid{
             grid-template-columns:1fr;
+            gap:14px;
           }
 
           .pj-card{
@@ -718,6 +734,12 @@ export default function Projects() {
 
           .pj-title{
             font-size:1.2rem;
+          }
+
+          .pj-bio{
+            display:block;
+            overflow:visible;
+            -webkit-line-clamp:unset;
           }
 
           .pj-tag{
