@@ -637,7 +637,7 @@ export default function Projects() {
           }
         }
 
-        /* tablet + smaller laptops: allow page to grow */
+        /* tablet + laptop: normal page can grow */
         @media (max-width: 1080px){
           .projects-page{
             height:auto;
@@ -676,12 +676,12 @@ export default function Projects() {
           }
         }
 
-        /* mobile: let it scroll normally */
+        /* mobile: explicitly allow vertical page scroll */
         @media (max-width: 760px){
           .projects-page{
             height:auto;
             min-height:100%;
-            overflow:visible;
+            overflow-y:visible;
             overflow-x:hidden;
           }
 
@@ -689,7 +689,7 @@ export default function Projects() {
             height:auto;
             min-height:100%;
             place-items:start center;
-            padding:18px 12px calc(38px + env(safe-area-inset-bottom));
+            padding:18px 12px calc(46px + env(safe-area-inset-bottom));
           }
 
           .projects-shell{
