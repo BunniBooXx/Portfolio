@@ -1,3 +1,4 @@
+
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -47,7 +48,8 @@ export default function Welcome() {
     const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
 
-    let w = 0, h = 0;
+    let w = 0,
+      h = 0;
     const rand = (min, max) => min + Math.random() * (max - min);
     const clamp = (n, a, b) => Math.min(b, Math.max(a, n));
 
@@ -75,7 +77,10 @@ export default function Welcome() {
       const r = rand(10, 26);
       const c = orbColors[Math.floor(Math.random() * orbColors.length)];
       return {
-        x, y, r, c,
+        x,
+        y,
+        r,
+        c,
         vx: rand(-0.16, 0.16),
         vy: rand(0.2, 0.7),
         wobble: rand(0, Math.PI * 2),
@@ -95,8 +100,12 @@ export default function Welcome() {
       ctx.beginPath();
       ctx.arc(o.x, o.y, o.r, 0, Math.PI * 2);
       const rg = ctx.createRadialGradient(
-        o.x - o.r * 0.35, o.y - o.r * 0.35, o.r * 0.16,
-        o.x, o.y, o.r
+        o.x - o.r * 0.35,
+        o.y - o.r * 0.35,
+        o.r * 0.16,
+        o.x,
+        o.y,
+        o.r
       );
       rg.addColorStop(0, "rgba(255,255,255,0.82)");
       rg.addColorStop(0.34, o.c.replace("1)", "0.46)"));
@@ -118,7 +127,9 @@ export default function Welcome() {
 
     const step = () => {
       ctx.clearRect(0, 0, w, h);
-      const gravity = 0.012, air = 0.994, bounce = 0.72;
+      const gravity = 0.012,
+        air = 0.994,
+        bounce = 0.72;
       for (const o of orbsRef.current) {
         o.wobble += o.wobbleSpeed;
         o.vx += Math.sin(o.wobble) * 0.003;
@@ -127,8 +138,14 @@ export default function Welcome() {
         o.y += o.vy;
         o.vx *= air;
         o.vy *= air;
-        if (o.x - o.r < 0) { o.x = o.r; o.vx = Math.abs(o.vx) * bounce; }
-        if (o.x + o.r > w) { o.x = w - o.r; o.vx = -Math.abs(o.vx) * bounce; }
+        if (o.x - o.r < 0) {
+          o.x = o.r;
+          o.vx = Math.abs(o.vx) * bounce;
+        }
+        if (o.x + o.r > w) {
+          o.x = w - o.r;
+          o.vx = -Math.abs(o.vx) * bounce;
+        }
         if (o.y + o.r > h) {
           o.y = h - o.r;
           o.vy = -Math.abs(o.vy) * bounce;
@@ -155,7 +172,10 @@ export default function Welcome() {
       for (const o of orbsRef.current) drawOrb(o);
     }
 
-    const ro = new ResizeObserver(() => { resize(); init(); });
+    const ro = new ResizeObserver(() => {
+      resize();
+      init();
+    });
     ro.observe(host);
     window.addEventListener("resize", resize);
     return () => {
@@ -183,35 +203,83 @@ export default function Welcome() {
       <canvas ref={orbsCanvasRef} className="gs-orbs" aria-hidden="true" />
 
       <div className="gs-inner">
-
-        {/* Left: decorative SVG pattern */}
         <div className="gs-left" aria-hidden="true">
-          <svg className="gs-deco" viewBox="0 0 120 320" fill="none" xmlns="http://www.w3.org/2000/svg">
-            {/* vertical dashed line */}
-            <line x1="60" y1="0" x2="60" y2="320" stroke="rgba(123,92,255,0.15)" strokeWidth="1.5" strokeDasharray="4 8" />
+          <svg
+            className="gs-deco"
+            viewBox="0 0 120 320"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <line
+              x1="60"
+              y1="0"
+              x2="60"
+              y2="320"
+              stroke="rgba(123,92,255,0.15)"
+              strokeWidth="1.5"
+              strokeDasharray="4 8"
+            />
 
-            {/* large 4-point star top */}
-            <path d="M60 30 L63 44 L77 44 L66 53 L70 67 L60 58 L50 67 L54 53 L43 44 L57 44 Z"
-              fill="none" stroke="rgba(123,92,255,0.28)" strokeWidth="1.2" />
+            <path
+              d="M60 30 L63 44 L77 44 L66 53 L70 67 L60 58 L50 67 L54 53 L43 44 L57 44 Z"
+              fill="none"
+              stroke="rgba(123,92,255,0.28)"
+              strokeWidth="1.2"
+            />
 
-            {/* small dot cluster */}
             <circle cx="60" cy="100" r="3.5" fill="rgba(123,92,255,0.22)" />
             <circle cx="48" cy="112" r="2" fill="rgba(184,164,255,0.35)" />
             <circle cx="72" cy="112" r="2" fill="rgba(184,164,255,0.35)" />
             <circle cx="60" cy="124" r="2" fill="rgba(110,201,255,0.30)" />
 
-            {/* horizontal tick marks */}
-            <line x1="44" y1="172" x2="76" y2="172" stroke="rgba(123,92,255,0.18)" strokeWidth="1.2" />
-            <line x1="50" y1="182" x2="70" y2="182" stroke="rgba(123,92,255,0.12)" strokeWidth="1" />
-            <line x1="55" y1="192" x2="65" y2="192" stroke="rgba(123,92,255,0.08)" strokeWidth="1" />
+            <line
+              x1="44"
+              y1="172"
+              x2="76"
+              y2="172"
+              stroke="rgba(123,92,255,0.18)"
+              strokeWidth="1.2"
+            />
+            <line
+              x1="50"
+              y1="182"
+              x2="70"
+              y2="182"
+              stroke="rgba(123,92,255,0.12)"
+              strokeWidth="1"
+            />
+            <line
+              x1="55"
+              y1="192"
+              x2="65"
+              y2="192"
+              stroke="rgba(123,92,255,0.08)"
+              strokeWidth="1"
+            />
 
-            {/* small 4-point star bottom */}
-            <path d="M60 240 L62 249 L71 249 L64 255 L66 264 L60 259 L54 264 L56 255 L49 249 L58 249 Z"
-              fill="rgba(184,164,255,0.30)" stroke="rgba(123,92,255,0.20)" strokeWidth="1" />
+            <path
+              d="M60 240 L62 249 L71 249 L64 255 L66 264 L60 259 L54 264 L56 255 L49 249 L58 249 Z"
+              fill="rgba(184,164,255,0.30)"
+              stroke="rgba(123,92,255,0.20)"
+              strokeWidth="1"
+            />
 
-            {/* plus / cross */}
-            <line x1="60" y1="290" x2="60" y2="310" stroke="rgba(123,92,255,0.22)" strokeWidth="1.5" />
-            <line x1="50" y1="300" x2="70" y2="300" stroke="rgba(123,92,255,0.22)" strokeWidth="1.5" />
+            <line
+              x1="60"
+              y1="290"
+              x2="60"
+              y2="310"
+              stroke="rgba(123,92,255,0.22)"
+              strokeWidth="1.5"
+            />
+            <line
+              x1="50"
+              y1="300"
+              x2="70"
+              y2="300"
+              stroke="rgba(123,92,255,0.22)"
+              strokeWidth="1.5"
+            />
           </svg>
 
           <div className="gs-roleStack">
@@ -221,7 +289,6 @@ export default function Welcome() {
           </div>
         </div>
 
-        {/* Center: main glass card */}
         <div className="gs-card">
           <div className="gs-blob" aria-hidden="true" />
 
@@ -243,8 +310,8 @@ export default function Welcome() {
 
             <p className="gs-bio">
               I craft soft, interactive web experiences — React frontends,
-              Django backends, and AI-aware product thinking that makes
-              things feel alive.
+              Django backends, and AI-aware product thinking that makes things
+              feel alive.
             </p>
 
             <div className="gs-actions">
@@ -261,7 +328,6 @@ export default function Welcome() {
           <div className="gs-cornerBR" aria-hidden="true" />
         </div>
 
-        {/* Right: floating stat chips */}
         <div className="gs-right" aria-hidden="true">
           <div className="gs-stat">
             <strong>Full Stack</strong>
@@ -276,7 +342,6 @@ export default function Welcome() {
             <span>Mid-level Dev</span>
           </div>
         </div>
-
       </div>
 
       <style>{`
@@ -329,7 +394,6 @@ export default function Welcome() {
           padding: clamp(16px, 3vw, 56px);
         }
 
-        /* ---- left column ---- */
         .gs-left {
           display: flex;
           flex-direction: column;
@@ -364,7 +428,6 @@ export default function Welcome() {
           white-space: nowrap;
         }
 
-        /* ---- center card ---- */
         .gs-card {
           position: relative;
           width: clamp(280px, 36vw, 520px);
@@ -552,7 +615,6 @@ export default function Welcome() {
           border-color: rgba(123,92,255,0.48);
         }
 
-        /* ---- right column ---- */
         .gs-right {
           display: flex;
           flex-direction: column;
@@ -588,7 +650,6 @@ export default function Welcome() {
           letter-spacing: 0.04em;
         }
 
-        /* ---- tablet / mobile ---- */
         @media (max-width: 860px) {
           .gs-inner {
             grid-template-columns: 1fr;
@@ -606,13 +667,142 @@ export default function Welcome() {
           }
         }
 
+        /* mobile-specific improvements only */
+        @media (max-width: 640px) {
+          .gs-inner {
+            padding: 14px 12px 18px;
+            align-content: center;
+            gap: 0;
+          }
+
+          .gs-card {
+            width: min(100%, 430px);
+            padding: 22px 18px;
+            border-radius: 22px;
+          }
+
+          .gs-cardInner {
+            gap: 12px;
+          }
+
+          .gs-eyebrow {
+            justify-content: center;
+            text-align: center;
+            font-size: 0.68rem;
+            letter-spacing: 0.1em;
+          }
+
+          .gs-name {
+            text-align: center;
+          }
+
+          .gs-nameLight {
+            font-size: clamp(1.5rem, 8vw, 2.3rem);
+          }
+
+          .gs-nameBold {
+            font-size: clamp(2.2rem, 12vw, 3.5rem);
+            line-height: 0.92;
+          }
+
+          .gs-tagline {
+            text-align: center;
+            font-size: 0.73rem;
+            line-height: 1.45;
+            letter-spacing: 0.08em;
+          }
+
+          .gs-bio {
+            max-width: 100%;
+            text-align: center;
+            font-size: 0.9rem;
+            line-height: 1.6;
+          }
+
+          .gs-actions {
+            width: 100%;
+            justify-content: center;
+            gap: 10px;
+          }
+
+          .gs-btnPrimary,
+          .gs-btnGhost {
+            min-height: 44px;
+            padding: 11px 16px;
+            font-size: 0.88rem;
+          }
+        }
+
         @media (max-width: 480px) {
+          .gs-inner {
+            padding: 12px 10px 16px;
+          }
+
           .gs-card {
             width: min(96vw, 420px);
-            padding: 22px 18px;
+            padding: 20px 16px;
             border-radius: 20px;
           }
+
           .gs-cornerTL, .gs-cornerBR { display: none; }
+
+          .gs-cardInner {
+            gap: 11px;
+          }
+
+          .gs-eyebrow {
+            font-size: 0.64rem;
+          }
+
+          .gs-nameLight {
+            font-size: clamp(1.35rem, 7vw, 2rem);
+          }
+
+          .gs-nameBold {
+            font-size: clamp(2rem, 11vw, 3rem);
+          }
+
+          .gs-tagline {
+            font-size: 0.68rem;
+          }
+
+          .gs-bio {
+            font-size: 0.86rem;
+            line-height: 1.58;
+          }
+
+          .gs-actions {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 10px;
+          }
+
+          .gs-btnPrimary,
+          .gs-btnGhost {
+            width: 100%;
+            min-height: 44px;
+            padding: 12px 16px;
+          }
+        }
+
+        @media (max-width: 360px) {
+          .gs-inner {
+            padding: 10px 8px 14px;
+          }
+
+          .gs-card {
+            padding: 18px 14px;
+            border-radius: 18px;
+          }
+
+          .gs-bio {
+            font-size: 0.82rem;
+          }
+
+          .gs-btnPrimary,
+          .gs-btnGhost {
+            font-size: 0.84rem;
+          }
         }
 
         @media (prefers-reduced-motion: reduce) {

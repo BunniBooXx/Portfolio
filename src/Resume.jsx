@@ -27,11 +27,7 @@ export default function Resume() {
           <header className="rm-header">
             <div className="rm-pill">💜 Resume</div>
 
-            <h1 className="rm-title">My Resume</h1>
-
-            <p className="rm-subtitle">
-              A polished snapshot of my frontend, UI/UX, and AI-integrated work.
-            </p>
+            
 
             <div className="rm-actions">
               <a
