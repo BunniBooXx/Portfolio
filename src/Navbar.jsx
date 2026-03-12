@@ -1,22 +1,33 @@
-// Navbar.jsx — lavender pill + sticky-safe + production-guarded ✅
-// ✅ Sticky works (not fixed)
-// ✅ Guard prevents “global fixed header” CSS from breaking layout
-// ✅ Dropdown click-open + closes on outside + escape
+// Navbar.jsx — refined glassmorphism navbar with shimmer, animated indicators, mobile drawer
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 export default function Navbar() {
   const location = useLocation();
-
-  const [open, setOpen] = useState(false);
+  const [dropOpen, setDropOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const dropRef = useRef(null);
 
-  useEffect(() => setOpen(false), [location.pathname]);
+  const isHome = location.pathname === "/" || location.pathname === "";
 
+  // Close everything on route change
+  useEffect(() => {
+    setDropOpen(false);
+    setMobileOpen(false);
+  }, [location.pathname]);
+
+  // Scroll shadow
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Outside click closes dropdown
   useEffect(() => {
     const onDown = (e) => {
-      if (!dropRef.current) return;
-      if (!dropRef.current.contains(e.target)) setOpen(false);
+      if (dropRef.current && !dropRef.current.contains(e.target)) setDropOpen(false);
     };
     document.addEventListener("mousedown", onDown);
     document.addEventListener("touchstart", onDown, { passive: true });
@@ -26,285 +37,651 @@ export default function Navbar() {
     };
   }, []);
 
+  // Escape key
   useEffect(() => {
     const onKey = (e) => {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") { setDropOpen(false); setMobileOpen(false); }
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, []);
 
-  const links = useMemo(
-    () => [
-      { to: "/aboutme", label: "About Me", icon: "👩‍💻" },
-      { to: "/projects", label: "Projects", icon: "🚀" },
-      { to: "/resume", label: "Resume", icon: "📝" },
-    ],
-    []
-  );
+  // Lock body scroll when mobile drawer open
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [mobileOpen]);
 
-  const isActive = (path) => location.pathname === path;
-  const isHome = location.pathname === "/" || location.pathname === "";
+  const moreLinks = useMemo(() => [
+    { to: "/aboutme", label: "About Me",  icon: "👩‍💻" },
+    { to: "/resume",  label: "Resume",    icon: "📝"   },
+  ], []);
+
+  const allLinks = useMemo(() => [
+    { to: "/",        label: "Home",     icon: "♥"   },
+    { to: "/projects",label: "Projects", icon: "🚀"  },
+    { to: "/aboutme", label: "About Me", icon: "👩‍💻" },
+    { to: "/resume",  label: "Resume",   icon: "📝"  },
+  ], []);
+
+  const isActive = (path) =>
+    path === "/" ? location.pathname === "/" : location.pathname.startsWith(path);
 
   return (
     <>
       <nav
-        className={`lav-navbar ${isHome ? "not-sticky" : "is-sticky"}`}
-        aria-label="Primary"
+        className={[
+          "lav-nav",
+          isHome ? "lav-nav--home" : "lav-nav--sticky",
+          scrolled ? "lav-nav--scrolled" : "",
+        ].join(" ")}
+        aria-label="Primary navigation"
       >
-        <div className="lav-inner">
+        {/* shimmer sweep line */}
+        <div className="lav-shimmer" aria-hidden="true" />
+
+        <div className="lav-pill">
+          {/* Brand */}
           <Link to="/" className="lav-brand" aria-label="Home">
-            <span className="lav-heart" aria-hidden="true">♥</span>
-            <span className="lav-brandText">Home</span>
-            <span className="lav-heart" aria-hidden="true">♥</span>
+            <span className="lav-brandHeart" aria-hidden="true">♥</span>
+            <span className="lav-brandName">Home</span>
+            <span className="lav-brandHeart lav-brandHeart--r" aria-hidden="true">♥</span>
           </Link>
 
-          <div className="lav-right">
+          {/* Desktop links */}
+          <div className="lav-links" role="list">
             <Link
               to="/projects"
-              className={`lav-link ${isActive("/projects") ? "active" : ""}`}
+              role="listitem"
+              className={`lav-link ${isActive("/projects") ? "lav-link--active" : ""}`}
             >
-              🚀 <span className="lav-linkText">Projects</span>
+              <span className="lav-linkIcon" aria-hidden="true">🚀</span>
+              <span className="lav-linkLabel">Projects</span>
+              {isActive("/projects") && <span className="lav-activeDot" aria-hidden="true" />}
             </Link>
 
-            <div className="lav-drop" ref={dropRef}>
+            {/* More dropdown */}
+            <div className="lav-drop" ref={dropRef} role="listitem">
               <button
                 type="button"
-                className={`lav-btn ${open ? "active" : ""}`}
-                onClick={() => setOpen((v) => !v)}
+                className={`lav-link lav-dropTrigger ${dropOpen ? "lav-link--open" : ""}`}
+                onClick={() => setDropOpen((v) => !v)}
                 aria-haspopup="menu"
-                aria-expanded={open}
+                aria-expanded={dropOpen}
               >
-                ✨ <span className="lav-moreText">More</span>{" "}
-                <span className="lav-caret" aria-hidden="true">▾</span>
+                <span className="lav-linkIcon" aria-hidden="true">✦</span>
+                <span className="lav-linkLabel">More</span>
+                <span className={`lav-chevron ${dropOpen ? "lav-chevron--up" : ""}`} aria-hidden="true">
+                  <svg width="10" height="6" viewBox="0 0 10 6" fill="none">
+                    <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </span>
               </button>
 
-              <div className={`lav-menu ${open ? "open" : ""}`} role="menu">
-                {links.map((l) => (
-                  <Link
-                    key={l.to}
-                    to={l.to}
-                    className="lav-item"
-                    role="menuitem"
-                    onClick={() => setOpen(false)}
-                  >
-                    <span className="lav-itemIcon">{l.icon}</span>
-                    <span className="lav-itemLabel">{l.label}</span>
-                    <span className="lav-dot" aria-hidden />
-                  </Link>
-                ))}
+              {/* Dropdown panel */}
+              <div
+                className={`lav-dropPanel ${dropOpen ? "lav-dropPanel--open" : ""}`}
+                role="menu"
+                aria-hidden={!dropOpen}
+              >
+                <div className="lav-dropInner">
+                  {moreLinks.map((l, i) => (
+                    <Link
+                      key={l.to}
+                      to={l.to}
+                      className={`lav-dropItem ${isActive(l.to) ? "lav-dropItem--active" : ""}`}
+                      role="menuitem"
+                      onClick={() => setDropOpen(false)}
+                      style={{ animationDelay: dropOpen ? `${i * 55}ms` : "0ms" }}
+                    >
+                      <span className="lav-dropItemIcon">{l.icon}</span>
+                      <span className="lav-dropItemLabel">{l.label}</span>
+                      <span className="lav-dropItemArrow" aria-hidden="true">→</span>
+                    </Link>
+                  ))}
+                </div>
               </div>
             </div>
+          </div>
+
+          {/* Mobile hamburger */}
+          <button
+            type="button"
+            className={`lav-burger ${mobileOpen ? "lav-burger--open" : ""}`}
+            onClick={() => setMobileOpen((v) => !v)}
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            aria-expanded={mobileOpen}
+          >
+            <span /><span /><span />
+          </button>
+        </div>
+
+        {/* Mobile drawer */}
+        <div
+          className={`lav-drawer ${mobileOpen ? "lav-drawer--open" : ""}`}
+          role="dialog"
+          aria-label="Mobile navigation"
+          aria-modal="true"
+        >
+          <div className="lav-drawerInner">
+            {allLinks.map((l, i) => (
+              <Link
+                key={l.to}
+                to={l.to}
+                className={`lav-drawerLink ${isActive(l.to) ? "lav-drawerLink--active" : ""}`}
+                onClick={() => setMobileOpen(false)}
+                style={{ animationDelay: mobileOpen ? `${60 + i * 60}ms` : "0ms" }}
+              >
+                <span className="lav-drawerIcon">{l.icon}</span>
+                <span>{l.label}</span>
+              </Link>
+            ))}
           </div>
         </div>
       </nav>
 
+      {/* Mobile backdrop */}
+      {mobileOpen && (
+        <div
+          className="lav-backdrop"
+          aria-hidden="true"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
       <style>{`
-        .lav-navbar, .lav-navbar * { box-sizing: border-box; }
-
-        /* ✅ PRODUCTION GUARD:
-           Prevent any global “header { position: fixed }” / “nav { position: fixed }”
-           from hijacking this element. Keeps sticky behavior via the class rules below. */
-        .lav-navbar{
-          position: relative !important;     /* base: normal flow */
-          inset: auto !important;
-          left: auto !important;
-          right: auto !important;
-          bottom: auto !important;
-          transform: none !important;
-
-          z-index: 1000;
-          width: 100%;
-          display: flex;
-          justify-content: center;
-          pointer-events: auto;
-          margin: 0;
-          padding: 14px 12px 16px;
-
-          background:
-            radial-gradient(900px 220px at 18% 0%, rgba(255,255,255,0.60) 0%, rgba(255,255,255,0) 60%),
-            radial-gradient(900px 220px at 82% 0%, rgba(255,255,255,0.50) 0%, rgba(255,255,255,0) 60%),
-            linear-gradient(135deg, #F6F1FF 0%, #EDE2FF 48%, #E7D7FF 100%);
-
-          box-shadow: 0 10px 24px rgba(40, 20, 80, 0.10);
+        /* =============================================
+           TOKENS
+        ============================================= */
+        .lav-nav {
+          --c-purple:     #7c4fff;
+          --c-purple-mid: #a47aff;
+          --c-purple-pale:#d8c8ff;
+          --c-bg-pill:    rgba(246,240,255,0.82);
+          --c-border:     rgba(255,255,255,0.70);
+          --c-shadow-sm:  0 4px 20px rgba(100,60,200,0.12);
+          --c-shadow-lg:  0 12px 48px rgba(100,60,200,0.20);
+          --pill-radius:  999px;
+          --transition:   200ms cubic-bezier(0.34, 1.2, 0.64, 1);
+          --font:         Nunito, ui-sans-serif, system-ui;
         }
 
-        /* ✅ Sticky when not on Home */
-        .lav-navbar.is-sticky{
+        .lav-nav, .lav-nav * { box-sizing: border-box; }
+
+        /* =============================================
+           NAV WRAPPER
+        ============================================= */
+        .lav-nav {
+          position: relative !important;
+          inset: auto !important;
+          z-index: 1000;
+          width: 100%;
+          padding: 10px 16px 12px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          font-family: var(--font);
+
+          /* Seamless background that blends with page */
+          background: linear-gradient(
+            180deg,
+            rgba(246,240,255,0.96) 0%,
+            rgba(237,226,255,0.88) 100%
+          );
+          backdrop-filter: blur(20px) saturate(1.6);
+          -webkit-backdrop-filter: blur(20px) saturate(1.6);
+          border-bottom: 1px solid rgba(200,180,255,0.25);
+          transition: box-shadow 300ms ease;
+        }
+
+        .lav-nav--sticky {
           position: sticky !important;
           top: 0 !important;
         }
 
-        .lav-navbar.not-sticky{
+        .lav-nav--home {
           position: relative !important;
           top: auto !important;
         }
 
-        /* PILL */
-        .lav-inner{
+        .lav-nav--scrolled {
+          box-shadow: var(--c-shadow-lg);
+        }
+
+        /* shimmer sweep — purely decorative */
+        .lav-shimmer {
+          position: absolute;
+          top: 0; left: -100%;
+          width: 60%;
+          height: 100%;
+          background: linear-gradient(
+            105deg,
+            transparent 30%,
+            rgba(255,255,255,0.28) 50%,
+            transparent 70%
+          );
+          animation: shimmerSweep 6s ease-in-out infinite;
+          pointer-events: none;
+          z-index: 0;
+        }
+
+        @keyframes shimmerSweep {
+          0%   { left: -100%; opacity: 0; }
+          10%  { opacity: 1; }
+          60%  { left: 140%; opacity: 1; }
+          61%  { opacity: 0; }
+          100% { left: 140%; opacity: 0; }
+        }
+
+        /* =============================================
+           PILL
+        ============================================= */
+        .lav-pill {
           position: relative;
+          z-index: 1;
           width: min(1100px, 100%);
-          padding: 14px 18px;
-          padding-right: 22px;
           display: flex;
           align-items: center;
           justify-content: space-between;
-          gap: 12px;
+          gap: 8px;
+          padding: 10px 10px 10px 16px;
 
-          border-radius: 999px;
-          background:
-            radial-gradient(1200px 220px at 20% 20%, rgba(255,255,255,0.7), transparent 60%),
-            linear-gradient(135deg, #f3eaff, #e6d9ff, #d7c7ff);
-
-          border: 1px solid rgba(255,255,255,0.65);
+          background: linear-gradient(
+            135deg,
+            rgba(255,255,255,0.72) 0%,
+            rgba(244,235,255,0.68) 50%,
+            rgba(235,220,255,0.66) 100%
+          );
+          border: 1px solid var(--c-border);
+          border-radius: var(--pill-radius);
           box-shadow:
-            0 20px 60px rgba(140, 90, 200, 0.22),
-            0 6px 18px rgba(140, 90, 200, 0.16);
-
-          backdrop-filter: blur(14px);
-          overflow: visible;
+            var(--c-shadow-sm),
+            inset 0 1px 0 rgba(255,255,255,0.80),
+            inset 0 -1px 0 rgba(160,120,255,0.08);
         }
 
-        .lav-inner::before{
+        /* top-left inner glow */
+        .lav-pill::before {
           content: "";
           position: absolute;
-          inset: 0;
-          border-radius: 999px;
+          top: 0; left: 0;
+          width: 40%; height: 100%;
+          border-radius: var(--pill-radius);
+          background: radial-gradient(ellipse at 0% 50%, rgba(255,255,255,0.45), transparent 70%);
           pointer-events: none;
-
-          background:
-            radial-gradient(260px 260px at 0% 0%, rgba(217,201,255,0.45), transparent 65%),
-            radial-gradient(260px 260px at 100% 0%, rgba(198,230,255,0.45), transparent 65%),
-            radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px);
-
-          background-size: auto, auto, 18px 18px;
-          opacity: 0.28;
-
-          -webkit-mask: radial-gradient(#000 98%, transparent 100%);
-          mask: radial-gradient(#000 98%, transparent 100%);
         }
 
-        /* BRAND */
-        .lav-brand{
+        /* =============================================
+           BRAND
+        ============================================= */
+        .lav-brand {
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
+          text-decoration: none;
+          padding: 6px 14px;
+          border-radius: var(--pill-radius);
+          border: 1px solid rgba(180,140,255,0.25);
+          background: rgba(255,255,255,0.55);
+          box-shadow: 0 2px 10px rgba(140,90,255,0.10);
+          transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+        }
+
+        .lav-brand:hover {
+          background: rgba(255,255,255,0.80);
+          transform: translateY(-1px);
+          box-shadow: 0 6px 20px rgba(140,90,255,0.18);
+        }
+
+        .lav-brandHeart {
+          font-size: 0.72rem;
+          color: var(--c-purple);
+          opacity: 0.7;
+          transition: opacity 200ms;
+        }
+
+        .lav-brandHeart--r {
+          animation: heartPulse 2.8s ease-in-out infinite;
+        }
+
+        @keyframes heartPulse {
+          0%, 100% { transform: scale(1);   opacity: 0.7; }
+          50%       { transform: scale(1.3); opacity: 1;   }
+        }
+
+        .lav-brandName {
+          font-size: 0.82rem;
+          font-weight: 900;
+          letter-spacing: 0.04em;
+          color: #3d1f8a;
+        }
+
+        /* =============================================
+           DESKTOP LINKS
+        ============================================= */
+        .lav-links {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+        }
+
+        .lav-link {
+          position: relative;
           display: inline-flex;
           align-items: center;
           gap: 6px;
+          padding: 7px 14px;
+          border-radius: var(--pill-radius);
+          border: 1px solid transparent;
+          background: transparent;
           text-decoration: none;
-          color: #5a2fa8;
+          font-size: 0.82rem;
           font-weight: 800;
-          padding: 7px 12px;
-          border-radius: 999px;
-          background: rgba(255,255,255,0.45);
-          border: 1px solid rgba(255,255,255,0.55);
-          white-space: nowrap;
-          position: relative;
-          z-index: 1;
-        }
-
-        .lav-heart{ animation: pulse 1.6s infinite; }
-        @keyframes pulse{ 0%,100%{transform:scale(1)} 50%{transform:scale(1.15)} }
-
-        /* RIGHT */
-        .lav-right{
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          flex: 0 1 auto;
-          min-width: 0;
-          position: relative;
-          z-index: 1;
-        }
-
-        .lav-link,
-        .lav-btn{
-          border-radius: 999px;
-          padding: 8px 14px;
-          background: rgba(255,255,255,0.45);
-          border: 1px solid rgba(255,255,255,0.55);
-          font-weight: 700;
-          color: #5a2fa8;
+          color: #4a2a96;
           cursor: pointer;
-          text-decoration: none;
+          transition:
+            background var(--transition),
+            border-color var(--transition),
+            color var(--transition),
+            transform var(--transition),
+            box-shadow var(--transition);
+          white-space: nowrap;
+          letter-spacing: 0.02em;
+          font-family: var(--font);
+        }
+
+        .lav-link:hover {
+          background: rgba(255,255,255,0.68);
+          border-color: rgba(180,140,255,0.30);
+          color: var(--c-purple);
+          transform: translateY(-1px);
+          box-shadow: 0 4px 14px rgba(140,90,255,0.14);
+        }
+
+        .lav-link--active {
+          background: rgba(255,255,255,0.75);
+          border-color: rgba(160,110,255,0.35);
+          color: var(--c-purple);
+          box-shadow: 0 4px 16px rgba(140,90,255,0.16);
+        }
+
+        .lav-link--open {
+          background: rgba(255,255,255,0.65);
+          border-color: rgba(160,110,255,0.30);
+          color: var(--c-purple);
+        }
+
+        .lav-linkIcon { font-size: 0.82rem; line-height: 1; }
+        .lav-linkLabel { line-height: 1; }
+
+        /* active dot indicator */
+        .lav-activeDot {
+          position: absolute;
+          bottom: 4px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 4px;
+          height: 4px;
+          border-radius: 50%;
+          background: var(--c-purple);
+          box-shadow: 0 0 6px rgba(124,79,255,0.6);
+          animation: dotPop 300ms cubic-bezier(0.34,1.56,0.64,1) both;
+        }
+
+        @keyframes dotPop {
+          from { transform: translateX(-50%) scale(0); opacity: 0; }
+          to   { transform: translateX(-50%) scale(1); opacity: 1; }
+        }
+
+        /* chevron */
+        .lav-chevron {
           display: inline-flex;
           align-items: center;
-          gap: 8px;
-          white-space: nowrap;
+          transition: transform 220ms ease;
+          color: var(--c-purple-mid);
         }
+        .lav-chevron--up { transform: rotate(180deg); }
 
-        .lav-link.active,
-        .lav-link:hover,
-        .lav-btn:hover,
-        .lav-btn.active{
-          background: rgba(255,255,255,0.68);
-        }
+        /* =============================================
+           DROPDOWN PANEL
+        ============================================= */
+        .lav-drop { position: relative; }
 
-        .lav-btn:focus-visible,
-        .lav-link:focus-visible,
-        .lav-brand:focus-visible{
-          outline: 3px solid rgba(123,92,255,0.35);
-          outline-offset: 3px;
-        }
-
-        /* DROPDOWN */
-        .lav-drop{ position: relative; }
-
-        .lav-menu{
+        .lav-dropPanel {
           position: absolute;
-          right: 0;
           top: calc(100% + 10px);
-          width: 230px;
-          padding: 8px;
-          border-radius: 22px;
-          background: rgba(255,255,255,0.86);
-          backdrop-filter: blur(16px);
-          border: 1px solid rgba(123,92,255,0.16);
-          box-shadow: 0 24px 60px rgba(120, 70, 180, 0.25);
+          right: 0;
+          min-width: 200px;
+          z-index: 200;
 
-          opacity: 0;
-          transform: translateY(-6px) scale(0.98);
+          background: rgba(250,246,255,0.96);
+          backdrop-filter: blur(20px) saturate(1.5);
+          -webkit-backdrop-filter: blur(20px) saturate(1.5);
+          border: 1px solid rgba(200,170,255,0.40);
+          border-radius: 18px;
+          box-shadow:
+            0 20px 60px rgba(100,60,200,0.18),
+            0 4px 16px rgba(100,60,200,0.10),
+            inset 0 1px 0 rgba(255,255,255,0.80);
+
+          overflow: hidden;
           pointer-events: none;
-          transition: 0.18s ease;
-          z-index: 3000;
+          opacity: 0;
+          transform: translateY(-8px) scale(0.97);
+          transform-origin: top right;
+          transition:
+            opacity 200ms ease,
+            transform 220ms cubic-bezier(0.34,1.2,0.64,1);
         }
 
-        .lav-menu.open{
+        .lav-dropPanel--open {
+          pointer-events: auto;
           opacity: 1;
           transform: translateY(0) scale(1);
-          pointer-events: auto;
         }
 
-        .lav-item{
+        .lav-dropInner {
+          padding: 8px;
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+        }
+
+        .lav-dropItem {
           display: flex;
           align-items: center;
           gap: 10px;
-          padding: 10px 14px;
-          border-radius: 16px;
-          color: #5a2fa8;
+          padding: 10px 12px;
+          border-radius: 12px;
           text-decoration: none;
-          background: rgba(255,255,255,0.62);
-          border: 1px solid rgba(123,92,255,0.10);
+          font-size: 0.84rem;
+          font-weight: 800;
+          color: #3d1f8a;
+          border: 1px solid transparent;
+          transition:
+            background var(--transition),
+            border-color var(--transition),
+            transform var(--transition);
+          animation: dropItemIn 200ms ease both;
         }
 
-        .lav-item:hover{ background: rgba(255,255,255,0.78); }
-
-        .lav-dot{
-          margin-left: auto;
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-          background: #cbb6ff;
+        @keyframes dropItemIn {
+          from { opacity: 0; transform: translateX(6px); }
+          to   { opacity: 1; transform: translateX(0);   }
         }
 
-        @media (max-width: 520px){
-          .lav-linkText{ display: none; }
-          .lav-moreText{ display: none; }
-          .lav-inner{ padding: 12px 14px; padding-right: 16px; }
-          .lav-navbar{ padding: 12px 10px 14px; }
+        .lav-dropItem:hover {
+          background: rgba(220,200,255,0.35);
+          border-color: rgba(180,140,255,0.25);
+          transform: translateX(3px);
         }
 
-        @media (prefers-reduced-motion: reduce){
-          .lav-menu{ transition: none; }
-          .lav-heart{ animation: none; }
+        .lav-dropItem--active {
+          background: rgba(200,175,255,0.28);
+          border-color: rgba(180,140,255,0.30);
+          color: var(--c-purple);
+        }
+
+        .lav-dropItemIcon { font-size: 1rem; line-height: 1; flex-shrink: 0; }
+        .lav-dropItemLabel { flex: 1; }
+        .lav-dropItemArrow {
+          font-size: 0.75rem;
+          color: var(--c-purple-mid);
+          opacity: 0;
+          transition: opacity 180ms, transform 180ms;
+        }
+        .lav-dropItem:hover .lav-dropItemArrow {
+          opacity: 1;
+          transform: translateX(3px);
+        }
+
+        /* =============================================
+           MOBILE HAMBURGER
+        ============================================= */
+        .lav-burger {
+          display: none;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          gap: 4.5px;
+          width: 38px;
+          height: 38px;
+          padding: 8px;
+          border-radius: 12px;
+          border: 1px solid rgba(180,140,255,0.28);
+          background: rgba(255,255,255,0.55);
+          cursor: pointer;
+          transition: background var(--transition), box-shadow var(--transition);
+          flex-shrink: 0;
+        }
+
+        .lav-burger:hover {
+          background: rgba(255,255,255,0.80);
+          box-shadow: 0 4px 14px rgba(140,90,255,0.14);
+        }
+
+        .lav-burger span {
+          display: block;
+          width: 18px;
+          height: 1.8px;
+          border-radius: 999px;
+          background: var(--c-purple);
+          transition: transform 260ms ease, opacity 200ms ease, width 260ms ease;
+          transform-origin: center;
+        }
+
+        .lav-burger--open span:nth-child(1) { transform: translateY(6.3px) rotate(45deg); }
+        .lav-burger--open span:nth-child(2) { opacity: 0; width: 0; }
+        .lav-burger--open span:nth-child(3) { transform: translateY(-6.3px) rotate(-45deg); }
+
+        /* =============================================
+           MOBILE DRAWER
+        ============================================= */
+        .lav-drawer {
+          display: none;
+          width: 100%;
+          overflow: hidden;
+          max-height: 0;
+          transition: max-height 320ms cubic-bezier(0.4,0,0.2,1);
+        }
+
+        .lav-drawer--open {
+          max-height: 400px;
+        }
+
+        .lav-drawerInner {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+          padding: 10px 8px 14px;
+        }
+
+        .lav-drawerLink {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 12px 16px;
+          border-radius: 14px;
+          text-decoration: none;
+          font-size: 0.92rem;
+          font-weight: 800;
+          color: #3d1f8a;
+          border: 1px solid transparent;
+          opacity: 0;
+          transform: translateX(-10px);
+          animation: none;
+          transition:
+            background var(--transition),
+            border-color var(--transition),
+            color var(--transition);
+        }
+
+        .lav-drawer--open .lav-drawerLink {
+          animation: drawerLinkIn 280ms ease both;
+        }
+
+        @keyframes drawerLinkIn {
+          from { opacity: 0; transform: translateX(-10px); }
+          to   { opacity: 1; transform: translateX(0);     }
+        }
+
+        .lav-drawerLink:hover {
+          background: rgba(220,200,255,0.35);
+          border-color: rgba(180,140,255,0.25);
+          color: var(--c-purple);
+        }
+
+        .lav-drawerLink--active {
+          background: rgba(210,185,255,0.30);
+          border-color: rgba(170,130,255,0.30);
+          color: var(--c-purple);
+        }
+
+        .lav-drawerIcon { font-size: 1.1rem; line-height: 1; }
+
+        /* =============================================
+           BACKDROP
+        ============================================= */
+        .lav-backdrop {
+          position: fixed;
+          inset: 0;
+          z-index: 999;
+          background: rgba(30,10,60,0.18);
+          backdrop-filter: blur(2px);
+          -webkit-backdrop-filter: blur(2px);
+          animation: fadeIn 200ms ease both;
+        }
+
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to   { opacity: 1; }
+        }
+
+        /* =============================================
+           RESPONSIVE
+        ============================================= */
+        @media (max-width: 680px) {
+          .lav-links   { display: none; }
+          .lav-burger  { display: flex; }
+          .lav-drawer  { display: block; }
+          .lav-nav     { padding: 8px 10px 10px; }
+        }
+
+        @media (max-width: 420px) {
+          .lav-brandName { display: none; }
+          .lav-brandHeart--r { display: none; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .lav-shimmer,
+          .lav-brandHeart--r,
+          .lav-activeDot { animation: none; }
+          .lav-link,
+          .lav-brand,
+          .lav-dropPanel,
+          .lav-dropItem,
+          .lav-drawerLink,
+          .lav-burger span { transition: none; }
         }
       `}</style>
     </>

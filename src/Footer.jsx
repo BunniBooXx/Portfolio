@@ -64,7 +64,7 @@ export default function Footer() {
             </a>
 
             <a
-              href="https://medium.com/@your-medium"
+              href="/contact"
               target="_blank"
               rel="noopener noreferrer"
               className="social-btn"
