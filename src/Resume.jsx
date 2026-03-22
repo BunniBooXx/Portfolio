@@ -362,20 +362,38 @@ export default function Resume() {
           }
         }
 
-        /* mobile/tablet: let parent page scroll normally if needed */
-        @media (max-width: 768px){
+        /* Short desktop (e.g. 2122x963): fit without scroll */
+        @media (min-width: 901px) and (max-height: 963px){
+          .rm-center{ padding: 6px 16px; }
+          .rm-card{ padding: 10px; gap: 6px; width: min(820px, 100%); }
+          .rm-header{ gap: 4px; }
+          .rm-pill{ font-size: 0.76rem; padding: 5px 10px; }
+          .rm-title{ font-size: clamp(1.6rem, 2.2vw, 2.2rem); }
+          .rm-subtitle{ font-size: 0.82rem; line-height: 1.3; }
+          .rm-actions{ gap: 6px; margin-top: 0; }
+          .rm-btn{ min-height: 32px; padding: 6px 12px; font-size: 0.8rem; }
+          .rm-previewWrap{ width: min(420px, 100%); }
+          .rm-previewCard{ width: min(100%, 320px); padding: 6px; border-radius: 18px; }
+          .rm-previewImage{ border-radius: 12px; }
+        }
+
+        /* mobile/tablet: center content like Welcome — responsive at all heights */
+        @media (max-width: 900px){
           .rm-page{
-            height:auto;
-            min-height:100%;
-            overflow:visible;
+            min-height: 100%;
+            height: auto;
+            overflow: visible;
+            display: flex;
+            align-items: center;
+            justify-content: center;
           }
 
           .rm-center{
-            height:auto;
-            min-height:100%;
-            place-items:start center;
-            padding-top:18px;
-            padding-bottom:calc(42px + env(safe-area-inset-bottom));
+            width: 100%;
+            min-height: 100%;
+            display: grid;
+            place-items: center;
+            padding: 18px 12px calc(42px + env(safe-area-inset-bottom));
           }
 
           .rm-card{

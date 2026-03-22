@@ -1,3 +1,4 @@
+
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -326,7 +327,7 @@ export default function Welcome() {
               <Link to="/projects" className="gs-btnPrimary">
                 See My Work
               </Link>
-              <Link to="/about" className="gs-btnGhost">
+              <Link to="/aboutme" className="gs-btnGhost">
                 About Me
               </Link>
             </div>
@@ -668,14 +669,27 @@ export default function Welcome() {
           letter-spacing: 0.04em;
         }
 
+        /* Tablet/mobile: center content in viewport */
         @media (max-width: 860px) {
+          .gs-hero {
+            min-height: 100%;
+            height: auto;
+            overflow: visible;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+
           .gs-inner {
             grid-template-columns: 1fr;
             grid-template-rows: auto;
+            width: 100%;
+            height: auto;
+            min-height: 0;
             justify-items: center;
             align-content: center;
             gap: clamp(10px, 2vw, 20px);
-            padding: clamp(12px, 3vw, 28px);
+            padding: clamp(12px, 3vw, 28px) clamp(12px, 3vw, 28px) calc(34px + env(safe-area-inset-bottom));
           }
 
           .gs-left,
@@ -688,12 +702,15 @@ export default function Welcome() {
           }
         }
 
-        /* MOBILE: allow natural page height + scrolling */
+        /* MOBILE: center content in viewport */
         @media (max-width: 640px) {
           .gs-hero {
-            height: auto;
             min-height: 100%;
+            height: auto;
             overflow: visible;
+            display: flex;
+            align-items: center;
+            justify-content: center;
           }
 
           .gs-bg,
@@ -704,10 +721,10 @@ export default function Welcome() {
 
           .gs-inner {
             height: auto;
-            min-height: 100%;
+            min-height: 0;
             grid-template-columns: 1fr;
             justify-items: center;
-            align-content: start;
+            align-content: center;
             gap: 0;
             padding: 18px 12px calc(34px + env(safe-area-inset-bottom));
           }
@@ -777,14 +794,14 @@ export default function Welcome() {
 
         @media (max-width: 480px) {
           .gs-hero {
-            height: auto;
             min-height: 100%;
+            height: auto;
             overflow: visible;
           }
 
           .gs-inner {
             height: auto;
-            min-height: 100%;
+            min-height: 0;
             padding: 16px 10px calc(28px + env(safe-area-inset-bottom));
           }
 

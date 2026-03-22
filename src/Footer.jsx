@@ -63,16 +63,14 @@ export default function Footer() {
               🐱
             </a>
 
-            <a
-              href="/contact"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              to="/contact"
               className="social-btn"
-              aria-label="Medium"
-              title="Medium"
+              aria-label="Contact"
+              title="Contact"
             >
-              📝
-            </a>
+              ✉️
+            </Link>
           </nav>
 
           {/* Copyright */}

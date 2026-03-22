@@ -442,20 +442,23 @@ export default function ContactMe() {
           }
         }
 
-        /* mobile/tablet: let normal page scroll happen if needed */
-        @media (max-width: 768px){
+        /* mobile/tablet: center content like Welcome — responsive at all heights */
+        @media (max-width: 900px){
           .cm-page{
-            height: auto;
             min-height: 100%;
+            height: auto;
             overflow: visible;
+            display: flex;
+            align-items: center;
+            justify-content: center;
           }
 
           .cm-center{
-            height: auto;
+            width: 100%;
             min-height: 100%;
-            place-items: start center;
-            padding-top: 18px;
-            padding-bottom: calc(42px + env(safe-area-inset-bottom));
+            display: grid;
+            place-items: center;
+            padding: 18px 12px calc(42px + env(safe-area-inset-bottom));
           }
 
           .cm-card{

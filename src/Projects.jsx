@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 const PROJECTS = [
   {
@@ -102,11 +102,6 @@ function ProjectCard({ project, featured = false }) {
 }
 
 export default function Projects() {
-  useEffect(() => {
-    document.body.classList.add("route-projects");
-    return () => document.body.classList.remove("route-projects");
-  }, []);
-
   const featuredProject = PROJECTS.find((p) => p.featured);
   const otherProjects   = PROJECTS.filter((p) => !p.featured);
 
@@ -134,14 +129,14 @@ export default function Projects() {
             </p>
           </header>
 
-          <main className="projects-content">
+          <div className="projects-content">
             {featuredProject && <ProjectCard project={featuredProject} featured />}
             <section className="projects-grid">
               {otherProjects.map((project) => (
                 <ProjectCard key={project.title} project={project} />
               ))}
             </section>
-          </main>
+          </div>
         </div>
       </div>
 
@@ -153,18 +148,104 @@ export default function Projects() {
           box-sizing: border-box;
         }
 
-        /* ── Base (mobile-first) ─────────────────────────────────────── */
+        /* Projects page base */
         .projects-page {
           position: relative;
           width: 100%;
-          /* Mobile: natural height, body scrolls */
-          height: auto;
-          min-height: 100vh;
-          overflow: visible;
+          height: 100%;
+          min-height: 0;
+          overflow: hidden;
           overflow-x: hidden;
-          display: block;
+          display: grid;
           color: #261b3d;
           isolation: isolate;
+        }
+
+        .projects-center {
+          position: relative;
+          z-index: 2;
+          padding: 18px 12px calc(40px + env(safe-area-inset-bottom));
+          height: auto;
+          max-height: none;
+          overflow: visible;
+        }
+
+        .projects-shell {
+          width: 100%;
+          max-width: 1220px;
+          margin: 0 auto;
+          height: auto;
+          max-height: none;
+          overflow: visible;
+        }
+
+        /* Desktop: fit viewport, no inner scroll */
+        @media (min-width: 901px) {
+          .projects-page {
+            height: 100%;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+          }
+
+          .projects-center {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+          }
+
+          .projects-shell {
+            width: 100%;
+            height: auto;
+            max-height: 100%;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+          }
+
+          .projects-hero { flex-shrink: 0; }
+
+          .projects-content {
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: minmax(300px, 1.02fr) minmax(0, 1.58fr);
+            gap: 14px;
+            align-items: stretch;
+          }
+
+          .projects-grid {
+            min-height: 0;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+          }
+        }
+
+        /* Mobile/tablet: same as AboutMe — app-main scrolls, single scrollbar */
+        @media (max-width: 900px) {
+          .projects-page {
+            height: auto;
+            min-height: 0;
+            overflow: visible;
+          }
+
+          .projects-center {
+            height: auto;
+            min-height: 0;
+            display: grid;
+            place-items: start center;
+            padding-top: 18px;
+            padding-bottom: calc(42px + env(safe-area-inset-bottom));
+          }
         }
 
         .projects-bg,
@@ -214,22 +295,10 @@ export default function Projects() {
           background: radial-gradient(circle, rgba(255,126,191,0.2) 0%, rgba(255,126,191,0) 68%);
         }
 
-        /* Mobile layout — no inner scroll, everything flows naturally */
-        .projects-center {
-          position: relative;
-          z-index: 2;
-          /* No overflow, no fixed height — just padding */
-          padding: 18px 12px calc(40px + env(safe-area-inset-bottom));
-        }
-
         .projects-shell {
-          width: 100%;
-          max-width: 1220px;
-          margin: 0 auto;
           display: flex;
           flex-direction: column;
           gap: 14px;
-          /* NO overflow:hidden, NO max-height on mobile */
         }
 
         .projects-hero {
@@ -279,17 +348,23 @@ export default function Projects() {
           color: rgba(38,27,61,0.64);
         }
 
-        /* Mobile: single column */
+        /* Mobile: single column — flow layout, no nested scroll/clip */
         .projects-content {
           display: flex;
           flex-direction: column;
           gap: 14px;
+          height: auto;
+          max-height: none;
+          overflow: visible;
         }
 
         .projects-grid {
           display: flex;
           flex-direction: column;
           gap: 14px;
+          height: auto;
+          max-height: none;
+          overflow: visible;
         }
 
         /* Cards */
@@ -441,34 +516,28 @@ export default function Projects() {
         .accent-rose    .pj-pill { background: rgba(255,126,191,0.11); color: #d94d90; border-color: rgba(255,126,191,0.14); }
         .accent-blue    .pj-pill { background: rgba(114,157,255,0.11); color: #4c6fd8; border-color: rgba(114,157,255,0.14); }
 
-        /* ── Desktop / Tablet: locked viewport, no body scroll ───────── */
-        @media (min-width: 761px) {
-          /* Lock the page to the viewport — no body scroll */
-          html, body { overflow: hidden; }
-
-          .projects-page {
-            height: 100%;
-            min-height: 0;
-            overflow: hidden;
-            display: grid;
+        /* Mobile/tablet: overflow release */
+        @media (max-width: 900px) {
+          .projects-shell,
+          .projects-content,
+          .projects-grid {
+            height: auto;
+            max-height: none;
+            overflow: visible;
           }
+        }
 
+        @media (min-width: 761px) {
           .projects-center {
-            height: 100%;
-            min-height: 0;
-            display: grid;
-            place-items: center;
-            padding: clamp(8px,1.3vh,14px) clamp(12px,2vw,24px);
-            /* No overflow here — shell handles it */
-            overflow: hidden;
+            padding: clamp(8px,1.3vh,14px) clamp(12px,2vw,24px) calc(40px + env(safe-area-inset-bottom));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
           }
 
           .projects-shell {
             width: min(1220px, 100%);
-            max-height: 100%;
-            /* Shell clips content to viewport — this is the ONLY scroll container */
-            overflow: hidden;
-            justify-content: center;
+            margin: 0 auto;
           }
 
           .projects-title {
@@ -481,12 +550,13 @@ export default function Projects() {
             line-height: 1.45;
           }
 
-          /* Two-column layout */
           .projects-content {
             display: grid;
             grid-template-columns: minmax(300px, 1.02fr) minmax(0, 1.58fr);
             gap: 14px;
-            min-height: 0;
+            height: auto;
+            max-height: none;
+            overflow: visible;
             align-items: stretch;
           }
 
@@ -494,7 +564,10 @@ export default function Projects() {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 14px;
-            min-width: 0; min-height: 0;
+            min-width: 0;
+            height: auto;
+            max-height: none;
+            overflow: visible;
           }
 
           .pj-card { border-radius: 22px; }
@@ -520,7 +593,6 @@ export default function Projects() {
           .pj-card-standard .pj-bio { -webkit-line-clamp: 3; }
         }
 
-        /* ── Short desktop screens ───────────────────────────────────── */
         @media (min-width: 761px) and (max-height: 860px) {
           .projects-center  { padding-top: 8px; padding-bottom: 8px; }
           .projects-shell   { gap: 12px; }
@@ -537,7 +609,68 @@ export default function Projects() {
           .pj-cta           { min-height: 35px; font-size: 0.74rem; padding: 8px 12px; }
         }
 
-        /* ── Small mobile ────────────────────────────────────────────── */
+        /* Desktop: fit viewport (override 761px rules), no scroll */
+        @media (min-width: 901px) {
+          .projects-page {
+            height: 100%;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+          }
+
+          .projects-center {
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
+          }
+
+          .projects-shell {
+            height: auto;
+            max-height: 100%;
+            min-height: 0;
+            overflow: hidden;
+          }
+
+          .projects-content {
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
+          }
+
+          .projects-content > .pj-card,
+          .projects-content > .projects-grid {
+            min-height: 0;
+          }
+
+          .projects-grid {
+            min-height: 0;
+            overflow: hidden;
+          }
+
+          .pj-card {
+            min-height: 0;
+            overflow: hidden;
+          }
+        }
+
+        /* Extra compaction for short desktop viewports (e.g. 2122x963) — cards fit, no scrollbar */
+        @media (min-width: 901px) and (max-height: 963px) {
+          .projects-center  { padding-top: 6px; padding-bottom: 6px; }
+          .projects-shell   { gap: 8px; }
+          .projects-hero    { gap: 5px; }
+          .projects-title   { font-size: clamp(1.5rem, 2.5vw, 2.4rem); }
+          .projects-subtitle { font-size: 0.82rem; line-height: 1.3; }
+          .projects-content { gap: 8px; }
+          .projects-grid    { gap: 8px; }
+          .pj-card          { padding: 10px 12px; gap: 8px; }
+          .pj-icon          { width: 36px; height: 36px; font-size: 0.95rem; }
+          .pj-card-featured .pj-bio { -webkit-line-clamp: 3; }
+          .pj-card-standard .pj-bio { -webkit-line-clamp: 2; }
+          .pj-tag           { font-size: 0.6rem; padding: 4px 6px; }
+          .pj-cta           { min-height: 32px; font-size: 0.7rem; padding: 6px 10px; }
+        }
+
         @media (max-width: 420px) {
           .projects-badge { font-size: 0.76rem; padding: 7px 12px; }
           .pj-card        { padding: 14px; }
@@ -545,24 +678,11 @@ export default function Projects() {
           .pj-bio         { font-size: 0.82rem; }
         }
 
-        /* ── Reduced motion ──────────────────────────────────────────── */
-        /* Hide scrollbar everywhere but keep scroll working */
-        html, body, .projects-page, .projects-center, .projects-shell {
-          scrollbar-width: none;       /* Firefox */
-          -ms-overflow-style: none;    /* IE/Edge */
-        }
-        html::-webkit-scrollbar,
-        body::-webkit-scrollbar,
-        .projects-page::-webkit-scrollbar,
-        .projects-center::-webkit-scrollbar,
-        .projects-shell::-webkit-scrollbar {
-          display: none;               /* Chrome/Safari/Opera */
-        }
-
         @media (prefers-reduced-motion: reduce) {
           .pj-card, .pj-cta { transition: none !important; }
           .pj-card:hover, .pj-cta:hover { transform: none !important; }
         }
+
       `}</style>
     </section>
   );

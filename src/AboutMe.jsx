@@ -265,33 +265,28 @@ export default function AboutMe() {
           to{ opacity: 1; transform: translateY(0); }
         }
 
-        /* =========================================================
-           ✅ MOBILE FIX (prevents bottom cut-off)
-           - Let the page/content be naturally tall
-           - Remove max-height + overflow clipping
-           - Add extra bottom padding so last section is always visible
-           ========================================================= */
-
-        @media (max-width: 768px){
+        /* mobile/tablet: center content like Welcome — responsive at all heights */
+        @media (max-width: 900px){
           .am-page{
-            height: auto;
             min-height: 100%;
-            overflow: visible; /* IMPORTANT: no inner scrolling container */
+            height: auto;
+            overflow: visible;
+            display: flex;
+            align-items: center;
+            justify-content: center;
           }
 
           .am-center{
-            height: auto;
+            width: 100%;
             min-height: 100%;
-            place-items: start center;
-
-            /* extra room so the very bottom never gets hidden */
-            padding-top: 18px;
-            padding-bottom: calc(42px + env(safe-area-inset-bottom));
+            display: grid;
+            place-items: center;
+            padding: 18px 12px calc(42px + env(safe-area-inset-bottom));
           }
 
           .am-card{
-            max-height: none;     /* remove clip */
-            overflow: visible;    /* remove clip */
+            max-height: none;
+            overflow: visible;
           }
         }
 
