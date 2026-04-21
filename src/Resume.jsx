@@ -9,12 +9,11 @@ export default function Resume() {
       link.id = id;
       link.rel = "stylesheet";
       link.href =
-        "https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Nunito:wght@500;700;800;900&display=swap";
+        "https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800;900&display=swap";
       document.head.appendChild(link);
     }
   }, []);
 
-  const RESUME_IMAGE = "/resume.png";
   const RESUME_PDF = "/Jaqueline-Smith-Resume.pdf";
 
   return (
@@ -25,7 +24,7 @@ export default function Resume() {
       <div className="rm-center">
         <div className="rm-card">
           <header className="rm-header">
-            <div className="rm-pill">💜 Resume</div>
+            <div className="rm-pill">Resume</div>
 
             
 
@@ -50,13 +49,16 @@ export default function Resume() {
           </header>
 
           <main className="rm-stage">
-            <div className="rm-previewWrap">
-              <div className="rm-previewGlow" aria-hidden="true" />
-              <div className="rm-previewCard">
-                <img
-                  className="rm-previewImage"
-                  src={RESUME_IMAGE}
-                  alt="Preview of Jaqueline Smith's resume"
+            <p className="rm-note">
+              Open or download the PDF to view the full resume.
+            </p>
+
+            <div className="rm-viewerWrap" aria-hidden="true">
+              <div className="rm-viewerFrame">
+                <iframe
+                  className="rm-viewer"
+                  title="Resume PDF viewer"
+                  src={RESUME_PDF}
                 />
               </div>
             </div>
@@ -119,7 +121,7 @@ export default function Resume() {
         }
 
         .rm-card{
-          width:min(900px, 100%);
+          width:min(1080px, 100%);
           background:rgba(255,255,255,0.78);
           border-radius:22px;
           border:1px solid rgba(169,135,255,0.20);
@@ -133,7 +135,7 @@ export default function Resume() {
 
           display:flex;
           flex-direction:column;
-          gap:10px;
+          gap:12px;
 
           animation:rmFadeUp 0.7s ease-out;
         }
@@ -160,25 +162,6 @@ export default function Resume() {
           font-size:0.82rem;
           font-weight:800;
           color:rgba(90,47,198,0.82);
-        }
-
-        .rm-title{
-          font-family:"Dancing Script", cursive;
-          font-size:clamp(2.1rem, 3.2vw, 3.3rem);
-          color:#6B34D9;
-          margin:0;
-          line-height:1.02;
-          letter-spacing:0.2px;
-        }
-
-        .rm-subtitle{
-          margin:0;
-          font-size:clamp(0.9rem, 1vw, 0.98rem);
-          color:rgba(40,20,80,0.72);
-          line-height:1.42;
-          font-family:Nunito, ui-sans-serif, system-ui;
-          font-weight:700;
-          max-width:620px;
         }
 
         .rm-actions{
@@ -230,54 +213,46 @@ export default function Resume() {
           min-height:0;
           display:grid;
           place-items:center;
+          gap:10px;
         }
 
-        .rm-previewWrap{
+        .rm-note{
+          margin:0;
+          font-family:Nunito, ui-sans-serif, system-ui;
+          font-size:0.92rem;
+          line-height:1.45;
+          font-weight:700;
+          color:rgba(40,20,80,0.68);
+          text-align:center;
+          max-width: 60ch;
+        }
+
+        .rm-viewerWrap{
+          width: min(980px, 100%);
+          display: grid;
+          place-items: center;
+        }
+
+        .rm-viewerFrame{
           position:relative;
-          width:min(560px, 100%);
-          height:100%;
-          min-height:0;
-          display:grid;
-          place-items:center;
-        }
-
-        .rm-previewGlow{
-          position:absolute;
-          inset:auto;
-          width:78%;
-          height:78%;
-          border-radius:50%;
-          background:radial-gradient(circle, rgba(153,117,255,0.18) 0%, rgba(153,117,255,0) 72%);
-          filter:blur(30px);
-          pointer-events:none;
-        }
-
-        .rm-previewCard{
-          position:relative;
-          z-index:1;
-          width:min(100%, 470px);
-          aspect-ratio:8.5 / 11;
-          padding:8px;
-          border-radius:24px;
-          background:rgba(255,255,255,0.62);
-          border:1px solid rgba(123,92,255,0.16);
+          width: min(100%, 980px);
+          height: clamp(520px, 62vh, 820px);
+          border-radius: 22px;
+          background: rgba(255,255,255,0.72);
+          border: 1px solid rgba(123,92,255,0.18);
           box-shadow:
-            0 18px 42px rgba(140,90,200,0.14),
-            0 6px 16px rgba(140,90,200,0.08);
-          display:grid;
-          place-items:center;
+            0 18px 42px rgba(140,90,200,0.12),
+            0 6px 16px rgba(140,90,200,0.08),
+            inset 0 1px 0 rgba(255,255,255,0.72);
           overflow:hidden;
         }
 
-        .rm-previewImage{
+        .rm-viewer{
           width:100%;
           height:100%;
           display:block;
-          object-fit:contain;
-          object-position:center top;
-          border-radius:18px;
+          border:0;
           background:#fff;
-          box-shadow:inset 0 0 0 1px rgba(123,92,255,0.08);
         }
 
         @keyframes rmFadeUp{
@@ -293,7 +268,7 @@ export default function Resume() {
           }
 
           .rm-card{
-            width:min(860px, 100%);
+            width:min(1040px, 100%);
             padding:12px;
             gap:8px;
           }
@@ -302,29 +277,10 @@ export default function Resume() {
             gap:4px;
           }
 
-          .rm-title{
-            font-size:clamp(1.9rem, 2.7vw, 2.8rem);
-          }
-
-          .rm-subtitle{
-            font-size:0.9rem;
-            line-height:1.35;
-          }
-
           .rm-btn{
             min-height:36px;
             padding:8px 14px;
             font-size:0.84rem;
-          }
-
-          .rm-previewCard{
-            width:min(100%, 400px);
-            padding:7px;
-            border-radius:20px;
-          }
-
-          .rm-previewImage{
-            border-radius:14px;
           }
         }
 
@@ -334,47 +290,25 @@ export default function Resume() {
             gap:7px;
           }
 
-          .rm-title{
-            font-size:clamp(1.75rem, 2.3vw, 2.45rem);
-          }
-
           .rm-pill{
             font-size:0.76rem;
             padding:6px 12px;
           }
 
-          .rm-subtitle{
-            font-size:0.86rem;
-          }
-
           .rm-actions{
             gap:8px;
-          }
-
-          .rm-previewCard{
-            width:min(100%, 350px);
-            padding:6px;
-            border-radius:18px;
-          }
-
-          .rm-previewImage{
-            border-radius:12px;
           }
         }
 
         /* Short desktop (e.g. 2122x963): fit without scroll */
         @media (min-width: 901px) and (max-height: 963px){
           .rm-center{ padding: 6px 16px; }
-          .rm-card{ padding: 10px; gap: 6px; width: min(820px, 100%); }
+          .rm-card{ padding: 10px; gap: 8px; width: min(1040px, 100%); }
           .rm-header{ gap: 4px; }
           .rm-pill{ font-size: 0.76rem; padding: 5px 10px; }
-          .rm-title{ font-size: clamp(1.6rem, 2.2vw, 2.2rem); }
-          .rm-subtitle{ font-size: 0.82rem; line-height: 1.3; }
           .rm-actions{ gap: 6px; margin-top: 0; }
           .rm-btn{ min-height: 32px; padding: 6px 12px; font-size: 0.8rem; }
-          .rm-previewWrap{ width: min(420px, 100%); }
-          .rm-previewCard{ width: min(100%, 320px); padding: 6px; border-radius: 18px; }
-          .rm-previewImage{ border-radius: 12px; }
+          .rm-viewerFrame{ height: clamp(460px, 58vh, 720px); }
         }
 
         /* mobile/tablet: center content like Welcome — responsive at all heights */
@@ -405,19 +339,7 @@ export default function Resume() {
             flex:none;
           }
 
-          .rm-previewWrap{
-            height:auto;
-          }
-
-          .rm-previewCard{
-            width:min(100%, 440px);
-            height:auto;
-          }
-
-          .rm-previewImage{
-            height:auto;
-            aspect-ratio:8.5 / 11;
-          }
+          .rm-viewerWrap{ display:none; }
         }
 
         @media (max-width: 480px){
@@ -431,21 +353,8 @@ export default function Resume() {
             padding-right:12px;
           }
 
-          .rm-title{
-            font-size:1.95rem;
-          }
-
           .rm-btn{
             width:100%;
-          }
-
-          .rm-previewCard{
-            border-radius:18px;
-            padding:7px;
-          }
-
-          .rm-previewImage{
-            border-radius:14px;
           }
         }
 

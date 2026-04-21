@@ -4,10 +4,10 @@ const PROJECTS = [
   {
     title: "Gentle Sprout",
     bio:
-      "A DBT-inspired full-stack mental wellness app with a companion chatbot, guided DBT coaching flows, and a live beta experience powered by retrieval-augmented generation. Built with a Django backend and designed to evolve into a more advanced AI-driven support experience.",
+      "A DBT-inspired mental wellness app with guided coaching flows, an AI companion chatbot, and a live beta experience powered by RAG.",
     href: "https://my-dbt-ai-frontend.onrender.com/",
     cta: "Explore Gentle Sprout Beta",
-    emoji: "🌱",
+    emoji: null,
     tags: ["React Native", "Django", "AI", "RAG", "DBT"],
     featured: true,
     accent: "green",
@@ -15,40 +15,40 @@ const PROJECTS = [
   {
     title: "Petite Planner",
     bio:
-      "A polished productivity app for organizing tasks, planning daily life, and keeping routines visually approachable. Built with a Firebase-powered data layer and a soft, delightful interface focused on usability.",
+      "A polished productivity app for task planning and daily organization, designed with a premium SaaS look and a clean Firebase-powered experience.",
     href: "https://petite-planner.netlify.app/",
     cta: "Explore Petite Planner",
-    emoji: "📝",
+    emoji: null,
     tags: ["React", "Firebase", "UI/UX", "Productivity"],
     accent: "pink",
   },
   {
     title: "Bunny Bubble Nails",
     bio:
-      "A custom press-on nails ecommerce experience with playful branding, polished product presentation, and a live shopping flow. Built with a Flask backend and Firebase-backed data to support a more custom storefront experience.",
+      "A custom press-on nails ecommerce experience with playful branding, polished product presentation, and a live shopping flow.",
     href: "https://bunnybubblenails.com",
     cta: "Visit Bunny Bubble Nails",
-    emoji: "🎀",
+    emoji: null,
     tags: ["Ecommerce", "Flask", "Firebase", "Brand UI"],
     accent: "rose",
   },
   {
     title: "Otome Game",
     bio:
-      "A charming browser-based otome game concept focused on cute presentation, immersive interactions, and personality-driven frontend storytelling.",
+      "A browser-based otome game concept focused on charming presentation, immersive interactions, and personality-driven frontend storytelling.",
     href: "https://arielles-code.netlify.app/",
     cta: "Play Otome Game",
-    emoji: "💌",
+    emoji: null,
     tags: ["Frontend", "Game UI", "Interactive Design"],
     accent: "lavender",
   },
   {
     title: "Pretty Links",
     bio:
-      "A Chrome extension for organizing and managing bookmarks with a prettier, more intentional experience using browser APIs and focused interface design.",
+      "A Chrome extension for organizing bookmarks with a cleaner, more intentional interface built around browser APIs.",
     href: "https://pretty-links.netlify.app",
     cta: "Explore Pretty Links",
-    emoji: "🔖",
+    emoji: null,
     tags: ["Chrome Extension", "Browser APIs", "Frontend"],
     accent: "blue",
   },
@@ -66,13 +66,9 @@ function ProjectCard({ project, featured = false }) {
       <div className="pj-sparkle pj-sparkle-two" aria-hidden="true" />
 
       <div className="pj-top">
-        <div className="pj-icon-wrap">
-          <div className="pj-icon">{project.emoji}</div>
-        </div>
         <div className="pj-heading">
           <div className="pj-meta">
             <span className="pj-pill">{featured ? "Featured" : "Project"}</span>
-            <span className="pj-arrow">↗</span>
           </div>
           <h2 className="pj-title">{project.title}</h2>
         </div>
@@ -115,7 +111,7 @@ export default function Projects() {
       <div className="projects-center">
         <div className="projects-shell">
           <header className="projects-hero">
-            <div className="projects-badge">✨ Selected Work</div>
+            <div className="projects-badge">Selected Work</div>
             <h1 className="projects-title">
               Projects that blend{" "}
               <span className="projects-title-gradient">
@@ -373,8 +369,8 @@ export default function Projects() {
           overflow: hidden;
           display: flex;
           flex-direction: column;
-          gap: 12px;
-          padding: 16px;
+          gap: 11px;
+          padding: 15px;
           border-radius: 20px;
           border: 1px solid rgba(127,93,211,0.14);
           background: linear-gradient(180deg, rgba(255,255,255,0.84) 0%, rgba(255,255,255,0.76) 100%);
@@ -399,26 +395,15 @@ export default function Projects() {
           z-index: 1;
           display: flex;
           align-items: flex-start;
-          gap: 12px;
+          gap: 0px;
           min-width: 0;
-        }
-
-        .pj-icon-wrap { flex-shrink: 0; }
-
-        .pj-icon {
-          width: 44px; height: 44px;
-          display: grid; place-items: center;
-          border-radius: 15px; font-size: 1.1rem;
-          background: linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(244,235,255,0.96) 100%);
-          border: 1px solid rgba(132,103,216,0.14);
-          box-shadow: 0 8px 18px rgba(111,66,232,0.1);
         }
 
         .pj-heading { min-width: 0; flex: 1; }
 
         .pj-meta {
           display: flex; align-items: center;
-          justify-content: space-between; gap: 8px; margin-bottom: 6px;
+          justify-content: space-between; gap: 8px; margin-bottom: 4px;
         }
 
         .pj-pill {
@@ -429,8 +414,6 @@ export default function Projects() {
           background: rgba(111,66,232,0.09); color: #7647ef;
           border: 1px solid rgba(111,66,232,0.1);
         }
-
-        .pj-arrow { font-size: 0.95rem; line-height: 1; color: rgba(111,66,232,0.55); }
 
         .pj-title {
           margin: 0; font-size: 1.2rem;
@@ -448,14 +431,14 @@ export default function Projects() {
 
         .pj-tags {
           position: relative; z-index: 1;
-          display: flex; flex-wrap: wrap; gap: 7px;
+          display: flex; flex-wrap: wrap; gap: 6px;
         }
 
         .pj-tag {
-          padding: 5px 9px; border-radius: 999px;
+          padding: 4px 8px; border-radius: 999px;
           background: rgba(255,255,255,0.84);
           border: 1px solid rgba(127,93,211,0.14);
-          color: #6443be; font-size: 0.7rem; font-weight: 800; line-height: 1;
+          color: #6443be; font-size: 0.68rem; font-weight: 800; line-height: 1;
           box-shadow: 0 5px 12px rgba(111,66,232,0.05);
         }
 
@@ -469,8 +452,8 @@ export default function Projects() {
         .pj-cta {
           display: inline-flex; align-items: center;
           justify-content: center; gap: 8px;
-          width: 100%; min-height: 38px;
-          padding: 9px 13px; border-radius: 999px;
+          width: 100%; min-height: 36px;
+          padding: 8px 12px; border-radius: 999px;
           text-decoration: none; color: #fff;
           font-size: 0.78rem; font-weight: 900; line-height: 1;
           background: linear-gradient(135deg, #7b45f2 0%, #5b30d9 58%, #a24dff 100%);
@@ -580,7 +563,7 @@ export default function Projects() {
             -webkit-box-orient: vertical;
             overflow: hidden;
           }
-          .pj-card-featured .pj-bio  { -webkit-line-clamp: 5; }
+          .pj-card-featured .pj-bio  { -webkit-line-clamp: 6; }
           .pj-card-standard .pj-bio  { -webkit-line-clamp: 4; }
 
           .pj-cta { width: auto; white-space: nowrap; }
@@ -590,7 +573,8 @@ export default function Projects() {
         @media (min-width: 1380px) {
           .projects-shell { width: min(1300px, 100%); }
           .projects-content { grid-template-columns: minmax(320px, 0.98fr) minmax(0, 1.62fr); }
-          .pj-card-standard .pj-bio { -webkit-line-clamp: 3; }
+          .pj-card-featured .pj-bio  { -webkit-line-clamp: 6; }
+          .pj-card-standard .pj-bio  { -webkit-line-clamp: 4; }
         }
 
         @media (min-width: 761px) and (max-height: 860px) {
@@ -601,8 +585,7 @@ export default function Projects() {
           .projects-subtitle { font-size: 0.9rem; line-height: 1.38; }
           .projects-content { gap: 12px; }
           .projects-grid    { gap: 12px; }
-          .pj-card          { padding: 14px; gap: 10px; }
-          .pj-icon          { width: 42px; height: 42px; font-size: 1.05rem; }
+          .pj-card          { padding: 13px; gap: 9px; }
           .pj-card-featured .pj-bio { -webkit-line-clamp: 4; }
           .pj-card-standard .pj-bio { -webkit-line-clamp: 3; }
           .pj-tag           { font-size: 0.64rem; padding: 5px 8px; }
@@ -664,9 +647,8 @@ export default function Projects() {
           .projects-content { gap: 8px; }
           .projects-grid    { gap: 8px; }
           .pj-card          { padding: 10px 12px; gap: 8px; }
-          .pj-icon          { width: 36px; height: 36px; font-size: 0.95rem; }
-          .pj-card-featured .pj-bio { -webkit-line-clamp: 3; }
-          .pj-card-standard .pj-bio { -webkit-line-clamp: 2; }
+          .pj-card-featured .pj-bio { -webkit-line-clamp: 4; }
+          .pj-card-standard .pj-bio { -webkit-line-clamp: 3; }
           .pj-tag           { font-size: 0.6rem; padding: 4px 6px; }
           .pj-cta           { min-height: 32px; font-size: 0.7rem; padding: 6px 10px; }
         }

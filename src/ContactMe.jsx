@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import emailjs from "@emailjs/browser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faLinkedin } from "@fortawesome/free-brands-svg-icons";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 export default function ContactMe() {
   const form = useRef(null);
@@ -47,11 +48,11 @@ export default function ContactMe() {
 
   const statusText =
     status === "sending"
-      ? "Sending… 💌"
+      ? "Sending…"
       : status === "sent"
-      ? "Sent! Thanks for reaching out 💜"
+      ? "Sent! Thanks for reaching out."
       : status === "error"
-      ? "Oops—something went wrong. Try again? 🥺"
+      ? "Something went wrong. Please try again."
       : "";
 
   return (
@@ -62,10 +63,10 @@ export default function ContactMe() {
       <div className="cm-center">
         <div className="cm-card">
           <header className="cm-header">
-            <div className="cm-pill">✨ Let’s connect</div>
+            <div className="cm-pill">Let’s connect</div>
             <h1 className="cm-title">Contact Form</h1>
             <p className="cm-subtitle">
-              Send me a message and I’ll get back to you soon 💜
+              Send me a message and I’ll get back to you soon.
             </p>
           </header>
 
@@ -73,7 +74,7 @@ export default function ContactMe() {
             <div className="cm-grid">
               <div className="cm-fieldWrap">
                 <label className="cm-label" htmlFor="user_name">
-                  Your Name ♡
+                  Your Name
                 </label>
                 <input
                   id="user_name"
@@ -87,7 +88,7 @@ export default function ContactMe() {
 
               <div className="cm-fieldWrap">
                 <label className="cm-label" htmlFor="user_email">
-                  Your Email ✉
+                  Your Email
                 </label>
                 <input
                   id="user_email"
@@ -102,7 +103,7 @@ export default function ContactMe() {
 
             <div className="cm-fieldWrap">
               <label className="cm-label" htmlFor="message">
-                Your Message 💬
+                Your Message
               </label>
               <textarea
                 id="message"
@@ -118,7 +119,14 @@ export default function ContactMe() {
               type="submit"
               disabled={status === "sending"}
             >
-              {status === "sending" ? "Sending…" : "Send Kawaii Message"}
+              {status === "sending" ? (
+                "Sending…"
+              ) : (
+                <>
+                  <FontAwesomeIcon icon={faPaperPlane} aria-hidden="true" />
+                  <span>Send Message</span>
+                </>
+              )}
             </button>
 
             <div
@@ -252,11 +260,12 @@ export default function ContactMe() {
 
         .cm-title{
           margin: 10px 0 6px;
-          font-family: "Dancing Script", cursive;
-          font-size: clamp(2rem, 3.4vw, 2.8rem);
+          font-family: Nunito, ui-sans-serif, system-ui;
+          font-size: clamp(1.7rem, 3.0vw, 2.35rem);
+          font-weight: 900;
           color: #6B34D9;
-          line-height: 1.05;
-          letter-spacing: 0.2px;
+          line-height: 1.08;
+          letter-spacing: -0.03em;
         }
 
         .cm-subtitle{
@@ -336,6 +345,11 @@ export default function ContactMe() {
           font-weight: 900;
           font-size: 1rem;
           color: #fff;
+
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
 
           background: linear-gradient(180deg, rgba(122,62,240,0.95) 0%, rgba(107,52,217,0.98) 100%);
           box-shadow: 0 14px 24px rgba(107,52,217,0.18);

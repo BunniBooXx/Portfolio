@@ -46,15 +46,15 @@ export default function Navbar() {
   }, [mobileOpen]);
 
   const moreLinks = useMemo(() => [
-    { to: "/aboutme", label: "About Me", icon: "👩‍💻" },
-    { to: "/resume",  label: "Resume",   icon: "📝"  },
+    { to: "/aboutme", label: "About Me" },
+    { to: "/resume",  label: "Resume" },
   ], []);
 
   const allLinks = useMemo(() => [
-    { to: "/",         label: "Home",     icon: "♥"   },
-    { to: "/projects", label: "Projects", icon: "🚀"  },
-    { to: "/aboutme",  label: "About Me", icon: "👩‍💻" },
-    { to: "/resume",   label: "Resume",   icon: "📝"  },
+    { to: "/",         label: "Home" },
+    { to: "/projects", label: "Projects" },
+    { to: "/aboutme",  label: "About Me" },
+    { to: "/resume",   label: "Resume" },
   ], []);
 
   const isActive = (path) =>
@@ -70,14 +70,11 @@ export default function Navbar() {
 
         <div className="lav-pill">
           <Link to="/" className="lav-brand" aria-label="Home">
-            <span className="lav-brandHeart" aria-hidden="true">♥</span>
             <span className="lav-brandName">Home</span>
-            <span className="lav-brandHeart lav-brandHeart--r" aria-hidden="true">♥</span>
           </Link>
 
           <div className="lav-links" role="list">
             <Link to="/projects" role="listitem" className={`lav-link ${isActive("/projects") ? "lav-link--active" : ""}`}>
-              <span className="lav-linkIcon" aria-hidden="true">🚀</span>
               <span className="lav-linkLabel">Projects</span>
               {isActive("/projects") && <span className="lav-activeDot" aria-hidden="true" />}
             </Link>
@@ -85,7 +82,6 @@ export default function Navbar() {
             <div className="lav-drop" ref={dropRef} role="listitem">
               <button type="button" className={`lav-link lav-dropTrigger ${dropOpen ? "lav-link--open" : ""}`}
                 onClick={() => setDropOpen((v) => !v)} aria-haspopup="menu" aria-expanded={dropOpen}>
-                <span className="lav-linkIcon" aria-hidden="true">✦</span>
                 <span className="lav-linkLabel">More</span>
                 <span className={`lav-chevron ${dropOpen ? "lav-chevron--up" : ""}`} aria-hidden="true">
                   <svg width="10" height="6" viewBox="0 0 10 6" fill="none">
@@ -101,7 +97,6 @@ export default function Navbar() {
                       className={`lav-dropItem ${isActive(l.to) ? "lav-dropItem--active" : ""}`}
                       role="menuitem" onClick={() => setDropOpen(false)}
                       style={{ animationDelay: dropOpen ? `${i * 55}ms` : "0ms" }}>
-                      <span className="lav-dropItemIcon">{l.icon}</span>
                       <span className="lav-dropItemLabel">{l.label}</span>
                       <span className="lav-dropItemArrow" aria-hidden="true">→</span>
                     </Link>
@@ -136,7 +131,6 @@ export default function Navbar() {
                 onClick={() => setMobileOpen(false)}
                 tabIndex={mobileOpen ? 0 : -1}
                 style={{ transitionDelay: mobileOpen ? `${i * 45}ms` : "0ms" }}>
-                <span className="lav-drawerIcon">{l.icon}</span>
                 <span>{l.label}</span>
               </Link>
             ))}
@@ -226,12 +220,6 @@ export default function Navbar() {
         }
         .lav-brand:hover { background: rgba(255,255,255,0.80); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(140,90,255,0.18); }
 
-        .lav-brandHeart { font-size: 0.72rem; color: var(--c-purple); opacity: 0.7; }
-        .lav-brandHeart--r { animation: heartPulse 2.8s ease-in-out infinite; }
-        @keyframes heartPulse {
-          0%, 100% { transform: scale(1);   opacity: 0.7; }
-          50%       { transform: scale(1.3); opacity: 1; }
-        }
         .lav-brandName { font-size: 0.82rem; font-weight: 900; letter-spacing: 0.04em; color: #3d1f8a; }
 
         .lav-links { display: flex; align-items: center; gap: 4px; }
@@ -248,7 +236,6 @@ export default function Navbar() {
         .lav-link:hover { background: rgba(255,255,255,0.68); border-color: rgba(180,140,255,0.30); color: var(--c-purple); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(140,90,255,0.14); }
         .lav-link--active { background: rgba(255,255,255,0.75); border-color: rgba(160,110,255,0.35); color: var(--c-purple); box-shadow: 0 4px 16px rgba(140,90,255,0.16); }
         .lav-link--open   { background: rgba(255,255,255,0.65); border-color: rgba(160,110,255,0.30); color: var(--c-purple); }
-        .lav-linkIcon  { font-size: 0.82rem; line-height: 1; }
         .lav-linkLabel { line-height: 1; }
 
         .lav-activeDot {
@@ -294,7 +281,6 @@ export default function Navbar() {
         }
         .lav-dropItem:hover { background: rgba(220,200,255,0.35); border-color: rgba(180,140,255,0.25); transform: translateX(3px); }
         .lav-dropItem--active { background: rgba(200,175,255,0.28); border-color: rgba(180,140,255,0.30); color: var(--c-purple); }
-        .lav-dropItemIcon  { font-size: 1rem; line-height: 1; flex-shrink: 0; }
         .lav-dropItemLabel { flex: 1; }
         .lav-dropItemArrow { font-size: 0.75rem; color: var(--c-purple-mid); opacity: 0; transition: opacity 180ms, transform 180ms; }
         .lav-dropItem:hover .lav-dropItemArrow { opacity: 1; transform: translateX(3px); }
@@ -382,7 +368,6 @@ export default function Navbar() {
         }
         .lav-drawerLink:hover { background: rgba(220,200,255,0.35); border-color: rgba(180,140,255,0.25); color: var(--c-purple); }
         .lav-drawerLink--active { background: rgba(210,185,255,0.30); border-color: rgba(170,130,255,0.30); color: var(--c-purple); }
-        .lav-drawerIcon { font-size: 1.1rem; line-height: 1; }
 
         .lav-backdrop {
           position: fixed; inset: 0; z-index: 999;
@@ -400,10 +385,9 @@ export default function Navbar() {
         }
         @media (max-width: 420px) {
           .lav-brandName    { display: none; }
-          .lav-brandHeart--r { display: none; }
         }
         @media (prefers-reduced-motion: reduce) {
-          .lav-shimmer, .lav-brandHeart--r, .lav-activeDot { animation: none; }
+          .lav-shimmer, .lav-activeDot { animation: none; }
           .lav-link, .lav-brand, .lav-dropPanel, .lav-dropItem,
           .lav-drawerLink, .lav-drawer, .lav-burger span { transition: none; }
         }
