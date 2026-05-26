@@ -348,7 +348,7 @@ export default function Welcome() {
           </div>
           <div className="gs-stat">
             <strong>✦</strong>
-            <span>Mid-level Dev</span>
+            <span>Junior-Level Dev</span>
           </div>
         </div>
       </div>
