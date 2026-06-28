@@ -5,7 +5,7 @@ const PROJECTS = [
     title: "Gentle Sprout",
     bio:
       "A DBT-inspired mental wellness app with guided coaching flows, an AI companion chatbot, and a live beta experience powered by RAG.",
-    href: "https://my-dbt-ai-frontend.onrender.com/",
+    href: "https://gentle-sprout.com/",
     cta: "Explore Gentle Sprout Beta",
     emoji: null,
     tags: ["React Native", "Django", "AI", "RAG", "DBT"],
@@ -26,7 +26,7 @@ const PROJECTS = [
     title: "Bunny Bubble Nails",
     bio:
       "A custom press-on nails ecommerce experience with playful branding, polished product presentation, and a live shopping flow.",
-    href: "https://bunnybubblenails.com",
+    href: "https://nail-shop.onrender.com/",
     cta: "Visit Bunny Bubble Nails",
     emoji: null,
     tags: ["Ecommerce", "Flask", "Firebase", "Brand UI"],
