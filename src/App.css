@@ -249,6 +249,84 @@ body,
   }
 }
 
+/* --------------------- MOBILE APP FRAME -------------------- */
+
+/* Below 768px the shell switches UX models entirely. Desktop/tablet
+   (above this) is a natural page: .app-main scrolls, and if content is
+   taller than the viewport the navbar/footer scroll out of view with it
+   — correct for a wide reading surface. On a phone-sized screen that
+   reads as "a long website", not an app — the requirement here is a
+   fixed frame (navbar and footer always visible, never scrolled away)
+   with exactly ONE internal scroll region for whatever content doesn't
+   fit between them.
+
+   Three property flips on the existing shared elements are enough —
+   confirmed live before landing this, across all 5 routes and 8 phone
+   widths — no new wrapper element, no route file changes:
+
+   .app-main    stops owning the scroll (overflow-y:hidden) — it was
+                the single page scrollbar for desktop; on mobile nothing
+                should scroll at this level anymore.
+   .app-page    height:100% (not just min-height:100% as the shared
+                base rule has it) — a real ceiling now, not just a
+                floor, since .app-content below is what's responsible
+                for not exceeding it.
+   .app-content flex:1 1 auto (base rule is 1 0 auto / flex-shrink:0 —
+                deliberately un-shrinkable on desktop so short content
+                never gets squeezed). Allowing shrink is what lets this
+                box settle to exactly "app-page height minus footer's
+                own height" instead of pushing .app-page taller than
+                .app-main's box. overflow-y:auto on top of that is what
+                turns it into the one scroll region for anything still
+                taller than that — every route's whole rendered output
+                (its own heading + card/grid) is already the sole child
+                of .app-content, so this scrolls each route as one
+                unit without touching Welcome/AboutMe/ContactMe/
+                Projects/Resume's own markup or CSS at all. */
+@media (max-width: 768px) {
+  .app-main {
+    overflow-y: hidden;
+  }
+
+  .app-page {
+    height: 100%;
+  }
+
+  .app-content {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(var(--color-border-rgb), 0.4) transparent;
+    /* "safe" is the fix, not a stylistic choice: the base (desktop) rule's
+       plain justify-content:center, once .app-content is itself the
+       overflow:auto scroll container (only true in this mobile block —
+       desktop scrolls one level up at .app-main, which never hits this),
+       centers an overflowing child by shifting it partly into NEGATIVE
+       scroll territory — scrollTop can't go below 0, so that portion
+       (confirmed live: the very top of About's card) becomes permanently
+       unreachable. "safe center" is the standard CSS answer: center when
+       it fits (Home's short hero — confirmed unchanged), fall back to
+       start-aligned when centering would hide content (About/Contact/
+       Projects/Resume whenever they overflow). */
+    justify-content: safe center;
+  }
+
+  .app-content::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .app-content::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .app-content::-webkit-scrollbar-thumb {
+    background: rgba(var(--color-border-rgb), 0.34);
+    border-radius: 999px;
+  }
+}
+
 /* -------------------------- MOBILE ------------------------ */
 
 @media (max-width: 600px) {

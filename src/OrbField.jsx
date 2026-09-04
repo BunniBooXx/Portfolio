@@ -57,7 +57,10 @@ export default function OrbField({ orbs }) {
     if (!orbs || orbs.length === 0) return undefined;
 
     const reduceMQ = window.matchMedia?.("(prefers-reduced-motion: reduce)");
-    const fineMQ = window.matchMedia?.("(pointer: fine)");
+    // Both hover AND a fine pointer, not fine-pointer alone — a touch
+    // device reporting a fine digitizer (some styluses) still has no
+    // hover state, and shouldn't get pointer-follow motion.
+    const fineMQ = window.matchMedia?.("(hover: hover) and (pointer: fine)");
     let parallaxActive = Boolean(fineMQ?.matches) && !reduceMQ?.matches;
 
     smoothedRef.current = orbs.map(() => ({ x: 0, y: 0 }));
@@ -181,6 +184,13 @@ export default function OrbField({ orbs }) {
         const mid = base.replace("1)", "0.55)");
         const edge = base.replace("1)", "0.2)");
         const glow = base.replace("1)", "0.16)");
+        // Alternates the ambient float's horizontal direction per orb
+        // (purely by position in the array, not part of orbLayouts.js'
+        // data) so same-depth orbs sharing a duration don't read as
+        // moving in lockstep — same amplitude/duration/delay, mirrored
+        // sideways. Only scales the ambient term in the keyframe below,
+        // never --px/--py, so pointer parallax direction is untouched.
+        const floatDir = i % 2 === 0 ? 1 : -1;
         return (
           <span
             key={i}
@@ -194,6 +204,7 @@ export default function OrbField({ orbs }) {
               "--float-amp": `${cfg.floatAmp}px`,
               "--float-dur": `${cfg.duration}s`,
               "--float-delay": `${orb.delay ?? 0}s`,
+              "--float-dir": floatDir,
               "--orb-mid": mid,
               "--orb-edge": edge,
               "--orb-glow": glow,
@@ -225,13 +236,17 @@ export default function OrbField({ orbs }) {
         /* Ambient float (always on) composes with the JS-driven parallax
            offset (--px/--py, defaulted to 0 when parallax is inactive)
            via calc() inside the keyframe — the two never fight over the
-           transform property. */
+           transform property. --float-dir (1 or -1, set per orb above)
+           only scales the ambient term's horizontal component, so orbs
+           sharing a depth/duration drift toward opposite sides instead of
+           in lockstep, while pointer parallax (--px/--py) keeps tracking
+           the cursor the same way for every orb regardless. */
         @keyframes orbfFloat {
           0%, 100% {
             transform: translate(-50%, -50%) translate3d(var(--px, 0px), var(--py, 0px), 0);
           }
           50% {
-            transform: translate(-50%, -50%) translate3d(calc(var(--px, 0px) + var(--float-amp, 10px) * 0.35), calc(var(--py, 0px) - var(--float-amp, 10px)), 0);
+            transform: translate(-50%, -50%) translate3d(calc(var(--px, 0px) + var(--float-amp, 10px) * 0.35 * var(--float-dir, 1)), calc(var(--py, 0px) - var(--float-amp, 10px)), 0);
           }
         }
 

@@ -290,16 +290,26 @@ export default function Resume() {
           box-sizing:border-box;
         }
 
-        /* .app-main (the shell's 1fr grid row) already IS "the available
-           space" — viewport minus navbar minus footer, with a definite
-           height. Filling it exactly (rather than guessing at vh values)
-           is what lets the header + viewer + gap compose against the real
-           remaining space instead of against the whole viewport. */
+        /* .rm-page sizes itself via flex-grow against .app-content (its
+           real parent — .app-content wraps every route), NOT via a
+           height:100% percentage. A percentage here would need to resolve
+           against .app-content's own height, but .app-content is itself a
+           flex item one level up (in .app-page, alongside .app-footer)
+           that grows to fill ITS available space — stacking two
+           independent "give me all available height" flex mechanisms
+           back to back double-claims space and starves the footer.
+           Measured live: with height:100% here, .rm-preview's own
+           intrinsic size (capped at its max-height) became .app-content's
+           flex-shrink:0 floor, forcing .app-page taller than .app-main by
+           exactly the footer's height on every common laptop viewport.
+           flex-grow avoids that: it only claims whatever .app-content
+           actually resolves to, after the footer's already been
+           accounted for one level up. */
         .rm-page{
           position:relative;
           width:100%;
-          height:100%;
-          min-height:100%;
+          flex:1 1 auto;
+          min-height:0;
           display:flex;
           flex-direction:column;
         }
@@ -448,11 +458,18 @@ export default function Resume() {
           position:relative;
           width:100%;
           max-width:820px;
-          /* flex:1 claims whatever's actually left in .rm-center after the
-             intrinsic header — the real available space — with min/max
-             just as sane guardrails for extreme viewports, instead of an
-             independent vh guess competing with the header's own padding. */
-          flex:1 1 auto;
+          /* flex-basis:0 (not auto) claims whatever's actually left in
+             .rm-center after the intrinsic header — the real available
+             space — with min/max as sane guardrails for extreme
+             viewports, instead of an independent vh guess competing with
+             the header's own padding. Tested live: flex-basis:auto lets
+             this item's own content (or its max-height cap) count as its
+             "intrinsic" size for the OUTER .app-content's flex-shrink:0
+             floor calculation, inflating that floor past the real
+             available space on ordinary laptop heights. Starting the
+             basis at 0 keeps that outer floor small and lets min/max-height
+             do their job at every breakpoint instead. */
+          flex:1 1 0;
           min-height:320px;
           max-height:640px;
           margin-top:clamp(16px, 3vh, 28px);
@@ -709,48 +726,6 @@ export default function Resume() {
           .rm-link:hover,
           .rm-link:focus-visible{
             transform:none !important;
-          }
-        }
-
-
-        /* =========================================================
-           APP SHELL COMPATIBILITY — natural page flow
-           ========================================================= */
-
-        .rm-page {
-          height: auto;
-          min-height: 0;
-        }
-
-        .rm-center {
-          flex: 0 0 auto;
-          min-height: 0;
-          padding: clamp(16px, 3vh, 32px) 0 clamp(18px, 3vh, 28px);
-        }
-
-        .rm-preview {
-          flex: 0 1 auto;
-          width: min(820px, 100%);
-          height: clamp(420px, 62vh, 640px);
-          min-height: 320px;
-          max-height: 640px;
-        }
-
-        @media (max-width: 700px) {
-          .rm-center {
-            padding: 14px 0 18px;
-          }
-
-          .rm-preview {
-            height: clamp(360px, 58vh, 540px);
-            min-height: 340px;
-          }
-        }
-
-        @media (max-width: 420px) {
-          .rm-preview {
-            height: clamp(340px, 56vh, 500px);
-            min-height: 320px;
           }
         }
 
