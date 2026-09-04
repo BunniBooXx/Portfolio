@@ -1,0 +1,89 @@
+/* =========================================================
+   GLOBAL COLOR TOKENS — "Black + White Light"
+   Deep graphite background + smoky dark glass + white/silver
+   light + restrained cool-gray text + a single icy-blue
+   micro-accent used sparingly for interactive/technical signals.
+
+   This replaces the earlier "Muted Pastel Lavender" (Palette D)
+   system. Every color used across the site should reference one
+   of these variables instead of a one-off hex/rgba.
+
+   Each token that is ever used with transparency also has an
+   "-rgb" companion (comma-separated r,g,b) so it can be used as
+   rgba(var(--color-x-rgb), <alpha>) for glass/blur effects.
+   ========================================================= */
+
+:root {
+  /* ---- Surfaces ---- */
+  --color-bg-page: #0B0C0F;           /* page background — graphite, not pure black */
+  --color-bg-page-rgb: 11, 12, 15;
+
+  --color-bg-deepest: #050506;        /* darkest gradient corner / vignette */
+  --color-bg-deepest-rgb: 5, 5, 6;
+
+  --color-bg-elevated: #17181D;       /* opaque elevated panel (non-home nav/footer) */
+  --color-bg-elevated-rgb: 23, 24, 29;
+
+  --color-surface-glass: #1C1E24;     /* smoky translucent charcoal — cards */
+  --color-surface-glass-rgb: 28, 30, 36;
+
+  --color-surface-recessed: #101114;  /* recessed/inset — inputs, tag chips, menus */
+  --color-surface-recessed-rgb: 16, 17, 20;
+
+  --color-border: #B9BEC9;            /* thin silver/gray border, used at low alpha */
+  --color-border-rgb: 185, 190, 201;
+
+  --color-shadow-rgb: 0, 0, 0;        /* true elevation shadows (not a glow) */
+
+  /* ---- Text ---- */
+  --color-text-primary: #EDEDEE;      /* soft off-white — headings, primary copy */
+  --color-text-primary-rgb: 237, 237, 238;
+
+  --color-text-secondary: #C7C9CF;    /* cool light gray — subtitles, labels */
+  --color-text-secondary-rgb: 199, 201, 207;
+
+  --color-text-muted: #8D909B;        /* dim cool gray — fine print, captions */
+  --color-text-muted-rgb: 141, 144, 155;
+
+  /* ---- Interactive accent (white/silver light) ---- */
+  --color-accent: #F2F3F5;
+  --color-accent-rgb: 242, 243, 245;
+
+  --color-accent-hover: #FFFFFF;
+  --color-accent-hover-rgb: 255, 255, 255;
+
+  --color-text-on-accent: #101114;    /* dark text placed on the light accent surface */
+
+  /* ---- Focus ---- */
+  --color-focus-ring: #7DD3FC;
+  --color-focus-ring-rgb: 125, 211, 252;
+
+  /* ---- Glows (decorative, low-opacity) ---- */
+  --color-glow-white: #FFFFFF;
+  --color-glow-white-rgb: 255, 255, 255;
+
+  --color-glow-silver: #C8CDD6;
+  --color-glow-silver-rgb: 200, 205, 214;
+
+  /* ---- Icy-blue micro-accent — sparingly: focus rings, tiny status
+     dots, hover/active signals. Not a general brand color. ---- */
+  --color-ice: #7DD3FC;
+  --color-ice-rgb: 125, 211, 252;
+
+  /* ---- Nav active-state accent — champagne ivory / warm silver.
+     Used ONLY for the navbar's current-page indication (Projects
+     underline, About Me / Resume active rows). Deliberately separate
+     from --color-ice: the rest of the site's blue accents (orbs,
+     project-card highlights, About Me heading, focus rings) are
+     unaffected by this token. ---- */
+  --color-nav-active: #DDD8CE;
+  --color-nav-active-rgb: 221, 216, 206;
+}
+
+/* Visible keyboard-focus ring across the app (added as part of this
+   pass's accessibility check — the previous theme relied on default
+   browser outlines only). */
+:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}

@@ -9,8 +9,6 @@ export default function Navbar() {
   const [scrolled, setScrolled]     = useState(false);
   const dropRef = useRef(null);
 
-  const isHome = location.pathname === "/" || location.pathname === "";
-
   useEffect(() => { setDropOpen(false); setMobileOpen(false); }, [location.pathname]);
 
   useEffect(() => {
@@ -63,11 +61,9 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={["lav-nav", isHome ? "lav-nav--home" : "lav-nav--sticky", scrolled ? "lav-nav--scrolled" : ""].join(" ")}
+        className={["lav-nav", scrolled ? "lav-nav--scrolled" : ""].filter(Boolean).join(" ")}
         aria-label="Primary navigation"
       >
-        <div className="lav-shimmer" aria-hidden="true" />
-
         <div className="lav-pill">
           <Link to="/" className="lav-brand" aria-label="Home">
             <span className="lav-brandName">Home</span>
@@ -76,7 +72,6 @@ export default function Navbar() {
           <div className="lav-links" role="list">
             <Link to="/projects" role="listitem" className={`lav-link ${isActive("/projects") ? "lav-link--active" : ""}`}>
               <span className="lav-linkLabel">Projects</span>
-              {isActive("/projects") && <span className="lav-activeDot" aria-hidden="true" />}
             </Link>
 
             <div className="lav-drop" ref={dropRef} role="listitem">
@@ -144,12 +139,13 @@ export default function Navbar() {
 
       <style>{`
         .lav-nav {
-          --c-purple:      #7c4fff;
-          --c-purple-mid:  #a47aff;
-          --c-purple-pale: #d8c8ff;
-          --c-border:      rgba(255,255,255,0.70);
-          --c-shadow-sm:   0 4px 20px rgba(100,60,200,0.12);
-          --c-shadow-lg:   0 12px 48px rgba(100,60,200,0.20);
+          --c-border:      rgba(255,255,255,0.16);
+          /* Kept tight (small blur radius) on purpose: at the pill's near-
+             full-width, a wide soft blur here reads as a horizontal light
+             flare/halo across the top of the page rather than a normal
+             grounding shadow under the pill. */
+          --c-shadow-sm:   0 3px 8px rgba(var(--color-glow-silver-rgb),0.10);
+          --c-shadow-lg:   0 12px 48px rgba(var(--color-glow-silver-rgb),0.20);
           --pill-radius:   999px;
           --transition:    200ms cubic-bezier(0.34, 1.2, 0.64, 1);
           --font:          Nunito, ui-sans-serif, system-ui;
@@ -163,36 +159,24 @@ export default function Navbar() {
           z-index: 1000;
           width: 100%;
           flex-shrink: 0;
-          padding: 10px 16px 12px;
+          padding: 0;
           display: flex;
           flex-direction: column;
           align-items: center;
           font-family: var(--font);
-          background: linear-gradient(180deg, rgba(246,240,255,0.96) 0%, rgba(237,226,255,0.88) 100%);
-          backdrop-filter: blur(20px) saturate(1.6);
-          -webkit-backdrop-filter: blur(20px) saturate(1.6);
-          border-bottom: 1px solid rgba(200,180,255,0.25);
+          /* Transparent shell everywhere — matches the home route: the
+             nav pill floats directly over each page's own background
+             instead of sitting inside a full-width glass/solid slab. */
+          background: transparent;
+          backdrop-filter: none;
+          -webkit-backdrop-filter: none;
+          border-bottom: none;
           transition: box-shadow 300ms ease;
         }
 
         .lav-nav--sticky   { position: sticky !important; top: 0 !important; }
         .lav-nav--home     { position: relative !important; top: auto !important; }
-        .lav-nav--scrolled { box-shadow: var(--c-shadow-lg); }
-
-        .lav-shimmer {
-          position: absolute; top: 0; left: -100%;
-          width: 60%; height: 100%;
-          background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.28) 50%, transparent 70%);
-          animation: shimmerSweep 6s ease-in-out infinite;
-          pointer-events: none; z-index: 0;
-        }
-        @keyframes shimmerSweep {
-          0%   { left: -100%; opacity: 0; }
-          10%  { opacity: 1; }
-          60%  { left: 140%; opacity: 1; }
-          61%  { opacity: 0; }
-          100% { left: 140%; opacity: 0; }
-        }
+        .lav-nav--scrolled { box-shadow: none; }
 
         .lav-pill {
           position: relative; z-index: 1;
@@ -200,27 +184,33 @@ export default function Navbar() {
           display: flex; align-items: center;
           justify-content: space-between; gap: 8px;
           padding: 10px 10px 10px 16px;
-          background: linear-gradient(135deg, rgba(255,255,255,0.72) 0%, rgba(244,235,255,0.68) 50%, rgba(235,220,255,0.66) 100%);
+          background: linear-gradient(135deg, rgba(var(--color-surface-glass-rgb),0.88) 0%, rgba(var(--color-surface-glass-rgb),0.7) 50%, rgba(var(--color-surface-recessed-rgb),0.68) 100%);
           border: 1px solid var(--c-border); border-radius: var(--pill-radius);
-          box-shadow: var(--c-shadow-sm), inset 0 1px 0 rgba(255,255,255,0.80), inset 0 -1px 0 rgba(160,120,255,0.08);
+          box-shadow: var(--c-shadow-sm), inset 0 1px 0 rgba(255,255,255,0.10), inset 0 -1px 0 rgba(0,0,0,0.3);
         }
         .lav-pill::before {
           content: ""; position: absolute; top: 0; left: 0;
           width: 40%; height: 100%; border-radius: var(--pill-radius);
-          background: radial-gradient(ellipse at 0% 50%, rgba(255,255,255,0.45), transparent 70%);
+          background: radial-gradient(ellipse at 0% 50%, rgba(255,255,255,0.08), transparent 70%);
           pointer-events: none;
         }
 
         .lav-brand {
           display: inline-flex; align-items: center; gap: 5px;
           text-decoration: none; padding: 6px 14px;
-          border-radius: var(--pill-radius); border: 1px solid rgba(180,140,255,0.25);
-          background: rgba(255,255,255,0.55); box-shadow: 0 2px 10px rgba(140,90,255,0.10);
-          transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+          border-radius: var(--pill-radius); border: 1px solid rgba(var(--color-border-rgb),0.22);
+          background: rgba(var(--color-surface-recessed-rgb),0.6); box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+          transition: background var(--transition), border-color var(--transition), transform var(--transition), box-shadow var(--transition);
         }
-        .lav-brand:hover { background: rgba(255,255,255,0.80); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(140,90,255,0.18); }
+        .lav-brand:hover,
+        .lav-brand:focus-visible {
+          background: rgba(var(--color-surface-recessed-rgb),0.85);
+          border-color: rgba(var(--color-glow-white-rgb),0.3);
+          transform: translateY(-1px);
+          box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
 
-        .lav-brandName { font-size: 0.82rem; font-weight: 900; letter-spacing: 0.04em; color: #3d1f8a; }
+        .lav-brandName { font-size: 0.82rem; font-weight: 900; letter-spacing: 0.04em; color: var(--color-text-primary); }
 
         .lav-links { display: flex; align-items: center; gap: 4px; }
 
@@ -229,37 +219,49 @@ export default function Navbar() {
           padding: 7px 14px; border-radius: var(--pill-radius);
           border: 1px solid transparent; background: transparent;
           text-decoration: none; font-size: 0.82rem; font-weight: 800;
-          color: #4a2a96; cursor: pointer; white-space: nowrap; letter-spacing: 0.02em;
+          color: var(--color-text-primary); cursor: pointer; white-space: nowrap; letter-spacing: 0.02em;
           font-family: var(--font);
-          transition: background var(--transition), border-color var(--transition), color var(--transition), transform var(--transition), box-shadow var(--transition);
+          transition: color var(--transition), opacity var(--transition);
         }
-        .lav-link:hover { background: rgba(255,255,255,0.68); border-color: rgba(180,140,255,0.30); color: var(--c-purple); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(140,90,255,0.14); }
-        .lav-link--active { background: rgba(255,255,255,0.75); border-color: rgba(160,110,255,0.35); color: var(--c-purple); box-shadow: 0 4px 16px rgba(140,90,255,0.16); }
-        .lav-link--open   { background: rgba(255,255,255,0.65); border-color: rgba(160,110,255,0.30); color: var(--c-purple); }
-        .lav-linkLabel { line-height: 1; }
+        /* Minimal/editorial hover — a slight text brightness lift only,
+           no pill background/border/shadow. Keyboard focus keeps the
+           global :focus-visible ring (index.css) since no outline is
+           suppressed here — that's the "only for keyboard" ring. */
+        .lav-link:hover {
+          color: var(--color-glow-white);
+        }
+        /* Current-page signal (Projects only): a short underline sized to
+           the label's own text width, not the whole pill hit-area —
+           restrained neutral silver, no fill/border/glow/dot. This is a
+           route-driven class (isActive("/projects")), independent of
+           whatever .lav-link--open state the separate More trigger is
+           in, so it stays put while More opens/closes. */
+        .lav-link--active { color: var(--color-text-primary); }
+        .lav-link--active .lav-linkLabel::after {
+          content: "";
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: -4px;
+          height: 1px;
+          background: rgba(var(--color-nav-active-rgb), 0.8);
+        }
+        /* "More" open state: no pill/outline — the dropdown panel
+           appearing plus the chevron flip are feedback enough. */
+        .lav-link--open { color: var(--color-glow-white); }
+        .lav-linkLabel { position: relative; line-height: 1; }
 
-        .lav-activeDot {
-          position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%);
-          width: 4px; height: 4px; border-radius: 50%; background: var(--c-purple);
-          box-shadow: 0 0 6px rgba(124,79,255,0.6);
-          animation: dotPop 300ms cubic-bezier(0.34,1.56,0.64,1) both;
-        }
-        @keyframes dotPop {
-          from { transform: translateX(-50%) scale(0); opacity: 0; }
-          to   { transform: translateX(-50%) scale(1); opacity: 1; }
-        }
-
-        .lav-chevron { display: inline-flex; align-items: center; transition: transform 220ms ease; color: var(--c-purple-mid); }
+        .lav-chevron { display: inline-flex; align-items: center; transition: transform 220ms ease; color: var(--color-text-secondary); }
         .lav-chevron--up { transform: rotate(180deg); }
 
         .lav-drop { position: relative; }
 
         .lav-dropPanel {
           position: absolute; top: calc(100% + 10px); right: 0; min-width: 200px; z-index: 200;
-          background: rgba(250,246,255,0.96);
+          background: rgba(var(--color-surface-glass-rgb),0.96);
           backdrop-filter: blur(20px) saturate(1.5); -webkit-backdrop-filter: blur(20px) saturate(1.5);
-          border: 1px solid rgba(200,170,255,0.40); border-radius: 18px;
-          box-shadow: 0 20px 60px rgba(100,60,200,0.18), 0 4px 16px rgba(100,60,200,0.10), inset 0 1px 0 rgba(255,255,255,0.80);
+          border: 1px solid rgba(var(--color-border-rgb),0.60); border-radius: 18px;
+          box-shadow: 0 20px 60px rgba(var(--color-glow-silver-rgb),0.18), 0 4px 16px rgba(var(--color-glow-silver-rgb),0.10), inset 0 1px 0 rgba(255,255,255,0.80);
           overflow: hidden; pointer-events: none; opacity: 0;
           transform: translateY(-8px) scale(0.97); transform-origin: top right;
           transition: opacity 200ms ease, transform 220ms cubic-bezier(0.34,1.2,0.64,1);
@@ -271,7 +273,7 @@ export default function Navbar() {
         .lav-dropItem {
           display: flex; align-items: center; gap: 10px; padding: 10px 12px;
           border-radius: 12px; text-decoration: none; font-size: 0.84rem; font-weight: 800;
-          color: #3d1f8a; border: 1px solid transparent;
+          color: var(--color-text-primary); border: 1px solid transparent;
           transition: background var(--transition), border-color var(--transition), transform var(--transition);
           animation: dropItemIn 200ms ease both;
         }
@@ -279,23 +281,33 @@ export default function Navbar() {
           from { opacity: 0; transform: translateX(6px); }
           to   { opacity: 1; transform: translateX(0); }
         }
-        .lav-dropItem:hover { background: rgba(220,200,255,0.35); border-color: rgba(180,140,255,0.25); transform: translateX(3px); }
-        .lav-dropItem--active { background: rgba(200,175,255,0.28); border-color: rgba(180,140,255,0.30); color: var(--c-purple); }
+        .lav-dropItem:hover,
+        .lav-dropItem:focus-visible { background: rgba(var(--color-surface-recessed-rgb),0.60); border-color: rgba(var(--color-glow-white-rgb),0.25); transform: translateX(3px); }
+        /* Current-page row (About Me / Resume): text color alone signals
+           it — no permanent outlined box or filled background. Hover/
+           focus above still apply normally on top of this. */
+        .lav-dropItem--active { color: var(--color-nav-active); }
         .lav-dropItemLabel { flex: 1; }
-        .lav-dropItemArrow { font-size: 0.75rem; color: var(--c-purple-mid); opacity: 0; transition: opacity 180ms, transform 180ms; }
-        .lav-dropItem:hover .lav-dropItemArrow { opacity: 1; transform: translateX(3px); }
+        .lav-dropItemArrow { font-size: 0.75rem; color: var(--color-text-secondary); opacity: 0; transition: opacity 180ms, transform 180ms; }
+        .lav-dropItem:hover .lav-dropItemArrow,
+        .lav-dropItem:focus-visible .lav-dropItemArrow { opacity: 1; transform: translateX(3px); }
 
         .lav-burger {
           display: none; flex-direction: column; justify-content: center; align-items: center;
           gap: 4.5px; width: 38px; height: 38px; padding: 8px; border-radius: 12px;
-          border: 1px solid rgba(180,140,255,0.28); background: rgba(255,255,255,0.55);
+          border: 1px solid rgba(var(--color-border-rgb),0.28); background: rgba(var(--color-surface-recessed-rgb),0.6);
           cursor: pointer; flex-shrink: 0;
-          transition: background var(--transition), box-shadow var(--transition);
+          transition: background var(--transition), border-color var(--transition), box-shadow var(--transition);
         }
-        .lav-burger:hover { background: rgba(255,255,255,0.80); box-shadow: 0 4px 14px rgba(140,90,255,0.14); }
+        .lav-burger:hover,
+        .lav-burger:focus-visible {
+          background: rgba(var(--color-surface-recessed-rgb),0.85);
+          border-color: rgba(var(--color-glow-white-rgb),0.3);
+          box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+        }
         .lav-burger span {
           display: block; width: 18px; height: 1.8px; border-radius: 999px;
-          background: var(--c-purple); transform-origin: center;
+          background: var(--color-text-primary); transform-origin: center;
           transition: transform 260ms ease, opacity 200ms ease, width 260ms ease;
         }
         .lav-burger--open span:nth-child(1) { transform: translateY(6.3px) rotate(45deg); }
@@ -342,16 +354,16 @@ export default function Navbar() {
           flex-direction: column;
           gap: 4px;
           padding: 10px 8px 14px;
-          background: linear-gradient(180deg, rgba(246,240,255,0.98) 0%, rgba(237,226,255,0.95) 100%);
-          border-bottom: 1px solid rgba(200,180,255,0.25);
-          box-shadow: 0 12px 24px rgba(100,60,200,0.12);
+          background: linear-gradient(180deg, rgba(var(--color-surface-glass-rgb),0.98) 0%, rgba(var(--color-surface-recessed-rgb),0.95) 100%);
+          border-bottom: 1px solid rgba(var(--color-border-rgb),0.5);
+          box-shadow: 0 12px 24px rgba(var(--color-glow-silver-rgb),0.12);
           border-radius: 0 0 16px 16px;
         }
 
         .lav-drawerLink {
           display: flex; align-items: center; gap: 12px; padding: 12px 16px;
           border-radius: 14px; text-decoration: none; font-size: 0.92rem; font-weight: 800;
-          color: #3d1f8a; border: 1px solid transparent;
+          color: var(--color-text-primary); border: 1px solid transparent;
           /* Staggered slide-in driven by transitionDelay on the element */
           opacity: 0;
           transform: translateY(-6px);
@@ -366,12 +378,13 @@ export default function Navbar() {
           opacity: 1;
           transform: translateY(0);
         }
-        .lav-drawerLink:hover { background: rgba(220,200,255,0.35); border-color: rgba(180,140,255,0.25); color: var(--c-purple); }
-        .lav-drawerLink--active { background: rgba(210,185,255,0.30); border-color: rgba(170,130,255,0.30); color: var(--c-purple); }
+        .lav-drawerLink:hover,
+        .lav-drawerLink:focus-visible { background: rgba(var(--color-surface-recessed-rgb),0.60); border-color: rgba(var(--color-glow-white-rgb),0.25); color: var(--color-text-primary); }
+        .lav-drawerLink--active { background: rgba(var(--color-surface-recessed-rgb),0.70); border-color: rgba(var(--color-border-rgb),0.30); color: var(--color-nav-active); }
 
         .lav-backdrop {
           position: fixed; inset: 0; z-index: 999;
-          background: rgba(30,10,60,0.18);
+          background: rgba(var(--color-text-primary-rgb),0.25);
           backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
           animation: fadeIn 200ms ease both;
         }
@@ -381,15 +394,20 @@ export default function Navbar() {
           .lav-links  { display: none; }
           .lav-burger { display: flex; }
           .lav-drawer { display: block; }
-          .lav-nav    { padding: 8px 10px 10px; }
+          .lav-nav    { padding: 0; }
         }
         @media (max-width: 420px) {
-          .lav-brandName    { display: none; }
+          /* Home stays visible (text and all) at every width — this used
+             to hide .lav-brandName entirely below 420px. Instead, only
+             tighten the pill's horizontal padding/gaps a little so the
+             "Home" pill + hamburger keep comfortable room down to very
+             narrow phones (320px). */
+          .lav-brand { padding: 6px 10px; }
+          .lav-pill  { padding: 10px 8px 10px 12px; gap: 6px; }
         }
         @media (prefers-reduced-motion: reduce) {
-          .lav-shimmer, .lav-activeDot { animation: none; }
           .lav-link, .lav-brand, .lav-dropPanel, .lav-dropItem,
-          .lav-drawerLink, .lav-drawer, .lav-burger span { transition: none; }
+          .lav-drawerLink, .lav-drawer, .lav-burger, .lav-burger span { transition: none; }
         }
       `}</style>
     </>

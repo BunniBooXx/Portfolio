@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Concept C — Original: Centered Axis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg-page:#F5F3FB;
+    --color-bg-card:#FAF9FE;
+    --color-surface-recessed:#E9E5F6;
+    --color-border:#CFC6EA;
+    --color-ink:#332B4D;
+    --color-text-muted:#5E5580;
+    --color-brand-purple:#6E63A6;
+    --color-brand-purple-deep:#4F4270;
+    --color-brand-purple-deep-2:#5F5286;
+    --color-glow-strong:#8B72CC;
+    --color-glow-strong-rgb:139,114,204;
+    --color-glow-soft:#C3B8F0;
+    --color-glow-soft-rgb:195,184,240;
+    --color-accent-blue:#A7BEDD;
+    --color-accent-blue-rgb:167,190,221;
+    --color-accent-pink:#D6B9D4;
+    --color-accent-pink-rgb:214,185,212;
+    --color-bg-card-rgb:250,249,254;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;width:100%;height:100%;background:var(--color-bg-page);font-family:Nunito,ui-sans-serif,system-ui;}
+  .page{display:flex;flex-direction:column;width:100%;height:100%;}
+  .protoNav{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;
+    padding:20px 32px;position:relative;z-index:40;}
+  .protoNav .brand{display:inline-flex;align-items:center;padding:11px 22px;border-radius:999px;
+    background:rgba(255,255,255,0.72);border:1px solid rgba(207,198,234,0.7);
+    font-weight:900;font-size:.85rem;color:var(--color-brand-purple-deep);font-family:Nunito,sans-serif;}
+  .protoNav .links{display:flex;align-items:center;gap:26px;font-family:Nunito,sans-serif;
+    font-weight:800;font-size:.9rem;color:var(--color-brand-purple-deep);}
+  .stage{position:relative;width:100%;flex:1 1 auto;min-height:0;overflow:hidden;
+    background:
+      radial-gradient(1200px 800px at 50% 0%, rgba(var(--color-glow-soft-rgb),0.30), transparent 62%),
+      radial-gradient(900px 600px at 50% 100%, rgba(var(--color-accent-blue-rgb),0.18), transparent 60%),
+      linear-gradient(180deg, var(--color-bg-card) 0%, var(--color-bg-page) 50%, var(--color-surface-recessed) 100%);
+  }
+  canvas.orbs{position:absolute;inset:0;pointer-events:none;z-index:1;}
+  .badge-note{position:fixed;top:14px;left:14px;z-index:50;background:rgba(255,255,255,0.85);border:1px solid var(--color-border);
+    color:var(--color-brand-purple-deep);font-size:11px;font-weight:800;letter-spacing:.04em;padding:5px 10px;border-radius:999px;
+    font-family:Nunito,sans-serif;}
+
+  .spine{position:absolute;left:50%;top:6vh;bottom:6vh;width:1px;z-index:2;
+    background:linear-gradient(180deg, transparent 0%, var(--color-border) 18%, var(--color-border) 82%, transparent 100%);
+    transform:translateX(-50%);}
+
+  .hero{position:relative;z-index:4;min-height:100%;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;text-align:center;padding:3vh 6vw;}
+
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:.76rem;font-weight:800;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--color-brand-purple-deep);margin-bottom:clamp(22px,4vh,42px);
+    background:var(--color-bg-page);padding:0 14px;}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--color-glow-strong);
+    box-shadow:0 0 0 4px rgba(var(--color-glow-strong-rgb),0.20);}
+
+  h1.name{margin:0 0 clamp(16px,2.6vh,28px) 0;line-height:.95;}
+  .n-light{display:block;font-family:"Instrument Serif",Georgia,serif;font-style:italic;font-weight:400;
+    font-size:clamp(1.6rem,3vw,2.5rem);color:var(--color-brand-purple);margin-bottom:.15em;letter-spacing:.01em;}
+  .n-bold{display:block;font-family:"Instrument Serif",Georgia,serif;font-style:normal;font-weight:400;
+    font-size:clamp(3.4rem,8.4vw,7.8rem);color:var(--color-ink);letter-spacing:-.01em;}
+
+  .tagline{margin:0 0 16px 0;font-size:clamp(.8rem,.98vw,.94rem);font-weight:800;
+    letter-spacing:.06em;text-transform:uppercase;color:var(--color-brand-purple-deep);max-width:38ch;}
+
+  .bio{margin:0 0 clamp(26px,4vh,40px) 0;font-size:clamp(.92rem,1.05vw,1.02rem);line-height:1.6;
+    color:var(--color-ink);opacity:.78;max-width:48ch;font-weight:600;}
+
+  .actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:center;}
+  .btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;
+    padding:14px 30px;border-radius:999px;font-weight:900;font-size:.92rem;letter-spacing:.02em;
+    font-family:Nunito,sans-serif;transition:transform .16s ease;}
+  .btn:hover{transform:translateY(-2px);}
+  .btn-primary{background:linear-gradient(135deg,var(--color-brand-purple-deep-2) 0%,var(--color-brand-purple-deep) 100%);
+    color:#fff;box-shadow:0 12px 28px rgba(79,66,112,0.28);}
+  .btn-ghost{background:transparent;color:var(--color-brand-purple-deep);border:1.5px solid rgba(var(--color-glow-strong-rgb),0.4);}
+
+  /* drifting capability pearls — capability info woven into the orb system */
+  .cap-pearl{position:absolute;z-index:3;display:flex;align-items:center;gap:7px;
+    padding:9px 15px;border-radius:999px;background:rgba(var(--color-bg-card-rgb),0.55);
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,0.6);box-shadow:0 10px 24px rgba(79,66,112,0.10);
+    font-size:.7rem;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:var(--color-brand-purple-deep);
+    animation: drift 9s ease-in-out infinite;}
+  .cap-pearl .pdot{width:5px;height:5px;border-radius:50%;flex:0 0 auto;}
+  .p1{left:6%; top:24%; animation-duration:10s;}
+  .p1 .pdot{background:var(--color-glow-strong);}
+  .p2{right:6%; top:30%; animation-duration:12s; animation-delay:-3s;}
+  .p2 .pdot{background:var(--color-accent-blue);}
+  .p3{right:9%; bottom:16%; animation-duration:11s; animation-delay:-6s;}
+  .p3 .pdot{background:var(--color-accent-pink);}
+
+  @keyframes drift{
+    0%,100%{transform:translate(0,0);}
+    33%{transform:translate(8px,-10px);}
+    66%{transform:translate(-6px,8px);}
+  }
+
+  @media (max-width:900px){
+    .cap-pearl{display:none;}
+    .n-bold{font-size:clamp(2.8rem,15vw,4.4rem);}
+    .spine{display:none;}
+  }
+</style>
+</head>
+<body>
+<div class="badge-note">CONCEPT C — Completely Original: Centered Axis (prototype, cool-lavender tokens)</div>
+<div class="page">
+  <nav class="protoNav">
+    <span class="brand">Home</span>
+    <div class="links"><span>Projects</span><span>More ▾</span></div>
+  </nav>
+  <div class="stage">
+    <canvas class="orbs" id="orbs"></canvas>
+    <div class="spine"></div>
+
+    <div class="cap-pearl p1"><span class="pdot"></span>Full Stack</div>
+    <div class="cap-pearl p2"><span class="pdot"></span>AI Systems</div>
+    <div class="cap-pearl p3"><span class="pdot"></span>AI Evaluation</div>
+
+    <div class="hero">
+      <div class="eyebrow"><span class="dot"></span>Available for work</div>
+      <h1 class="name">
+        <span class="n-light">Jaqueline</span>
+        <span class="n-bold">Smith</span>
+      </h1>
+      <p class="tagline">Software Engineer building AI systems and full-stack products</p>
+      <p class="bio">I build full-stack, AI-enabled products across React, React Native, and Django, combining polished interfaces with retrieval, LLM orchestration, and deterministic safeguards.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="#">See My Work</a>
+        <a class="btn btn-ghost" href="#">About Me</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const canvas = document.getElementById('orbs');
+  const ctx = canvas.getContext('2d', {alpha:true});
+  let w=0,h=0;
+  const rand=(a,b)=>a+Math.random()*(b-a);
+  const clamp=(n,a,b)=>Math.min(b,Math.max(a,n));
+  function resize(){
+    const dpr = Math.max(1, Math.min(2, window.devicePixelRatio||1));
+    w = window.innerWidth; h = window.innerHeight;
+    canvas.style.width=w+'px'; canvas.style.height=h+'px';
+    canvas.width=Math.floor(w*dpr); canvas.height=Math.floor(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  const colors = [
+    "rgba(139,114,204,1)",
+    "rgba(195,184,240,1)",
+    "rgba(195,184,240,1)",
+    "rgba(167,190,221,1)",
+    "rgba(214,185,212,1)",
+  ];
+  let orbs=[];
+  function makeOrb(x,y){
+    const r=rand(10,26);
+    const c=colors[Math.floor(Math.random()*colors.length)];
+    return {x,y,r,c,vx:rand(-.12,.12),vy:rand(.16,.5),wobble:rand(0,Math.PI*2),wobbleSpeed:rand(.006,.014)};
+  }
+  function init(){
+    orbs=[];
+    const count = clamp(Math.floor(w/150),8,18);
+    for(let i=0;i<count;i++) orbs.push(makeOrb(rand(40,w-40), rand(-h*.3,h)));
+  }
+  function drawOrb(o){
+    ctx.beginPath();
+    ctx.arc(o.x,o.y,o.r*3,0,Math.PI*2);
+    const g=ctx.createRadialGradient(o.x,o.y,0,o.x,o.y,o.r*3);
+    g.addColorStop(0,o.c.replace('1)','0.12)'));
+    g.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=g; ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(o.x,o.y,o.r,0,Math.PI*2);
+    const rg=ctx.createRadialGradient(o.x-o.r*.35,o.y-o.r*.35,o.r*.15,o.x,o.y,o.r);
+    rg.addColorStop(0,'rgba(255,255,255,0.85)');
+    rg.addColorStop(.34,o.c.replace('1)','0.46)'));
+    rg.addColorStop(1,o.c.replace('1)','0.20)'));
+    ctx.fillStyle=rg; ctx.fill();
+    ctx.strokeStyle='rgba(110,99,166,0.12)'; ctx.lineWidth=1; ctx.stroke();
+  }
+  function step(){
+    ctx.clearRect(0,0,w,h);
+    const gravity=.01, air=.995, bounce=.7;
+    for(const o of orbs){
+      o.wobble+=o.wobbleSpeed;
+      o.vx+=Math.sin(o.wobble)*.003;
+      o.vy+=gravity;
+      o.x+=o.vx; o.y+=o.vy;
+      o.vx*=air; o.vy*=air;
+      if(o.x-o.r<0){o.x=o.r;o.vx=Math.abs(o.vx)*bounce;}
+      if(o.x+o.r>w){o.x=w-o.r;o.vx=-Math.abs(o.vx)*bounce;}
+      if(o.y+o.r>h){
+        o.y=h-o.r; o.vy=-Math.abs(o.vy)*bounce; o.vx*=.92;
+        if(Math.abs(o.vy)<.08){o.x=rand(40,w-40);o.y=rand(-160,-30);o.vx=rand(-.12,.12);o.vy=rand(.2,.6);o.wobble=rand(0,Math.PI*2);}
+      }
+      drawOrb(o);
+    }
+    requestAnimationFrame(step);
+  }
+  resize(); init(); step();
+  window.addEventListener('resize', ()=>{resize(); init();});
+})();
+</script>
+</body>
+</html>

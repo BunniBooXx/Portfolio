@@ -1,24 +1,11 @@
-
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-
-const ENABLE_ORBS = true;
+import usePointerGlow from "./usePointerGlow";
+import useMagneticGlass from "./useMagneticGlass";
 
 export default function Welcome() {
-  const orbsCanvasRef = useRef(null);
-  const rafOrbsRef = useRef(0);
-  const orbsRef = useRef([]);
-  const [reducedMotion, setReducedMotion] = useState(false);
-
-  const theme = useMemo(
-    () => ({
-      bg0: "#fcfaff",
-      bg1: "#f5efff",
-      bg2: "#eee3ff",
-      bg3: "#e6d7ff",
-    }),
-    []
-  );
+  const ghostGlowRef = usePointerGlow();
+  const magnetRef = useMagneticGlass();
 
   useEffect(() => {
     const id = "welcome-fonts";
@@ -27,189 +14,16 @@ export default function Welcome() {
     link.id = id;
     link.rel = "stylesheet";
     link.href =
-      "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Nunito:wght@500;700;800;900&display=swap";
+      "https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500&family=Nunito:wght@500;700;800;900&display=swap";
     document.head.appendChild(link);
   }, []);
 
-  useEffect(() => {
-    const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
-    const set = () => setReducedMotion(Boolean(mq?.matches));
-    set();
-    mq?.addEventListener?.("change", set);
-    return () => mq?.removeEventListener?.("change", set);
-  }, []);
-
-  useEffect(() => {
-    if (!ENABLE_ORBS) return;
-    const canvas = orbsCanvasRef.current;
-    if (!canvas) return;
-    const host = canvas.closest(".gs-hero");
-    if (!host) return;
-    const ctx = canvas.getContext("2d", { alpha: true });
-    if (!ctx) return;
-
-    let w = 0;
-    let h = 0;
-
-    const rand = (min, max) => min + Math.random() * (max - min);
-    const clamp = (n, a, b) => Math.min(b, Math.max(a, n));
-
-    const resize = () => {
-      const rect = host.getBoundingClientRect();
-      const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
-      w = Math.max(1, Math.floor(rect.width));
-      h = Math.max(1, Math.floor(rect.height));
-      canvas.style.width = `${w}px`;
-      canvas.style.height = `${h}px`;
-      canvas.width = Math.floor(w * dpr);
-      canvas.height = Math.floor(h * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    };
-
-    const orbColors = [
-      "rgba(184,164,255,1)",
-      "rgba(214,204,255,1)",
-      "rgba(110,201,255,1)",
-      "rgba(127,240,198,1)",
-      "rgba(255,204,235,1)",
-    ];
-
-    const makeOrb = (x, y) => {
-      const r = rand(10, 26);
-      const c = orbColors[Math.floor(Math.random() * orbColors.length)];
-      return {
-        x,
-        y,
-        r,
-        c,
-        vx: rand(-0.16, 0.16),
-        vy: rand(0.2, 0.7),
-        wobble: rand(0, Math.PI * 2),
-        wobbleSpeed: rand(0.008, 0.018),
-      };
-    };
-
-    const drawOrb = (o) => {
-      ctx.beginPath();
-      ctx.arc(o.x, o.y, o.r * 3.15, 0, Math.PI * 2);
-      const g = ctx.createRadialGradient(o.x, o.y, 0, o.x, o.y, o.r * 3.15);
-      g.addColorStop(0, o.c.replace("1)", "0.13)"));
-      g.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = g;
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.arc(o.x, o.y, o.r, 0, Math.PI * 2);
-      const rg = ctx.createRadialGradient(
-        o.x - o.r * 0.35,
-        o.y - o.r * 0.35,
-        o.r * 0.16,
-        o.x,
-        o.y,
-        o.r
-      );
-      rg.addColorStop(0, "rgba(255,255,255,0.82)");
-      rg.addColorStop(0.34, o.c.replace("1)", "0.46)"));
-      rg.addColorStop(1, o.c.replace("1)", "0.20)"));
-      ctx.fillStyle = rg;
-      ctx.fill();
-      ctx.strokeStyle = "rgba(123,92,255,0.10)";
-      ctx.lineWidth = 1;
-      ctx.stroke();
-    };
-
-    const init = () => {
-      orbsRef.current = [];
-      const count = clamp(Math.floor(w / 150), 8, 18);
-      for (let i = 0; i < count; i++) {
-        orbsRef.current.push(makeOrb(rand(40, w - 40), rand(-h * 0.2, h)));
-      }
-    };
-
-    const step = () => {
-      ctx.clearRect(0, 0, w, h);
-      const gravity = 0.012;
-      const air = 0.994;
-      const bounce = 0.72;
-
-      for (const o of orbsRef.current) {
-        o.wobble += o.wobbleSpeed;
-        o.vx += Math.sin(o.wobble) * 0.003;
-        o.vy += gravity;
-        o.x += o.vx;
-        o.y += o.vy;
-        o.vx *= air;
-        o.vy *= air;
-
-        if (o.x - o.r < 0) {
-          o.x = o.r;
-          o.vx = Math.abs(o.vx) * bounce;
-        }
-        if (o.x + o.r > w) {
-          o.x = w - o.r;
-          o.vx = -Math.abs(o.vx) * bounce;
-        }
-        if (o.y + o.r > h) {
-          o.y = h - o.r;
-          o.vy = -Math.abs(o.vy) * bounce;
-          o.vx *= 0.92;
-
-          if (Math.abs(o.vy) < 0.08) {
-            o.x = rand(40, w - 40);
-            o.y = rand(-160, -30);
-            o.vx = rand(-0.16, 0.16);
-            o.vy = rand(0.25, 0.8);
-            o.wobble = rand(0, Math.PI * 2);
-          }
-        }
-
-        drawOrb(o);
-      }
-
-      rafOrbsRef.current = requestAnimationFrame(step);
-    };
-
-    resize();
-    init();
-
-    if (!reducedMotion) {
-      rafOrbsRef.current = requestAnimationFrame(step);
-    } else {
-      ctx.clearRect(0, 0, w, h);
-      for (const o of orbsRef.current) drawOrb(o);
-    }
-
-    const ro = new ResizeObserver(() => {
-      resize();
-      init();
-    });
-
-    ro.observe(host);
-    window.addEventListener("resize", resize);
-
-    return () => {
-      cancelAnimationFrame(rafOrbsRef.current);
-      window.removeEventListener("resize", resize);
-      ro.disconnect();
-    };
-  }, [reducedMotion]);
-
   return (
     <section className="gs-hero" aria-label="Welcome">
-      <div
-        aria-hidden="true"
-        className="gs-bg"
-        style={{
-          background: `
-            radial-gradient(950px 680px at 18% 18%, rgba(123,92,255,0.11), transparent 58%),
-            radial-gradient(760px 560px at 86% 72%, rgba(184,164,255,0.18), transparent 60%),
-            radial-gradient(680px 480px at 58% 10%, rgba(110,201,255,0.08), transparent 62%),
-            linear-gradient(135deg, ${theme.bg0} 0%, ${theme.bg1} 40%, ${theme.bg2} 72%, ${theme.bg3} 100%)
-          `,
-        }}
-      />
-      <div aria-hidden="true" className="gs-texture" />
-      <canvas ref={orbsCanvasRef} className="gs-orbs" aria-hidden="true" />
+      {/* Background gradient, grain texture, and the floating orb canvas
+          now live in <HomeOrbBackground /> (mounted at the app-shell level
+          in App.jsx) so the animation runs as one continuous layer behind
+          the navbar, this hero, and the footer — not just this section. */}
 
       <div className="gs-inner">
         <div className="gs-left" aria-hidden="true">
@@ -219,12 +33,25 @@ export default function Welcome() {
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
+            {/* Delicate silver constellation — Black + White Light system.
+                Varied white opacity gives it depth; the primary star (the
+                diamond glyph + core dot) carries a faint soft-white glow. */}
+            <defs>
+              <filter id="gsStarGlow" x="-150%" y="-150%" width="400%" height="400%">
+                <feGaussianBlur stdDeviation="2.2" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+
             <line
               x1="60"
               y1="0"
               x2="60"
               y2="320"
-              stroke="rgba(123,92,255,0.15)"
+              stroke="rgba(255,255,255,0.14)"
               strokeWidth="1.5"
               strokeDasharray="4 8"
             />
@@ -232,21 +59,22 @@ export default function Welcome() {
             <path
               d="M60 30 L63 44 L77 44 L66 53 L70 67 L60 58 L50 67 L54 53 L43 44 L57 44 Z"
               fill="none"
-              stroke="rgba(123,92,255,0.28)"
+              stroke="rgba(255,255,255,0.55)"
               strokeWidth="1.2"
+              filter="url(#gsStarGlow)"
             />
 
-            <circle cx="60" cy="100" r="3.5" fill="rgba(123,92,255,0.22)" />
-            <circle cx="48" cy="112" r="2" fill="rgba(184,164,255,0.35)" />
-            <circle cx="72" cy="112" r="2" fill="rgba(184,164,255,0.35)" />
-            <circle cx="60" cy="124" r="2" fill="rgba(110,201,255,0.30)" />
+            <circle cx="60" cy="100" r="3.5" fill="rgba(255,255,255,0.7)" filter="url(#gsStarGlow)" />
+            <circle cx="48" cy="112" r="2" fill="rgba(255,255,255,0.5)" />
+            <circle cx="72" cy="112" r="2" fill="rgba(255,255,255,0.5)" />
+            <circle cx="60" cy="124" r="2" fill="rgba(200,205,214,0.4)" />
 
             <line
               x1="44"
               y1="172"
               x2="76"
               y2="172"
-              stroke="rgba(123,92,255,0.18)"
+              stroke="rgba(255,255,255,0.22)"
               strokeWidth="1.2"
             />
             <line
@@ -254,7 +82,7 @@ export default function Welcome() {
               y1="182"
               x2="70"
               y2="182"
-              stroke="rgba(123,92,255,0.12)"
+              stroke="rgba(255,255,255,0.15)"
               strokeWidth="1"
             />
             <line
@@ -262,14 +90,14 @@ export default function Welcome() {
               y1="192"
               x2="65"
               y2="192"
-              stroke="rgba(123,92,255,0.08)"
+              stroke="rgba(255,255,255,0.1)"
               strokeWidth="1"
             />
 
             <path
               d="M60 240 L62 249 L71 249 L64 255 L66 264 L60 259 L54 264 L56 255 L49 249 L58 249 Z"
-              fill="rgba(184,164,255,0.30)"
-              stroke="rgba(123,92,255,0.20)"
+              fill="rgba(200,205,214,0.35)"
+              stroke="rgba(255,255,255,0.3)"
               strokeWidth="1"
             />
 
@@ -278,7 +106,7 @@ export default function Welcome() {
               y1="290"
               x2="60"
               y2="310"
-              stroke="rgba(123,92,255,0.22)"
+              stroke="rgba(255,255,255,0.28)"
               strokeWidth="1.5"
             />
             <line
@@ -286,7 +114,7 @@ export default function Welcome() {
               y1="300"
               x2="70"
               y2="300"
-              stroke="rgba(123,92,255,0.22)"
+              stroke="rgba(255,255,255,0.28)"
               strokeWidth="1.5"
             />
           </svg>
@@ -299,12 +127,10 @@ export default function Welcome() {
         </div>
 
         <div className="gs-card">
-          <div className="gs-blob" aria-hidden="true" />
-
           <div className="gs-cardInner">
             <div className="gs-eyebrow">
               <span className="gs-dot" />
-              Available for work
+                 Available for work
             </div>
 
             <h1 className="gs-name">
@@ -314,21 +140,24 @@ export default function Welcome() {
             </h1>
 
             <p className="gs-tagline">
-              Frontend AI Trainer&nbsp;&amp;&nbsp;Full Stack Developer
+              Software Engineer Building AI Systems and Full-Stack Products
             </p>
 
             <p className="gs-bio">
-              I craft soft, interactive web experiences — React frontends,
-              Django backends, and AI-aware product thinking that makes things
-              feel alive.
+              I build full-stack, AI-enabled products across React, React
+              Native, and Django, combining polished interfaces with
+              retrieval, LLM orchestration, and deterministic safeguards.
             </p>
 
             <div className="gs-actions">
-              <Link to="/projects" className="gs-btnPrimary">
-                See My Work
+              <Link to="/projects" className="gs-btnPrimary gs-magnetBtn" ref={magnetRef}>
+                <span className="gs-magnet-glass" aria-hidden="true" />
+                <span className="gs-liquid-label">See My Work</span>
               </Link>
-              <Link to="/aboutme" className="gs-btnGhost">
-                About Me
+              <Link to="/aboutme" className="gs-btnGhost gs-liquid gs-liquid--ghost" ref={ghostGlowRef}>
+                <span className="gs-liquid-border" aria-hidden="true" />
+                <span className="gs-liquid-fill" aria-hidden="true" />
+                <span className="gs-liquid-label">About Me</span>
               </Link>
             </div>
           </div>
@@ -343,12 +172,12 @@ export default function Welcome() {
             <span>React · Django</span>
           </div>
           <div className="gs-stat">
-            <strong>AI Trainer</strong>
-            <span>Outlier AI</span>
+            <strong>AI Systems</strong>
+            <span>RAG · Gemini</span>
           </div>
           <div className="gs-stat">
-            <strong>✦</strong>
-            <span>Junior-Level Dev</span>
+            <strong>AI Evaluation</strong>
+            <span>Agents · Testing</span>
           </div>
         </div>
       </div>
@@ -364,42 +193,20 @@ export default function Welcome() {
         .gs-hero {
           position: relative;
           width: 100%;
-          height: 100%;
-          min-height: 0;
-          overflow: hidden;
+          /* Natural flow: .gs-hero is sized by its own content, not
+             forced to fill the viewport (that's .app-shell/.app-main's
+             job — see App.css). overflow:visible so nothing here can
+             clip the hover-lift or corner decorations. */
+          height: auto;
+          overflow: visible;
           font-family: Nunito, ui-sans-serif, system-ui;
         }
-
-        .gs-bg,
-        .gs-texture,
-        .gs-orbs {
-          position: absolute;
-          inset: 0;
-          pointer-events: none;
-        }
-
-        .gs-bg { z-index: 0; }
-
-        .gs-texture {
-          z-index: 1;
-          background-image:
-            radial-gradient(circle at 18% 22%, rgba(0,0,0,0.028) 0 1px, transparent 2px),
-            radial-gradient(circle at 70% 32%, rgba(0,0,0,0.022) 0 1px, transparent 2px),
-            radial-gradient(circle at 44% 74%, rgba(0,0,0,0.018) 0 1px, transparent 2px),
-            radial-gradient(circle at 84% 82%, rgba(0,0,0,0.020) 0 1px, transparent 2px);
-          background-size: 260px 260px;
-          opacity: 0.46;
-          mix-blend-mode: multiply;
-        }
-
-        .gs-orbs { z-index: 2; }
 
         .gs-inner {
           position: relative;
           z-index: 3;
           width: 100%;
-          height: 100%;
-          min-height: 0;
+          height: auto;
           display: grid;
           grid-template-columns: 1fr auto 1fr;
           align-items: center;
@@ -434,49 +241,34 @@ export default function Welcome() {
           font-weight: 900;
           letter-spacing: 0.18em;
           text-transform: uppercase;
-          color: rgba(123,92,255,0.55);
+          color: var(--color-text-primary);
           padding: 4px 10px;
-          border: 1px solid rgba(123,92,255,0.16);
+          border: 1px solid rgba(var(--color-border-rgb),0.22);
           border-radius: 4px;
-          background: rgba(255,255,255,0.42);
+          background: rgba(var(--color-surface-recessed-rgb),0.55);
           white-space: nowrap;
         }
 
         .gs-card {
           position: relative;
-          width: clamp(280px, 36vw, 520px);
+          width: clamp(300px, 42vw, 680px);
           flex-shrink: 0;
-          background: rgba(255,255,255,0.62);
-          backdrop-filter: blur(18px) saturate(1.4);
-          -webkit-backdrop-filter: blur(18px) saturate(1.4);
-          border: 1px solid rgba(255,255,255,0.72);
+          /* Dark smoky glass — deliberately translucent (not the old
+             0.72 near-opaque fill) so the fixed HomeOrbBackground canvas
+             behind it visibly shows through, softened by the blur, as
+             the orbs drift past. See index.css for the surface-glass
+             token this is built on. */
+          background: rgba(var(--color-surface-glass-rgb),0.62);
+          backdrop-filter: blur(18px) saturate(1.15);
+          -webkit-backdrop-filter: blur(18px) saturate(1.15);
+          border: 1px solid rgba(var(--color-glow-white-rgb),0.14);
           border-radius: 28px;
           box-shadow:
-            0 8px 32px rgba(123,92,255,0.10),
-            0 2px 8px rgba(123,92,255,0.06),
-            inset 0 1px 0 rgba(255,255,255,0.85);
+            0 20px 60px rgba(0,0,0,0.55),
+            0 4px 16px rgba(var(--color-glow-silver-rgb),0.08),
+            inset 0 1px 0 rgba(255,255,255,0.16);
           padding: clamp(24px, 4vw, 52px) clamp(22px, 3.5vw, 46px);
           overflow: hidden;
-        }
-
-        .gs-blob {
-          position: absolute;
-          top: -40%;
-          right: -30%;
-          width: 70%;
-          aspect-ratio: 1;
-          border-radius: 50%;
-          background: radial-gradient(circle, rgba(184,164,255,0.38) 0%, rgba(110,201,255,0.18) 60%, transparent 80%);
-          animation: blobDrift 8s ease-in-out infinite alternate;
-          pointer-events: none;
-          z-index: 0;
-        }
-
-        @keyframes blobDrift {
-          0%   { transform: translate(0, 0) scale(1); }
-          33%  { transform: translate(-8%, 6%) scale(1.06); }
-          66%  { transform: translate(6%, -4%) scale(0.96); }
-          100% { transform: translate(-4%, 8%) scale(1.04); }
         }
 
         .gs-cornerTL,
@@ -491,16 +283,16 @@ export default function Welcome() {
         .gs-cornerTL {
           top: 14px;
           left: 14px;
-          border-top: 2px solid rgba(123,92,255,0.30);
-          border-left: 2px solid rgba(123,92,255,0.30);
+          border-top: 2px solid rgba(var(--color-border-rgb),0.35);
+          border-left: 2px solid rgba(var(--color-border-rgb),0.35);
           border-radius: 4px 0 0 0;
         }
 
         .gs-cornerBR {
           bottom: 14px;
           right: 14px;
-          border-bottom: 2px solid rgba(123,92,255,0.30);
-          border-right: 2px solid rgba(123,92,255,0.30);
+          border-bottom: 2px solid rgba(var(--color-border-rgb),0.35);
+          border-right: 2px solid rgba(var(--color-border-rgb),0.35);
           border-radius: 0 0 4px 0;
         }
 
@@ -509,6 +301,8 @@ export default function Welcome() {
           z-index: 1;
           display: flex;
           flex-direction: column;
+          align-items: center;
+          text-align: center;
           gap: clamp(10px, 1.6vw, 20px);
         }
 
@@ -520,22 +314,22 @@ export default function Welcome() {
           font-weight: 800;
           letter-spacing: 0.12em;
           text-transform: uppercase;
-          color: rgba(123,92,255,0.72);
+          color: var(--color-text-primary);
         }
 
         .gs-dot {
           width: 7px;
           height: 7px;
           border-radius: 50%;
-          background: #7b5cff;
-          box-shadow: 0 0 0 3px rgba(123,92,255,0.18);
+          background: var(--color-ice);
+          box-shadow: 0 0 0 3px rgba(var(--color-ice-rgb),0.22);
           animation: pulse 2.4s ease-in-out infinite;
           flex-shrink: 0;
         }
 
         @keyframes pulse {
-          0%, 100% { box-shadow: 0 0 0 3px rgba(123,92,255,0.18); }
-          50% { box-shadow: 0 0 0 6px rgba(123,92,255,0.08); }
+          0%, 100% { box-shadow: 0 0 0 3px rgba(var(--color-ice-rgb),0.22); }
+          50% { box-shadow: 0 0 0 6px rgba(var(--color-ice-rgb),0.10); }
         }
 
         .gs-name {
@@ -546,20 +340,24 @@ export default function Welcome() {
 
         .gs-nameLight {
           display: block;
-          font-family: "Playfair Display", Georgia, serif;
-          font-style: italic;
-          font-weight: 700;
-          font-size: clamp(1.8rem, 4vw, 4.2rem);
-          color: rgba(123,92,255,0.55);
+          font-family: "Source Serif 4", Georgia, serif;
+          font-style: normal;
+          font-weight: 500;
+          font-size: clamp(2.1rem, 4.4vw, 4rem);
+          letter-spacing: -0.005em;
+          color: var(--color-text-primary);
+          text-shadow: 0 8px 28px rgba(0,0,0,0.35);
         }
 
         .gs-nameBold {
           display: block;
-          font-family: "Playfair Display", Georgia, serif;
-          font-weight: 900;
-          font-size: clamp(2.4rem, 5.5vw, 5.8rem);
-          color: #3d2a8a;
-          text-shadow: 0 8px 28px rgba(123,92,255,0.14);
+          font-family: "Source Serif 4", Georgia, serif;
+          font-style: normal;
+          font-weight: 500;
+          font-size: clamp(2.2rem, 4.55vw, 4.15rem);
+          letter-spacing: -0.005em;
+          color: var(--color-text-primary);
+          text-shadow: 0 8px 28px rgba(0,0,0,0.35);
         }
 
         .gs-tagline {
@@ -567,8 +365,9 @@ export default function Welcome() {
           font-size: clamp(0.72rem, 1vw, 0.92rem);
           font-weight: 800;
           letter-spacing: 0.05em;
-          color: rgba(123,92,255,0.65);
+          color: var(--color-text-primary);
           text-transform: uppercase;
+          max-width: 36ch;
         }
 
         .gs-bio {
@@ -576,15 +375,66 @@ export default function Welcome() {
           font-size: clamp(0.8rem, 1.1vw, 1rem);
           font-weight: 600;
           line-height: 1.65;
-          color: rgba(40,30,70,0.68);
-          max-width: 34ch;
+          color: var(--color-text-primary);
+          opacity: 0.82;
+          max-width: 48ch;
         }
 
         .gs-actions {
           display: flex;
           align-items: center;
+          justify-content: center;
           gap: clamp(8px, 1.2vw, 14px);
           flex-wrap: wrap;
+        }
+
+        /* ===== Liquid Glass / Refraction — prototype (§1) =====
+           The button surface reacts to the pointer itself rather than
+           playing a canned animation. --mx/--my (set by usePointerGlow)
+           drive two layers: a border-hugging ring highlight
+           (.gs-liquid-border, built with mask-composite so only the
+           ring nearest the pointer is visible) and an interior fill
+           highlight (.gs-liquid-fill, a broad soft glow + a tight
+           specular fleck). Both fade in/out via the is-glow-active
+           class rather than looping or sweeping automatically. */
+        .gs-liquid {
+          position: relative;
+          isolation: isolate;
+          transition: transform 120ms ease, box-shadow 160ms ease;
+        }
+        .gs-liquid:active { transform: scale(0.985); }
+
+        .gs-liquid-border,
+        .gs-liquid-fill {
+          position: absolute;
+          inset: 0;
+          border-radius: inherit;
+          opacity: 0;
+          transition: opacity 220ms ease;
+          pointer-events: none;
+        }
+        .gs-liquid.is-glow-active .gs-liquid-border,
+        .gs-liquid.is-glow-active .gs-liquid-fill { opacity: 1; }
+        /* Keyboard focus: --mx/--my default to 50%/50% (see the
+           radial-gradient fallbacks below), so focusing via keyboard
+           shows the same glass reaction centered in the button rather
+           than requiring pointer coordinates. */
+        .gs-liquid:focus-visible .gs-liquid-border,
+        .gs-liquid:focus-visible .gs-liquid-fill { opacity: 1; }
+        .gs-liquid-label { position: relative; z-index: 1; }
+
+        .gs-liquid-border {
+          padding: 1px;
+          background: radial-gradient(90px circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.9), transparent 70%);
+          -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          -webkit-mask-composite: xor;
+          mask-composite: exclude;
+        }
+
+        .gs-liquid-fill {
+          background:
+            radial-gradient(140px circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.14), transparent 60%),
+            radial-gradient(40px circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.35), transparent 70%);
         }
 
         .gs-btnPrimary {
@@ -594,20 +444,56 @@ export default function Welcome() {
           justify-content: center;
           padding: clamp(10px, 1.2vw, 14px) clamp(18px, 2vw, 28px);
           border-radius: 999px;
-          background: linear-gradient(135deg, #8b6bff 0%, #6344d4 100%);
-          color: #fff;
+          border: 1px solid rgba(0,0,0,0.14);
+          background: linear-gradient(135deg, var(--color-accent-hover) 0%, var(--color-accent) 100%);
+          color: var(--color-text-on-accent);
           font-family: Nunito, ui-sans-serif, system-ui;
           font-weight: 900;
           font-size: clamp(0.75rem, 1vw, 0.95rem);
           letter-spacing: 0.02em;
-          box-shadow: 0 10px 28px rgba(123,92,255,0.28), inset 0 1px 0 rgba(255,255,255,0.18);
-          transition: transform 160ms ease, box-shadow 160ms ease;
+          box-shadow: 0 10px 28px rgba(0,0,0,0.35), 0 2px 10px rgba(var(--color-glow-white-rgb),0.12), inset 0 1px 0 rgba(255,255,255,0.55);
           white-space: nowrap;
         }
+        /* Magnetic glass (See My Work only) — distinct from the dark
+           liquid-glass treatment on About Me. No traveling/looping
+           animation: the button itself drifts a few px toward the
+           pointer (soft ease, not springy) while a two-tone radial
+           highlight — a pale specular layer plus a faint graphite
+           shadow, both tracking the pointer — suggests depth moving
+           beneath frosted white glass. --tx/--ty/--mx/--my come from
+           useMagneticGlass.js; :active layers a compression scale on
+           top of whatever translate is currently active. */
+        .gs-magnetBtn {
+          position: relative;
+          isolation: isolate;
+          --tx: 0px;
+          --ty: 0px;
+          transform: translate(var(--tx), var(--ty));
+          transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1), border-color 220ms ease;
+        }
+        .gs-magnetBtn.is-glow-active,
+        .gs-magnetBtn:hover,
+        .gs-magnetBtn:focus-visible {
+          border-color: rgba(20,22,26,0.24);
+        }
+        .gs-magnetBtn:active {
+          transform: translate(var(--tx), var(--ty)) scale(0.985);
+        }
 
-        .gs-btnPrimary:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 16px 36px rgba(123,92,255,0.36), inset 0 1px 0 rgba(255,255,255,0.18);
+        .gs-magnet-glass {
+          position: absolute;
+          inset: 0;
+          border-radius: inherit;
+          pointer-events: none;
+          opacity: 0;
+          transition: opacity 260ms ease;
+          background:
+            radial-gradient(130px circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.55), transparent 62%),
+            radial-gradient(190px circle at var(--mx,50%) var(--my,50%), rgba(52,56,64,0.14), transparent 72%);
+        }
+        .gs-magnetBtn.is-glow-active .gs-magnet-glass,
+        .gs-magnetBtn:focus-visible .gs-magnet-glass {
+          opacity: 1;
         }
 
         .gs-btnGhost {
@@ -617,21 +503,21 @@ export default function Welcome() {
           justify-content: center;
           padding: clamp(10px, 1.2vw, 14px) clamp(18px, 2vw, 28px);
           border-radius: 999px;
-          border: 1.5px solid rgba(123,92,255,0.28);
-          background: rgba(255,255,255,0.48);
-          color: #5b3fc4;
+          border: 1.5px solid rgba(var(--color-border-rgb),0.35);
+          background: rgba(var(--color-surface-glass-rgb),0.55);
+          color: var(--color-text-primary);
           font-family: Nunito, ui-sans-serif, system-ui;
           font-weight: 900;
           font-size: clamp(0.75rem, 1vw, 0.95rem);
           letter-spacing: 0.02em;
-          transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
           white-space: nowrap;
+          transition: background 220ms ease, border-color 220ms ease;
         }
-
-        .gs-btnGhost:hover {
-          transform: translateY(-2px);
-          background: rgba(255,255,255,0.72);
-          border-color: rgba(123,92,255,0.48);
+        .gs-liquid--ghost.is-glow-active,
+        .gs-liquid--ghost:focus-visible {
+          border-color: rgba(var(--color-glow-white-rgb),0.4);
+          background: rgba(var(--color-surface-glass-rgb),0.72);
         }
 
         .gs-right {
@@ -648,48 +534,74 @@ export default function Welcome() {
           gap: 2px;
           padding: clamp(8px, 1vw, 14px) clamp(12px, 1.4vw, 20px);
           border-radius: 14px;
-          background: rgba(255,255,255,0.52);
-          border: 1px solid rgba(123,92,255,0.12);
+          background: rgba(var(--color-surface-glass-rgb),0.55);
+          border: 1px solid rgba(var(--color-border-rgb),0.2);
           backdrop-filter: blur(8px);
-          box-shadow: 0 4px 16px rgba(123,92,255,0.07);
+          box-shadow: 0 4px 16px rgba(var(--color-glow-silver-rgb),0.08);
           min-width: clamp(90px, 10vw, 150px);
         }
 
         .gs-stat strong {
           font-size: clamp(0.75rem, 1vw, 0.98rem);
           font-weight: 900;
-          color: #4a2faa;
+          color: var(--color-text-primary);
           line-height: 1;
         }
 
         .gs-stat span {
           font-size: clamp(0.6rem, 0.8vw, 0.78rem);
           font-weight: 700;
-          color: rgba(123,92,255,0.6);
+          color: var(--color-text-secondary);
           letter-spacing: 0.04em;
         }
 
-        /* Tablet/mobile: center content in viewport */
-        @media (max-width: 860px) {
-          .gs-hero {
-            min-height: 100%;
-            height: auto;
-            overflow: visible;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          }
+        /* Tablet/mobile: card becomes a fixed-height glass shell that
+           fits fully between the navbar and footer, instead of the page
+           growing taller than the viewport. .gs-hero keeps its BASE
+           height: 100%/min-height: 0 (no override here anymore) so it
+           stays sized to .app-main's actual available space.
 
+           .gs-inner switches from grid to flex here. It's not just a
+           centering preference: .gs-card needs a genuinely explicit
+           height (not merely a max-height ceiling on an otherwise
+           content-sized box) so that .gs-cardInner's own max-height:
+           100% below has something valid to resolve against — per the
+           CSS percentage-height rules, a child's percentage height is
+           invalid (treated as none) against a parent whose height
+           "depends on its content", which max-height-only sizing counts
+           as even once resolved. A flex column with height: 100% on the
+           item sidesteps that: flex hands out space from the
+           container's own definite height directly, so .gs-card's
+           height: 100% is genuinely definite, and .gs-cardInner's
+           max-height: 100%/overflow-y: auto then actually clamps it
+           (confirmed in-browser — the grid/align-content/max-height
+           combination this replaced left .gs-cardInner unclamped, so it
+           silently overflowed .gs-card and got clipped by its
+           overflow: hidden instead of scrolling).
+
+           .gs-card itself does not scroll — .gs-cardInner does (below)
+           — so the corner decorations (.gs-cornerTL/.gs-cornerBR,
+           absolutely positioned children of .gs-card) stay visually
+           pinned to the shell's corners instead of scrolling away with
+           the content. */
+        @media (max-width: 860px) {
+          /* justify-content:flex-start (not center) + padding-bottom
+             (not the old calc(34px+safe-area) bottom inset) — content
+             starts right after the shared navbar->content gap and ends
+             with its own small breathing room; .app-content now owns
+             the page->footer distance (see App.css --page-footer-gap),
+             so this doesn't need to reserve its own large bottom inset
+             for a footer that used to live inside this same viewport-
+             filling box. */
           .gs-inner {
-            grid-template-columns: 1fr;
-            grid-template-rows: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
             width: 100%;
-            height: auto;
-            min-height: 0;
-            justify-items: center;
-            align-content: center;
             gap: clamp(10px, 2vw, 20px);
-            padding: clamp(12px, 3vw, 28px) clamp(12px, 3vw, 28px) calc(34px + env(safe-area-inset-bottom));
+            padding: clamp(12px, 3vw, 28px) clamp(12px, 3vw, 28px)
+              clamp(16px, 3vw, 28px);
           }
 
           .gs-left,
@@ -697,36 +609,28 @@ export default function Welcome() {
             display: none;
           }
 
+          /* height:auto (not 100%) — the card is sized by its own
+             content in natural flow, not stretched to fill a
+             viewport-height parent. */
           .gs-card {
-            width: min(92vw, 480px);
+            width: min(100%, 480px);
+            height: auto;
+          }
+
+          /* No longer its own scroll region — .gs-card's content is
+             short enough in natural flow that it never needs one
+             (.app-main is the single scroll owner for anything taller
+             than the viewport). */
+          .gs-cardInner {
+            max-height: none;
+            overflow: visible;
           }
         }
 
-        /* MOBILE: center content in viewport */
         @media (max-width: 640px) {
-          .gs-hero {
-            min-height: 100%;
-            height: auto;
-            overflow: visible;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          }
-
-          .gs-bg,
-          .gs-texture,
-          .gs-orbs {
-            inset: 0;
-          }
-
           .gs-inner {
-            height: auto;
-            min-height: 0;
-            grid-template-columns: 1fr;
-            justify-items: center;
-            align-content: center;
             gap: 0;
-            padding: 18px 12px calc(34px + env(safe-area-inset-bottom));
+            padding: 18px 0;
           }
 
           .gs-left,
@@ -756,11 +660,11 @@ export default function Welcome() {
           }
 
           .gs-nameLight {
-            font-size: clamp(1.5rem, 8vw, 2.3rem);
+            font-size: clamp(1.9rem, 9.5vw, 2.7rem);
           }
 
           .gs-nameBold {
-            font-size: clamp(2.2rem, 12vw, 3.5rem);
+            font-size: clamp(2rem, 9.9vw, 2.8rem);
             line-height: 0.92;
           }
 
@@ -793,20 +697,12 @@ export default function Welcome() {
         }
 
         @media (max-width: 480px) {
-          .gs-hero {
-            min-height: 100%;
-            height: auto;
-            overflow: visible;
-          }
-
           .gs-inner {
-            height: auto;
-            min-height: 0;
-            padding: 16px 10px calc(28px + env(safe-area-inset-bottom));
+            padding: 16px 0;
           }
 
           .gs-card {
-            width: min(96vw, 420px);
+            width: 100%;
             padding: 20px 16px;
             border-radius: 20px;
           }
@@ -825,11 +721,11 @@ export default function Welcome() {
           }
 
           .gs-nameLight {
-            font-size: clamp(1.35rem, 7vw, 2rem);
+            font-size: clamp(1.6rem, 8vw, 2.3rem);
           }
 
           .gs-nameBold {
-            font-size: clamp(2rem, 11vw, 3rem);
+            font-size: clamp(1.7rem, 8.3vw, 2.4rem);
           }
 
           .gs-tagline {
@@ -857,7 +753,7 @@ export default function Welcome() {
 
         @media (max-width: 360px) {
           .gs-inner {
-            padding: 14px 8px calc(24px + env(safe-area-inset-bottom));
+            padding: 14px 0;
           }
 
           .gs-card {
@@ -876,10 +772,18 @@ export default function Welcome() {
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .gs-blob { animation: none; }
           .gs-dot  { animation: none; }
-          .gs-btnPrimary,
-          .gs-btnGhost { transition: none; }
+          .gs-liquid { transition: none; }
+          .gs-liquid:active { transform: none; }
+          .gs-liquid-border, .gs-liquid-fill { transition: none; }
+
+          /* No magnetic translate — keep only the static hover
+             contrast (border-color) and the glass highlight's opacity
+             fade, both of which useMagneticGlass.js still toggles via
+             pointerenter/leave under reduced motion. */
+          .gs-magnetBtn { transition: border-color 220ms ease; transform: none !important; }
+          .gs-magnetBtn:active { transform: none !important; }
+          .gs-magnet-glass { transition: opacity 260ms ease; }
         }
       `}</style>
     </section>

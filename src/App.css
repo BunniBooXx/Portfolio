@@ -1,69 +1,282 @@
-/* App.css — single scrollbar: ONLY .app-main scrolls */
+/* =========================================================
+   GLOBAL APP LAYOUT
 
-html {
-  margin: 0;
-  padding: 0;
+   One viewport shell.
+   One page scrollbar: .app-main.
+   Navbar, route content, and footer share one centered axis.
+   ========================================================= */
+
+html,
+body,
+#root {
   width: 100%;
   height: 100%;
-  min-height: 100%;
-  min-height: -webkit-fill-available;
-  overflow: hidden;
-  background: #F6F1FF;
+  margin: 0;
+  padding: 0;
 }
 
-body, #root {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
+html {
   min-height: 100%;
   min-height: -webkit-fill-available;
   overflow: hidden;
-  background: #F6F1FF;
+  background: var(--color-bg-page);
+}
+
+body,
+#root {
+  min-width: 0;
+  min-height: 100%;
+  min-height: -webkit-fill-available;
+  overflow: hidden;
+  background: var(--color-bg-page);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  --app-max-width: 1440px;
+  --app-gutter: clamp(12px, 2.5vw, 32px);
+  --app-header-gap: clamp(10px, 1.5vw, 16px);
+  --app-footer-gap: clamp(12px, 2vw, 22px);
+
+  /* Shared vertical rhythm — the ONE place that owns "how far page
+     content sits from the footer below it," for every route, so no
+     route needs its own copy of this decision. (Navbar->content
+     spacing is deliberately NOT centralized here: every route's own
+     top padding already reads correctly today, verified via
+     screenshots across the full matrix, and centralizing it risks
+     shifting an already-correct desktop baseline for no visual gain.)
+     Value chosen from live measurement, not guessed: the previous
+     .app-footer{margin-top:clamp(20px,3.5vh,32px)} produced a visible
+     content->footer gap of 37.9-54px across tested viewports, which
+     read as "a little too high" on Home. This raises the floor/ceiling
+     modestly (28-48px token + the footer's own ~12-22px internal
+     padding = ~40-70px visible gap) — comfortably more breathing room
+     without approaching the old 90-175px auto-margin dead zone. */
+  --page-footer-gap: clamp(28px, 4.5vh, 48px);
 }
 
 .app-shell {
+  position: relative;
+  isolation: isolate;
   width: 100%;
   height: 100%;
-  min-height: 100%;
+  min-width: 0;
   min-height: 100dvh;
   min-height: -webkit-fill-available;
-  display: grid;
-  grid-template-rows: auto 1fr auto;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
+  background: transparent;
 }
 
+/* ------------------------- NAVBAR ------------------------- */
+
+.app-header {
+  position: relative;
+  flex: 0 0 auto;
+  width: 100%;
+  min-width: 0;
+  padding: var(--app-header-gap) var(--app-gutter) 0;
+  z-index: 100;
+  background: transparent;
+}
+
+.app-header-inner {
+  width: min(100%, var(--app-max-width));
+  min-width: 0;
+  margin-inline: auto;
+}
+
+.app-header-inner > * {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* ---------------------- SCROLL OWNER ---------------------- */
+
 .app-main {
+  position: relative;
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
   min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
-  overscroll-behavior: contain;
+  overscroll-behavior-y: contain;
+  overscroll-behavior-x: none;
+  -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
-  scrollbar-color: rgba(123, 92, 255, 0.4) rgba(123, 92, 255, 0.08);
-}
-/* Projects: use its own scroll on desktop only; mobile/tablet use app-main (prevents double scrollbar) */
-@media (min-width: 901px) {
-  .app-main--projects { overflow: hidden; }
-}
-.app-main::-webkit-scrollbar {
-  width: 8px;
-}
-.app-main::-webkit-scrollbar-track {
-  background: rgba(123, 92, 255, 0.06);
-  border-radius: 4px;
-}
-.app-main::-webkit-scrollbar-thumb {
-  background: rgba(123, 92, 255, 0.35);
-  border-radius: 4px;
-}
-.app-main::-webkit-scrollbar-thumb:hover {
-  background: rgba(123, 92, 255, 0.5);
+  scrollbar-color: rgba(var(--color-border-rgb), 0.4) transparent;
+  background: transparent;
+  z-index: 1;
 }
 
-.app-footer{
-  position: relative !important;
-  inset: auto !important;
-  transform: none !important;
-  margin: 0;
-  padding: 0;
+/* min-height:100% makes .app-page at least fill .app-main's available
+   height (definite, since .app-main is a flex item with a resolved
+   height inside .app-shell). Combined with .app-content's flex-grow
+   below, this is what lets short-page free space become a genuine part
+   of the composition (split above/below the route content, footer
+   landing near the real bottom of the screen) instead of either (a)
+   collecting as one giant void below the footer (plain min-height with
+   no flex-grow child — tested live, a no-op) or (b) collecting as one
+   giant void between content and footer (flex-grow without centering
+   the route inside it — tested live, just relocates the old auto-margin
+   bug). When route content is taller than the available space, this
+   floor simply doesn't bind — .app-page grows to fit its content like
+   any other block box, .app-main scrolls, and .app-content's
+   justify-content:center below is provably a no-op then (verified live:
+   identical measurements with and without it once content overflows). */
+.app-page {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+}
+
+/* ----------------------- PAGE CONTENT --------------------- */
+
+.app-content {
+  position: relative;
+  width: min(100%, var(--app-max-width));
+  min-width: 0;
+  margin-inline: auto;
+  padding-inline: var(--app-gutter);
+  /* The shared content->footer spacing owner (see --page-footer-gap
+     above) — a floor UNDER the route content, not instead of the
+     centering below: on short pages centering distributes most of the
+     free space, and this still guarantees a minimum breathing room so
+     the route content never reads as touching the footer even when
+     centering's own share of the gap is small. */
+  padding-bottom: var(--page-footer-gap);
+  /* flex-grow:1 claims .app-page's leftover height (from min-height:100%
+     above) so short-page free space lives here, not below the footer.
+     flex-shrink is moot either way — .app-page's own height is content-
+     driven with min-height only as a floor, never a ceiling, so this
+     flex column is never squeezed smaller than its items' content sizes
+     — but flex-shrink:0 documents the intent plainly. min-height:0
+     overrides the flex-item automatic-minimum-size default so a route
+     taller than the available space can still grow/overflow normally
+     instead of the box refusing to shrink below its content's
+     hypothetical size (irrelevant for growing past, but keeps this
+     flex item well-behaved in general). justify-content:center only
+     has anything to distribute when .app-content is taller than its
+     single child (the route root) — i.e. exactly the short-page case;
+     on a route taller than the viewport it's a verified no-op. */
+  flex: 1 0 auto;
+  flex-shrink: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+}
+
+.app-content > * {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin-inline: auto;
+}
+
+/* -------------------------- FOOTER ------------------------ */
+
+.app-footer {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  /* No margin-top here — content->footer spacing is owned entirely by
+     .app-content's padding-bottom (--page-footer-gap) above, so there
+     is one spacing owner, not two contributing to the same visible
+     gap. (History: this was first margin-top:auto — which produced a
+     90-175px dead zone on short-content routes by consuming 100% of
+     .app-page's forced min-height:100% leftover space — then a bounded
+     clamp() directly on this rule, which fixed the dead zone but still
+     left two different layers each supplying part of the visible gap.
+     Centralizing it on .app-content is the version that sticks.) */
+  padding: var(--app-footer-gap) var(--app-gutter)
+    max(var(--app-footer-gap), env(safe-area-inset-bottom));
+  flex: 0 0 auto;
+  background: transparent;
+  z-index: 10;
+}
+
+.app-footer-inner {
+  width: min(100%, var(--app-max-width));
+  min-width: 0;
+  margin-inline: auto;
+}
+
+.app-footer-inner > * {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* ------------------------- SCROLLBAR ---------------------- */
+
+.app-main::-webkit-scrollbar {
+  width: 6px;
+}
+
+.app-main::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.app-main::-webkit-scrollbar-thumb {
+  background: rgba(var(--color-border-rgb), 0.34);
+  border-radius: 999px;
+}
+
+.app-main::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--color-border-rgb), 0.5);
+}
+
+/* -------------------------- TABLET ------------------------ */
+
+@media (max-width: 900px) {
+  :root {
+    --app-gutter: clamp(12px, 3vw, 24px);
+  }
+}
+
+/* -------------------------- MOBILE ------------------------ */
+
+@media (max-width: 600px) {
+  :root {
+    --app-gutter: clamp(10px, 3.5vw, 16px);
+    --app-header-gap: 10px;
+    --app-footer-gap: 12px;
+  }
+
+  .app-header {
+    padding-top: max(10px, env(safe-area-inset-top));
+  }
+}
+
+@media (max-width: 380px) {
+  :root {
+    --app-gutter: 10px;
+  }
+}
+
+@media (max-width: 340px) {
+  :root {
+    --app-gutter: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-main {
+    scroll-behavior: auto;
+  }
 }

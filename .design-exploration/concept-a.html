@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Concept A — Open Editorial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,340;0,9..144,600;0,9..144,900;1,9..144,400&family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* ---- proposed COOL lavender tokens (not yet implemented site-wide) ---- */
+    --color-bg-page:#F5F3FB;
+    --color-bg-card:#FAF9FE;
+    --color-surface-recessed:#E9E5F6;
+    --color-border:#CFC6EA;
+    --color-ink:#332B4D;
+    --color-text-muted:#5E5580;
+    --color-brand-purple:#6E63A6;
+    --color-brand-purple-deep:#4F4270;
+    --color-brand-purple-deep-2:#5F5286;
+    --color-glow-strong:#8B72CC;
+    --color-glow-strong-rgb:139,114,204;
+    --color-glow-soft:#C3B8F0;
+    --color-glow-soft-rgb:195,184,240;
+    --color-accent-blue:#A7BEDD;
+    --color-accent-blue-rgb:167,190,221;
+    --color-accent-pink:#D6B9D4;
+    --color-accent-pink-rgb:214,185,212;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;width:100%;height:100%;background:var(--color-bg-page);font-family:Nunito,ui-sans-serif,system-ui;}
+  .page{display:flex;flex-direction:column;width:100%;height:100%;}
+  .protoNav{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;
+    padding:20px 32px;position:relative;z-index:40;}
+  .protoNav .brand{display:inline-flex;align-items:center;padding:11px 22px;border-radius:999px;
+    background:rgba(255,255,255,0.72);border:1px solid rgba(207,198,234,0.7);
+    font-weight:900;font-size:.85rem;color:var(--color-brand-purple-deep);font-family:Nunito,sans-serif;}
+  .protoNav .links{display:flex;align-items:center;gap:26px;font-family:Nunito,sans-serif;
+    font-weight:800;font-size:.9rem;color:var(--color-brand-purple-deep);}
+  .stage{position:relative;width:100%;flex:1 1 auto;min-height:0;overflow:hidden;
+    background:
+      radial-gradient(1100px 700px at 12% 10%, rgba(var(--color-glow-soft-rgb),0.35), transparent 60%),
+      radial-gradient(900px 600px at 88% 85%, rgba(var(--color-accent-blue-rgb),0.22), transparent 62%),
+      linear-gradient(135deg, var(--color-bg-card) 0%, var(--color-bg-page) 45%, var(--color-surface-recessed) 78%, var(--color-border) 100%);
+  }
+  canvas.orbs{position:absolute;inset:0;pointer-events:none;z-index:2;}
+  .badge-note{position:fixed;top:14px;left:14px;z-index:50;background:rgba(255,255,255,0.85);border:1px solid var(--color-border);
+    color:var(--color-brand-purple-deep);font-size:11px;font-weight:800;letter-spacing:.04em;padding:5px 10px;border-radius:999px;
+    font-family:Nunito,sans-serif;}
+
+  .hero{position:relative;z-index:3;min-height:100%;display:flex;flex-direction:column;justify-content:center;
+    padding: 4vh 8vw; max-width:1500px;}
+
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:.78rem;font-weight:800;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--color-brand-purple-deep);margin-bottom:clamp(18px,4vh,40px);}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--color-glow-strong);
+    box-shadow:0 0 0 4px rgba(var(--color-glow-strong-rgb),0.20);}
+
+  h1.name{margin:0 0 clamp(14px,2.4vh,26px) 0;line-height:.92;letter-spacing:-.01em;}
+  .n-light{display:block;font-family:"Fraunces",Georgia,serif;font-style:italic;font-weight:340;
+    font-size:clamp(2.6rem,7vw,6.4rem);color:var(--color-brand-purple);}
+  .n-bold{display:block;font-family:"Fraunces",Georgia,serif;font-weight:900;font-optical-sizing:auto;
+    font-size:clamp(4.2rem,12vw,10.5rem);color:var(--color-ink);margin-top:-.06em;}
+
+  .tagline{margin:0 0 clamp(14px,2vh,22px) 0;font-size:clamp(.85rem,1.05vw,1.02rem);font-weight:800;
+    letter-spacing:.05em;text-transform:uppercase;color:var(--color-brand-purple-deep);max-width:46ch;}
+
+  .bio{margin:0 0 clamp(24px,4vh,42px) 0;font-size:clamp(.95rem,1.15vw,1.12rem);line-height:1.6;
+    color:var(--color-ink);opacity:.78;max-width:56ch;font-weight:600;}
+
+  .actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:clamp(20px,3.4vh,34px);}
+  .btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;
+    padding:14px 30px;border-radius:999px;font-weight:900;font-size:.95rem;letter-spacing:.02em;
+    font-family:Nunito,sans-serif;transition:transform .16s ease;}
+  .btn:hover{transform:translateY(-2px);}
+  .btn-primary{background:linear-gradient(135deg,var(--color-brand-purple-deep-2) 0%,var(--color-brand-purple-deep) 100%);
+    color:#fff;box-shadow:0 12px 28px rgba(79,66,112,0.28);}
+  .btn-ghost{background:transparent;color:var(--color-brand-purple-deep);border:1.5px solid rgba(var(--color-glow-strong-rgb),0.4);}
+
+  .cap-line{font-size:.72rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--color-text-muted);}
+  .cap-line b{color:var(--color-brand-purple-deep);font-weight:900;}
+
+  @media (max-width:760px){
+    .hero{padding:6vh 6vw;justify-content:flex-start;padding-top:14vh;}
+    .n-bold{font-size:clamp(3rem,17vw,4.6rem);}
+    .n-light{font-size:clamp(1.8rem,9vw,2.6rem);}
+    .actions{flex-direction:column;align-items:stretch;}
+  }
+</style>
+</head>
+<body>
+<div class="badge-note">CONCEPT A — Open Editorial / No Main Card (prototype, cool-lavender tokens)</div>
+<div class="page">
+  <nav class="protoNav">
+    <span class="brand">Home</span>
+    <div class="links"><span>Projects</span><span>More ▾</span></div>
+  </nav>
+  <div class="stage">
+    <canvas class="orbs" id="orbs"></canvas>
+    <div class="hero">
+      <div class="eyebrow"><span class="dot"></span>Available for work</div>
+      <h1 class="name">
+        <span class="n-light">Jaqueline</span>
+        <span class="n-bold">Smith</span>
+      </h1>
+      <p class="tagline">Software Engineer building AI systems and full-stack products</p>
+      <p class="bio">I build full-stack, AI-enabled products across React, React Native, and Django, combining polished interfaces with retrieval, LLM orchestration, and deterministic safeguards.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="#">See My Work</a>
+        <a class="btn btn-ghost" href="#">About Me</a>
+      </div>
+      <div class="cap-line"><b>Full Stack</b> · <b>AI Systems</b> · <b>AI Evaluation</b></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const canvas = document.getElementById('orbs');
+  const ctx = canvas.getContext('2d', {alpha:true});
+  let w=0,h=0;
+  const rand=(a,b)=>a+Math.random()*(b-a);
+  const clamp=(n,a,b)=>Math.min(b,Math.max(a,n));
+  function resize(){
+    const dpr = Math.max(1, Math.min(2, window.devicePixelRatio||1));
+    w = window.innerWidth; h = window.innerHeight;
+    canvas.style.width=w+'px'; canvas.style.height=h+'px';
+    canvas.width=Math.floor(w*dpr); canvas.height=Math.floor(h*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  const colors = [
+    "rgba(139,114,204,1)",  /* glow-strong */
+    "rgba(195,184,240,1)",  /* glow-soft */
+    "rgba(195,184,240,1)",
+    "rgba(167,190,221,1)",  /* accent-blue */
+    "rgba(214,185,212,1)",  /* accent-pink (minor) */
+  ];
+  let orbs=[];
+  function makeOrb(x,y){
+    const r=rand(14,34);
+    const c=colors[Math.floor(Math.random()*colors.length)];
+    return {x,y,r,c,vx:rand(-.14,.14),vy:rand(.18,.6),wobble:rand(0,Math.PI*2),wobbleSpeed:rand(.006,.014)};
+  }
+  function init(){
+    orbs=[];
+    const count = clamp(Math.floor(w/140),10,22);
+    for(let i=0;i<count;i++) orbs.push(makeOrb(rand(40,w-40), rand(-h*.3,h)));
+  }
+  function drawOrb(o){
+    ctx.beginPath();
+    ctx.arc(o.x,o.y,o.r*3,0,Math.PI*2);
+    const g=ctx.createRadialGradient(o.x,o.y,0,o.x,o.y,o.r*3);
+    g.addColorStop(0,o.c.replace('1)','0.12)'));
+    g.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=g; ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(o.x,o.y,o.r,0,Math.PI*2);
+    const rg=ctx.createRadialGradient(o.x-o.r*.35,o.y-o.r*.35,o.r*.15,o.x,o.y,o.r);
+    rg.addColorStop(0,'rgba(255,255,255,0.85)');
+    rg.addColorStop(.34,o.c.replace('1)','0.46)'));
+    rg.addColorStop(1,o.c.replace('1)','0.20)'));
+    ctx.fillStyle=rg; ctx.fill();
+    ctx.strokeStyle='rgba(110,99,166,0.12)'; ctx.lineWidth=1; ctx.stroke();
+  }
+  function step(){
+    ctx.clearRect(0,0,w,h);
+    const gravity=.01, air=.995, bounce=.7;
+    for(const o of orbs){
+      o.wobble+=o.wobbleSpeed;
+      o.vx+=Math.sin(o.wobble)*.003;
+      o.vy+=gravity;
+      o.x+=o.vx; o.y+=o.vy;
+      o.vx*=air; o.vy*=air;
+      if(o.x-o.r<0){o.x=o.r;o.vx=Math.abs(o.vx)*bounce;}
+      if(o.x+o.r>w){o.x=w-o.r;o.vx=-Math.abs(o.vx)*bounce;}
+      if(o.y+o.r>h){
+        o.y=h-o.r; o.vy=-Math.abs(o.vy)*bounce; o.vx*=.92;
+        if(Math.abs(o.vy)<.08){o.x=rand(40,w-40);o.y=rand(-160,-30);o.vx=rand(-.14,.14);o.vy=rand(.2,.7);o.wobble=rand(0,Math.PI*2);}
+      }
+      drawOrb(o);
+    }
+    requestAnimationFrame(step);
+  }
+  resize(); init(); step();
+  window.addEventListener('resize', ()=>{resize(); init();});
+})();
+</script>
+</body>
+</html>

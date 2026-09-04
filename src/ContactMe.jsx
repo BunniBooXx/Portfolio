@@ -3,6 +3,8 @@ import emailjs from "@emailjs/browser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faLinkedin } from "@fortawesome/free-brands-svg-icons";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import OrbField from "./OrbField";
+import { CONTACT_ORBS } from "./orbLayouts";
 
 export default function ContactMe() {
   const form = useRef(null);
@@ -59,110 +61,116 @@ export default function ContactMe() {
     <section className="cm-page" aria-label="Contact Me">
       <div className="cm-bg" aria-hidden="true" />
       <div className="cm-texture" aria-hidden="true" />
+      <OrbField orbs={CONTACT_ORBS} />
 
       <div className="cm-center">
         <div className="cm-card">
-          <header className="cm-header">
-            <div className="cm-pill">Let’s connect</div>
-            <h1 className="cm-title">Contact Form</h1>
-            <p className="cm-subtitle">
-              Send me a message and I’ll get back to you soon.
-            </p>
-          </header>
+          {/* Plain grouping wrapper — no styling of its own. .app-main is
+              the single page scroll owner at every width now, so this
+              no longer needs to be its own scroll region on mobile. */}
+          <div className="cm-cardInner">
+            <header className="cm-header">
+              <div className="cm-pill">Let’s connect</div>
+              <h1 className="cm-title">Contact Form</h1>
+              <p className="cm-subtitle">
+                Send me a message and I’ll get back to you soon.
+              </p>
+            </header>
 
-          <form className="cm-form" ref={form} onSubmit={sendEmail}>
-            <div className="cm-grid">
+            <form className="cm-form" ref={form} onSubmit={sendEmail}>
+              <div className="cm-grid">
+                <div className="cm-fieldWrap">
+                  <label className="cm-label" htmlFor="user_name">
+                    Your Name
+                  </label>
+                  <input
+                    id="user_name"
+                    type="text"
+                    name="user_name"
+                    className="cm-field"
+                    placeholder="Your cute name"
+                    required
+                  />
+                </div>
+
+                <div className="cm-fieldWrap">
+                  <label className="cm-label" htmlFor="user_email">
+                    Your Email
+                  </label>
+                  <input
+                    id="user_email"
+                    type="email"
+                    name="user_email"
+                    className="cm-field"
+                    placeholder="Your adorable email"
+                    required
+                  />
+                </div>
+              </div>
+
               <div className="cm-fieldWrap">
-                <label className="cm-label" htmlFor="user_name">
-                  Your Name
+                <label className="cm-label" htmlFor="message">
+                  Your Message
                 </label>
-                <input
-                  id="user_name"
-                  type="text"
-                  name="user_name"
-                  className="cm-field"
-                  placeholder="Your cute name"
+                <textarea
+                  id="message"
+                  name="message"
+                  className="cm-field cm-textarea"
+                  placeholder="Your sweet message"
                   required
                 />
               </div>
 
-              <div className="cm-fieldWrap">
-                <label className="cm-label" htmlFor="user_email">
-                  Your Email
-                </label>
-                <input
-                  id="user_email"
-                  type="email"
-                  name="user_email"
-                  className="cm-field"
-                  placeholder="Your adorable email"
-                  required
-                />
+              <button
+                className="cm-submit"
+                type="submit"
+                disabled={status === "sending"}
+              >
+                {status === "sending" ? (
+                  "Sending…"
+                ) : (
+                  <>
+                    <FontAwesomeIcon icon={faPaperPlane} aria-hidden="true" />
+                    <span>Send Message</span>
+                  </>
+                )}
+              </button>
+
+              <div
+                className={`cm-status ${status !== "idle" ? "show" : ""}`}
+                role="status"
+                aria-live="polite"
+              >
+                {statusText}
               </div>
-            </div>
 
-            <div className="cm-fieldWrap">
-              <label className="cm-label" htmlFor="message">
-                Your Message
-              </label>
-              <textarea
-                id="message"
-                name="message"
-                className="cm-field cm-textarea"
-                placeholder="Your sweet message"
-                required
-              />
-            </div>
+              <div className="cm-divider" aria-hidden="true" />
 
-            <button
-              className="cm-submit"
-              type="submit"
-              disabled={status === "sending"}
-            >
-              {status === "sending" ? (
-                "Sending…"
-              ) : (
-                <>
-                  <FontAwesomeIcon icon={faPaperPlane} aria-hidden="true" />
-                  <span>Send Message</span>
-                </>
-              )}
-            </button>
+              <div className="cm-socialRow">
+                <a
+                  className="cm-socialBtn"
+                  href="https://github.com/BunniBooXx"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="GitHub"
+                >
+                  <FontAwesomeIcon icon={faGithub} />
+                  <span>GitHub</span>
+                </a>
 
-            <div
-              className={`cm-status ${status !== "idle" ? "show" : ""}`}
-              role="status"
-              aria-live="polite"
-            >
-              {statusText}
-            </div>
-
-            <div className="cm-divider" aria-hidden="true" />
-
-            <div className="cm-socialRow">
-              <a
-                className="cm-socialBtn"
-                href="https://github.com/BunniBooXx"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="GitHub"
-              >
-                <FontAwesomeIcon icon={faGithub} />
-                <span>GitHub</span>
-              </a>
-
-              <a
-                className="cm-socialBtn"
-                href="https://www.linkedin.com/in/jaqueline-smith-237366238/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="LinkedIn"
-              >
-                <FontAwesomeIcon icon={faLinkedin} />
-                <span>LinkedIn</span>
-              </a>
-            </div>
-          </form>
+                <a
+                  className="cm-socialBtn"
+                  href="https://www.linkedin.com/in/jaqueline-smith-237366238/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="LinkedIn"
+                >
+                  <FontAwesomeIcon icon={faLinkedin} />
+                  <span>LinkedIn</span>
+                </a>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
 
@@ -177,62 +185,77 @@ export default function ContactMe() {
         .cm-page{
           position: relative;
           width: 100%;
-          height: 100%;
-          min-height: 0;
-          overflow: hidden;
-          overflow-x: hidden;
-          display: grid;
+          /* Natural flow — sized by its own content, not forced to fill
+             the viewport (App.css's .app-shell/.app-main own that). */
+          height: auto;
+          overflow: visible;
+          display: block;
         }
 
+        /* Fixed to the viewport (not .cm-page's own box) so the background
+           spans the full screen, continuing behind the navbar and footer
+           instead of being clipped to the space between them. */
         .cm-bg,
         .cm-texture{
-          position: absolute;
+          position: fixed;
           inset: 0;
           pointer-events: none;
         }
 
         .cm-bg{
           z-index: 0;
+          /* The top-left highlight formerly here (radial-gradient at
+             18% 10%) read fine when this layer was clipped to the content
+             box below the navbar, but now that the background is fixed to
+             the viewport (see .cm-bg/.cm-texture above) that same
+             10%-from-top anchor sits behind/above the navbar itself,
+             showing up as a bright top-edge flare. Removed; the
+             lower-right highlight and base gradient are unchanged. */
           background:
-            radial-gradient(1100px 560px at 18% 10%, rgba(255,255,255,0.66) 0%, rgba(255,255,255,0) 55%),
-            radial-gradient(900px 520px at 84% 88%, rgba(255,255,255,0.38) 0%, rgba(255,255,255,0) 60%),
-            linear-gradient(135deg, #F4EEFF 0%, #EDE2FF 45%, #E6D8FF 100%);
+            radial-gradient(900px 520px at 84% 88%, rgba(var(--color-ice-rgb),0.05) 0%, rgba(var(--color-ice-rgb),0) 60%),
+            linear-gradient(135deg, var(--color-surface-glass) 0%, var(--color-bg-page) 45%, var(--color-surface-recessed) 100%);
         }
 
         .cm-texture{
           z-index: 1;
-          opacity: 0.40;
+          opacity: 0.5;
           background-image:
-            radial-gradient(circle at 18% 22%, rgba(0,0,0,0.03) 0 1px, transparent 2px),
-            radial-gradient(circle at 70% 32%, rgba(0,0,0,0.025) 0 1px, transparent 2px),
-            radial-gradient(circle at 44% 74%, rgba(0,0,0,0.02) 0 1px, transparent 2px),
-            radial-gradient(circle at 84% 82%, rgba(0,0,0,0.025) 0 1px, transparent 2px);
+            radial-gradient(circle at 18% 22%, rgba(255,255,255,0.035) 0 1px, transparent 2px),
+            radial-gradient(circle at 70% 32%, rgba(255,255,255,0.03) 0 1px, transparent 2px),
+            radial-gradient(circle at 44% 74%, rgba(255,255,255,0.028) 0 1px, transparent 2px),
+            radial-gradient(circle at 84% 82%, rgba(255,255,255,0.03) 0 1px, transparent 2px);
           background-size: 260px 260px;
-          mix-blend-mode: multiply;
         }
 
+        /* Natural top-down flow, not centered in a viewport-height box.
+           Horizontal padding is 0 — the shared .app-content gutter
+           (App.css) already supplies it. */
         .cm-center{
           position: relative;
           z-index: 2;
-          height: 100%;
-          min-height: 0;
-          display: grid;
-          place-items: center;
-          padding: clamp(10px, 2vh, 18px) clamp(12px, 2.6vw, 26px);
+          width: 100%;
+          height: auto;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: flex-start;
+          padding: clamp(10px, 2vh, 18px) 0;
         }
 
         .cm-card{
           width: min(760px, 100%);
-          background: rgba(255, 255, 255, 0.78);
+          background: rgba(var(--color-surface-glass-rgb), 0.82);
           border-radius: 22px;
-          border: 1px solid rgba(169, 135, 255, 0.20);
-          box-shadow: 0 12px 30px rgba(40, 20, 80, 0.12);
+          border: 1px solid rgba(var(--color-border-rgb), 0.3);
+          box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 4px 14px rgba(var(--color-glow-silver-rgb), 0.08);
           backdrop-filter: blur(8px);
           -webkit-backdrop-filter: blur(8px);
           padding: clamp(16px, 2.3vh, 24px);
 
-          max-height: 100%;
-          overflow: hidden;
+          /* Natural flow — never its own scroll region; .app-main is
+             the single page scroll owner (App.css). */
+          max-height: none;
+          overflow: visible;
 
           animation: cmFadeUp 0.7s ease-out;
         }
@@ -248,14 +271,14 @@ export default function ContactMe() {
           justify-content: center;
           padding: 7px 14px;
           border-radius: 999px;
-          background: rgba(255,255,255,0.64);
-          border: 1px solid rgba(156,122,255,0.20);
-          box-shadow: 0 8px 18px rgba(40,20,80,0.07);
+          background: rgba(var(--color-surface-recessed-rgb),0.6);
+          border: 1px solid rgba(var(--color-border-rgb),0.24);
+          box-shadow: 0 8px 18px rgba(0,0,0,0.2);
 
           font-family: Nunito, ui-sans-serif, system-ui;
           font-size: 0.9rem;
           font-weight: 800;
-          color: rgba(90, 47, 198, 0.82);
+          color: var(--color-text-primary);
         }
 
         .cm-title{
@@ -263,7 +286,7 @@ export default function ContactMe() {
           font-family: Nunito, ui-sans-serif, system-ui;
           font-size: clamp(1.7rem, 3.0vw, 2.35rem);
           font-weight: 900;
-          color: #6B34D9;
+          color: var(--color-text-primary);
           line-height: 1.08;
           letter-spacing: -0.03em;
         }
@@ -275,7 +298,7 @@ export default function ContactMe() {
           font-size: clamp(0.92rem, 1.15vw, 1rem);
           line-height: 1.45;
           font-weight: 700;
-          color: rgba(40, 20, 80, 0.72);
+          color: rgba(var(--color-text-primary-rgb), 0.78);
         }
 
         .cm-form{
@@ -300,16 +323,16 @@ export default function ContactMe() {
           font-family: Nunito, ui-sans-serif, system-ui;
           font-size: 0.95rem;
           font-weight: 800;
-          color: #6B34D9;
+          color: var(--color-text-primary);
         }
 
         .cm-field{
           width: 100%;
           padding: 12px 13px;
           border-radius: 14px;
-          border: 1px solid rgba(156, 122, 255, 0.26);
-          background: rgba(255,255,255,0.92);
-          color: rgba(25,18,40,0.88);
+          border: 1px solid rgba(var(--color-border-rgb), 0.3);
+          background: rgba(var(--color-surface-recessed-rgb), 0.85);
+          color: var(--color-text-primary);
           font-family: Nunito, ui-sans-serif, system-ui;
           font-size: 0.97rem;
           font-weight: 700;
@@ -318,13 +341,15 @@ export default function ContactMe() {
         }
 
         .cm-field::placeholder{
-          color: rgba(25,18,40,0.40);
+          color: var(--color-text-muted);
           font-weight: 600;
         }
 
+        /* Elegant focus lighting: icy-blue ring, matching the global
+           focus-ring token used for keyboard focus elsewhere. */
         .cm-field:focus{
-          border-color: rgba(107,52,217,0.44);
-          box-shadow: 0 0 0 4px rgba(123,92,255,0.14);
+          border-color: rgba(var(--color-ice-rgb),0.6);
+          box-shadow: 0 0 0 4px rgba(var(--color-ice-rgb),0.18);
         }
 
         .cm-textarea{
@@ -334,6 +359,8 @@ export default function ContactMe() {
         }
 
         .cm-submit{
+          position: relative;
+          overflow: hidden;
           margin-top: 4px;
           width: 100%;
           border: none;
@@ -344,22 +371,38 @@ export default function ContactMe() {
           font-family: Nunito, ui-sans-serif, system-ui;
           font-weight: 900;
           font-size: 1rem;
-          color: #fff;
+          color: var(--color-text-on-accent);
 
           display: inline-flex;
           align-items: center;
           justify-content: center;
           gap: 8px;
 
-          background: linear-gradient(180deg, rgba(122,62,240,0.95) 0%, rgba(107,52,217,0.98) 100%);
-          box-shadow: 0 14px 24px rgba(107,52,217,0.18);
+          background: linear-gradient(180deg, var(--color-accent-hover) 0%, var(--color-accent) 100%);
+          box-shadow: 0 14px 24px rgba(0,0,0,0.4);
           border: 1px solid rgba(255,255,255,0.18);
-          transition: transform 160ms ease, filter 160ms ease;
+          transition: transform 160ms ease, filter 160ms ease, box-shadow 160ms ease;
         }
 
-        .cm-submit:hover{
+        .cm-submit::after{
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,0.55) 50%, transparent 65%);
+          transform: translateX(-130%);
+          transition: transform 550ms ease;
+          pointer-events: none;
+        }
+
+        .cm-submit:hover,
+        .cm-submit:focus-visible{
           transform: translateY(-2px);
           filter: brightness(1.05);
+          box-shadow: 0 18px 32px rgba(0,0,0,0.5), 0 2px 12px rgba(var(--color-glow-white-rgb),0.15);
+        }
+        .cm-submit:hover::after,
+        .cm-submit:focus-visible::after{
+          transform: translateX(130%);
         }
 
         .cm-submit:disabled{
@@ -375,7 +418,7 @@ export default function ContactMe() {
           font-family: Nunito, ui-sans-serif, system-ui;
           font-size: 0.95rem;
           font-weight: 800;
-          color: rgba(40,20,80,0.72);
+          color: rgba(var(--color-text-primary-rgb), 0.78);
           opacity: 0;
           transform: translateY(-2px);
           transition: 180ms ease;
@@ -388,7 +431,7 @@ export default function ContactMe() {
 
         .cm-divider{
           height: 1px;
-          background: rgba(156,122,255,0.18);
+          background: rgba(var(--color-border-rgb), 0.7);
           margin: 2px 0 0;
         }
 
@@ -406,24 +449,26 @@ export default function ContactMe() {
           padding: 11px 12px;
           border-radius: 16px;
           text-decoration: none;
-          background: rgba(243,238,255,0.88);
-          border: 1px solid rgba(156,122,255,0.18);
-          color: rgba(40,20,80,0.82);
+          background: rgba(var(--color-surface-recessed-rgb),0.70);
+          border: 1px solid rgba(var(--color-border-rgb),0.55);
+          color: rgba(var(--color-text-primary-rgb),0.86);
 
           font-family: Nunito, ui-sans-serif, system-ui;
           font-weight: 800;
           transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
         }
 
-        .cm-socialBtn:hover{
-          transform: translateY(-2px);
-          background: rgba(255,255,255,0.88);
-          border-color: rgba(156,122,255,0.28);
+        .cm-socialBtn:hover,
+        .cm-socialBtn:focus-visible{
+          transform: translateY(-1px);
+          background: rgba(var(--color-surface-recessed-rgb),0.95);
+          border-color: rgba(var(--color-glow-white-rgb),0.4);
+          color: var(--color-text-primary);
         }
 
         .cm-socialBtn svg{
           font-size: 1.08rem;
-          color: rgba(107,52,217,0.92);
+          color: var(--color-text-primary);
         }
 
         @keyframes cmFadeUp{
@@ -456,28 +501,13 @@ export default function ContactMe() {
           }
         }
 
-        /* mobile/tablet: center content like Welcome — responsive at all heights */
+        /* Mobile/tablet: 1-column field/social layout is the only real
+           layout-mode change at this width. Centering/flex/natural-flow
+           already come from the base .cm-center/.cm-card/.cm-cardInner
+           rules above, applied uniformly at every width. */
         @media (max-width: 900px){
-          .cm-page{
-            min-height: 100%;
-            height: auto;
-            overflow: visible;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          }
-
           .cm-center{
-            width: 100%;
-            min-height: 100%;
-            display: grid;
-            place-items: center;
-            padding: 18px 12px calc(42px + env(safe-area-inset-bottom));
-          }
-
-          .cm-card{
-            max-height: none;
-            overflow: visible;
+            padding: 14px 0;
           }
 
           .cm-grid{
@@ -489,15 +519,16 @@ export default function ContactMe() {
           }
         }
 
+        @media (max-width: 520px){
+          .cm-center{
+            padding: 12px 0;
+          }
+        }
+
         @media (max-width: 420px){
           .cm-card{
             border-radius: 18px;
             padding: 14px;
-          }
-
-          .cm-center{
-            padding-left: 12px;
-            padding-right: 12px;
           }
 
           .cm-title{
@@ -518,6 +549,7 @@ export default function ContactMe() {
         @media (prefers-reduced-motion: reduce){
           .cm-card,
           .cm-submit,
+          .cm-submit::after,
           .cm-socialBtn,
           .cm-field,
           .cm-status{
@@ -526,10 +558,18 @@ export default function ContactMe() {
           }
 
           .cm-submit:hover,
-          .cm-socialBtn:hover{
+          .cm-submit:focus-visible,
+          .cm-socialBtn:hover,
+          .cm-socialBtn:focus-visible{
             transform: none !important;
           }
+          .cm-submit:hover::after,
+          .cm-submit:focus-visible::after{
+            transform: translateX(-130%) !important;
+          }
         }
+
+
       `}</style>
     </section>
   );
